@@ -1,0 +1,392 @@
+---
+// src/components/Projects/Filters.astro
+import type { CollectionEntry } from "astro:content";
+
+type AnyEntry = CollectionEntry<"projects" | "initiatives" | "caseStudies" | "events">;
+
+interface Props {
+  items?: AnyEntry[];
+  clientFields?: string[];
+}
+
+const { items = [], clientFields = ["client", "organisation", "institution", "organiser"] } =
+  Astro.props as Props;
+
+const flattenStrings = (val: unknown): string[] => {
+  if (!val) return [];
+  if (Array.isArray(val)) return val.filter(Boolean).map(String);
+  return [String(val)];
+};
+
+const getClientLike = (data: Record<string, unknown>) => {
+  if (!data) return "";
+  for (const key of clientFields) {
+    const val = data[key];
+    if (typeof val === "string" && val.trim()) return val.trim();
+
+    if (key === "organiser") {
+      if (Array.isArray(val)) {
+        const first = val.find((o) => {
+          if (!o) return false;
+          if (typeof o === "string") return o.trim().length > 0;
+          return typeof o === "object" && o !== null && "name" in o && String((o as { name?: unknown }).name || "").trim().length > 0;
+        });
+
+        if (typeof first === "string") return first.trim();
+        if (first && typeof first === "object" && "name" in first) {
+          return String((first as { name?: unknown }).name || "").trim();
+        }
+      }
+
+      if (val && typeof val === "object" && "name" in (val as object)) {
+        return String((val as { name?: unknown }).name || "").trim();
+      }
+    }
+  }
+  return "";
+};
+
+const allClients = Array.from(
+  new Set(
+    items
+      .map((p) => getClientLike((p.data as Record<string, unknown>) || {}))
+      .filter(Boolean)
+  )
+).sort();
+
+const allTags = Array.from(
+  new Set(
+    items.flatMap((p) => flattenStrings(((p.data as Record<string, unknown>)?.tags ?? []) as unknown))
+  )
+).sort();
+
+const allCategories = Array.from(
+  new Set(
+    items.flatMap((p) => [
+      ...flattenStrings(((p.data as Record<string, unknown>)?.category ?? []) as unknown),
+      ...flattenStrings(((p.data as Record<string, unknown>)?.sectors ?? []) as unknown),
+    ])
+  )
+).sort();
+
+const allTypes = Array.from(
+  new Set(
+    items
+      .map((p) => String((p.data as Record<string, unknown>)?.type || "").trim())
+      .filter(Boolean)
+  )
+).sort();
+
+const allStatuses = Array.from(
+  new Set(
+    items
+      .map((p) => String((p.data as Record<string, unknown>)?.status || "").trim())
+      .filter(Boolean)
+  )
+).sort();
+
+const hasEvents = items.some((p) => {
+  const data = (p.data as Record<string, unknown>) || {};
+  return Boolean(data.location || data.format);
+});
+
+const allFormats = Array.from(
+  new Set(
+    items
+      .map((p) => String((p.data as Record<string, unknown>)?.format || "").trim())
+      .filter(Boolean)
+  )
+).sort();
+---
+
+<div class="filters" aria-label="Filters">
+  <div class="filter-field full-width">
+    <label for="search">Search</label>
+    <input id="search" type="text" placeholder="Search title or description" />
+  </div>
+
+  {allClients.length > 0 && (
+    <div class="filter-field">
+      <label for="client">Client / Organiser</label>
+      <select id="client">
+        <option value="">All</option>
+        {allClients.map((c) => <option value={c}>{c}</option>)}
+      </select>
+    </div>
+  )}
+
+  {allTags.length > 0 && (
+    <div class="filter-field full-width">
+      <label>Tags</label>
+      <div class="checkbox-group" id="tagGroup">
+        {allTags.map((t) => (
+          <label class="checkbox-label">
+            <input type="checkbox" class="tag-checkbox" value={t} />
+            <span>{t}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {allCategories.length > 0 && (
+    <div class="filter-field full-width">
+      <label>Categories</label>
+      <div class="checkbox-group" id="categoryGroup">
+        {allCategories.map((c) => (
+          <label class="checkbox-label">
+            <input type="checkbox" class="category-checkbox" value={c} />
+            <span>{c}</span>
+          </label>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {allTypes.length > 0 && (
+    <div class="filter-field">
+      <label for="type">Type</label>
+      <select id="type">
+        <option value="">All</option>
+        {allTypes.map((t) => <option value={t}>{t}</option>)}
+      </select>
+    </div>
+  )}
+
+  {allStatuses.length > 0 && (
+    <div class="filter-field">
+      <label for="status">Status</label>
+      <select id="status">
+        <option value="">All</option>
+        {allStatuses.map((s) => <option value={s}>{s}</option>)}
+      </select>
+    </div>
+  )}
+
+  {hasEvents && allFormats.length > 0 && (
+    <div class="filter-field">
+      <label for="format">Format</label>
+      <select id="format">
+        <option value="">All</option>
+        {allFormats.map((f) => <option value={f}>{f}</option>)}
+      </select>
+    </div>
+  )}
+
+  <div class="filter-field">
+    <label for="fromDate">From</label>
+    <input id="fromDate" type="date" />
+  </div>
+
+  <div class="filter-field">
+    <label for="toDate">To</label>
+    <input id="toDate" type="date" />
+  </div>
+
+  <div class="filter-actions">
+    <button id="clearFilters" type="button">Clear</button>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const grid = document.getElementById("projectGrid");
+      const searchInput = document.getElementById("search");
+      const clientSelect = document.getElementById("client");
+      const typeSelect = document.getElementById("type");
+      const statusSelect = document.getElementById("status");
+      const formatSelect = document.getElementById("format");
+      const fromDateInput = document.getElementById("fromDate");
+      const toDateInput = document.getElementById("toDate");
+      const clearBtn = document.getElementById("clearFilters");
+
+      const tagCheckboxes = Array.from(document.querySelectorAll(".tag-checkbox"));
+      const categoryCheckboxes = Array.from(document.querySelectorAll(".category-checkbox"));
+
+      const getValue = (el) => (el && "value" in el ? el.value : "");
+      const setValue = (el, value) => {
+        if (el && "value" in el) el.value = value;
+      };
+
+      const getCheckedValues = (boxes) => boxes.filter((b) => b.checked).map((b) => b.value);
+
+      const parseDateInput = (value) => {
+        if (!value) return null;
+        const d = new Date(`${value}T00:00:00`);
+        return Number.isNaN(d.getTime()) ? null : d.getTime();
+      };
+
+      const parseStartDate = (raw) => {
+        if (!raw) return null;
+        const d = new Date(raw);
+        return Number.isNaN(d.getTime()) ? null : d.getTime();
+      };
+
+      function applyFilters() {
+        const q = getValue(searchInput).toLowerCase().trim();
+        const client = getValue(clientSelect);
+        const type = getValue(typeSelect);
+        const status = getValue(statusSelect);
+        const format = getValue(formatSelect);
+        const from = parseDateInput(getValue(fromDateInput));
+        const to = parseDateInput(getValue(toDateInput));
+
+        const selectedTags = getCheckedValues(tagCheckboxes);
+        const selectedCategories = getCheckedValues(categoryCheckboxes);
+
+        const cards = Array.from(grid?.children || []);
+
+        cards.forEach((card) => {
+          const title = (card.dataset.title || "").toLowerCase();
+          const desc = (card.dataset.description || "").toLowerCase();
+          const clientLike = card.dataset.client || "";
+          const cardTags = (card.dataset.tags || "").split("|").filter(Boolean);
+          const cardCategories = (card.dataset.categories || "").split("|").filter(Boolean);
+          const cardType = card.dataset.type || "";
+          const cardStatus = card.dataset.status || "";
+          const cardFormat = card.dataset.format || "";
+          const start = parseStartDate(card.dataset.startDate);
+
+          let ok = true;
+
+          if (q && !`${title} ${desc}`.includes(q)) ok = false;
+          if (client && clientLike !== client) ok = false;
+
+          if (selectedTags.length > 0) {
+            const matchesTag = selectedTags.some((t) => cardTags.includes(t));
+            if (!matchesTag) ok = false;
+          }
+
+          if (selectedCategories.length > 0) {
+            const matchesCategory = selectedCategories.some((c) => cardCategories.includes(c));
+            if (!matchesCategory) ok = false;
+          }
+
+          if (type && cardType !== type) ok = false;
+          if (status && cardStatus !== status) ok = false;
+          if (format && cardFormat !== format) ok = false;
+
+          if (from !== null && start !== null && start < from) ok = false;
+          if (to !== null && start !== null && start > to) ok = false;
+
+          card.style.display = ok ? "" : "none";
+        });
+      }
+
+      [searchInput, clientSelect, typeSelect, statusSelect, formatSelect, fromDateInput, toDateInput].forEach((el) =>
+        el?.addEventListener("input", applyFilters)
+      );
+
+      [clientSelect, typeSelect, statusSelect, formatSelect, fromDateInput, toDateInput].forEach((el) =>
+        el?.addEventListener("change", applyFilters)
+      );
+
+      tagCheckboxes.forEach((cb) => cb.addEventListener("change", applyFilters));
+      categoryCheckboxes.forEach((cb) => cb.addEventListener("change", applyFilters));
+
+      clearBtn?.addEventListener("click", () => {
+        setValue(searchInput, "");
+        setValue(clientSelect, "");
+        setValue(typeSelect, "");
+        setValue(statusSelect, "");
+        setValue(formatSelect, "");
+        setValue(fromDateInput, "");
+        setValue(toDateInput, "");
+
+        tagCheckboxes.forEach((cb) => (cb.checked = false));
+        categoryCheckboxes.forEach((cb) => (cb.checked = false));
+
+        applyFilters();
+      });
+
+      applyFilters();
+    })();
+  </script>
+</div>
+
+<style>
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (min-width: 640px) {
+    .filters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .filters {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .filter-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .filter-field.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .filter-field label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .filter-field input[type="text"],
+  .filter-field input[type="date"],
+  .filter-field select {
+    padding: 0.4rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.6rem;
+    max-height: 10rem;
+    overflow-y: auto;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .checkbox-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .checkbox-label input[type="checkbox"] {
+    margin: 0;
+  }
+
+  .filter-actions {
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .filter-actions button {
+    padding: 0.4rem 0.7rem;
+    border: 1px solid var(--color-border);
+    background: #f7f7f7;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: var(--color-text-muted);
+  }
+
+  .filter-actions button:hover {
+    background: #eee;
+  }
+</style>

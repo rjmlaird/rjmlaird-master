@@ -1,0 +1,158 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  description: string;
+  icon?: string;
+  tags?: string[];
+  variant?: "teal" | "violet" | "amber" | "neutral";
+  link?: string;
+  linkLabel?: string;
+}
+
+const {
+  title,
+  subtitle,
+  description,
+  icon = "◈",
+  tags = [],
+  variant = "neutral",
+  link,
+  linkLabel = "Learn more"
+} = Astro.props;
+
+const variantClass = `ac-${variant}`;
+---
+
+<article class={`ac ${variantClass}`}>
+  <div class="ac-h">
+    <div class="ac-icon">{icon}</div>
+
+    {subtitle && (
+      <p class="ac-subtitle">{subtitle}</p>
+    )}
+
+    <h3 class="ac-title">{title}</h3>
+
+    <p class="ac-desc">{description}</p>
+
+    {tags.length > 0 && (
+      <div class="ac-tags">
+        {tags.map((tag) => (
+          <span class="ac-tag">{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {link && (
+    <div class="ac-footer">
+      <a class="ac-link" href={link}>
+        {linkLabel} →
+      </a>
+    </div>
+  )}
+</article>
+
+<style>
+  .ac {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .ac:hover {
+    border-color: var(--bm);
+    transform: translateY(-2px);
+  }
+
+  .ac-h {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: .65rem;
+  }
+
+  .ac-icon {
+    font-size: 1.4rem;
+    line-height: 1;
+  }
+
+  .ac-subtitle {
+    font-family: var(--D);
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--m);
+  }
+
+  .ac-title {
+    font-family: var(--D);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--w);
+    line-height: 1.25;
+  }
+
+  .ac-desc {
+    font-size: .82rem;
+    color: var(--m);
+    line-height: 1.7;
+  }
+
+  .ac-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin-top: .5rem;
+  }
+
+  .ac-tag {
+    font-family: var(--D);
+    font-size: .6rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    border: 1px solid var(--bm);
+    color: var(--m);
+    padding: .18rem .5rem;
+    border-radius: 3px;
+  }
+
+  .ac-footer {
+    padding: .9rem 1.5rem;
+    border-top: 1px solid var(--bd);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .ac-link {
+    font-family: var(--D);
+    font-size: .7rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--m);
+    text-decoration: none;
+    transition: color .2s;
+  }
+
+  .ac-link:hover {
+    color: var(--teal);
+  }
+
+  /* Variants */
+  .ac-teal .ac-icon { color: var(--teal); }
+  .ac-violet .ac-icon { color: var(--violet); }
+  .ac-amber .ac-icon { color: var(--amber); }
+
+  .ac-teal:hover { border-color: var(--tb); }
+  .ac-violet:hover { border-color: var(--vb); }
+  .ac-amber:hover { border-color: var(--ad); }
+</style>

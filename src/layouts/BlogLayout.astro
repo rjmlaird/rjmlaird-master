@@ -1,0 +1,161 @@
+---
+// src/layouts/BlogLayout.astro
+import Layout from './Layout.astro';
+import { getEntry, type CollectionEntry } from 'astro:content';
+import PostMeta from '../components/PostMeta.astro';
+import TableOfContents from '../components/TableOfContents.astro';
+import RelatedPosts from '../components/RelatedPosts.astro';
+import AuthorCard from '../components/AuthorCard.astro';
+import { getReadingTime } from '../utils/readingTime';
+
+interface Props {
+  post?: CollectionEntry<'blog'>;
+  title?: string;
+  description?: string;
+  headings?: { depth: number; slug: string; text: string }[];
+  relatedPosts?: CollectionEntry<'blog'>[];
+  body?: string;
+  pubDate?: Date;
+  updatedDate?: Date;
+  readingTime?: string;
+  category?: string;
+  tags?: string[];
+  author?: { name: string; role: string; avatar: any };
+}
+
+const { post, headings = [], relatedPosts = [], body = '' } = Astro.props;
+const {
+  title: postTitle = '',
+  description: postDescription = '',
+  excerpt,
+  pubDate = new Date(),
+  updatedDate,
+  category = '',
+  tags = [],
+  heroImage,
+  heroAlt,
+  imageCredit,
+  author: authorRef,
+  canonical,
+  noindex = false,
+} = post ? post.data : ({} as any);
+
+const title = Astro.props.title || postTitle;
+const description = Astro.props.description || postDescription || excerpt;
+
+let authorEntry = null;
+if (authorRef && typeof authorRef === 'string') {
+  try {
+    authorEntry = await getEntry('authors', authorRef);
+  } catch {
+    authorEntry = null;
+  }
+}
+
+const author = Astro.props.author || {
+  name: authorEntry?.data.name ?? 'Unknown Author',
+  role: authorEntry?.data.role ?? '',
+  avatar: authorEntry?.data.avatar as any,
+};
+
+const readingTime = Astro.props.readingTime || getReadingTime(body || post?.body || '');
+const safeHeadings = Array.isArray(headings) ? headings : [];
+const safeRelatedPosts = Array.isArray(relatedPosts) ? relatedPosts : [];
+const rawCategory = Astro.props.category ?? category;
+const safeCategory = Array.isArray(rawCategory) ? rawCategory[0] || '' : rawCategory;
+const safeTags = Array.isArray(Astro.props.tags) ? Astro.props.tags : Array.isArray(tags) ? tags : [];
+
+const resolvedHeroSrc = heroImage;
+const resolvedHeroAlt = heroAlt || title || 'Hero image';
+const resolvedHeroCredit = imageCredit;
+
+const rawPubDate = Astro.props.pubDate ?? pubDate;
+const parsedPubDate = rawPubDate instanceof Date ? rawPubDate : new Date(rawPubDate);
+
+const rawUpdatedDate = Astro.props.updatedDate ?? updatedDate;
+const parsedUpdatedDate = rawUpdatedDate ? (rawUpdatedDate instanceof Date ? rawUpdatedDate : new Date(rawUpdatedDate)) : undefined;
+---
+
+<Layout
+  title={title}
+  description={description}
+  image={typeof resolvedHeroSrc === 'string' ? resolvedHeroSrc : undefined}
+  canonical={canonical}
+  noindex={noindex}
+>
+  <Fragment slot="head">
+    {post && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: title,
+        description,
+        image: resolvedHeroSrc ? [resolvedHeroSrc] : undefined,
+        datePublished: parsedPubDate?.toISOString?.(),
+        dateModified: (parsedUpdatedDate ?? parsedPubDate)?.toISOString?.(),
+        author: { '@type': 'Person', name: author.name || 'Ryan Laird', url: Astro.site ? new URL('/', Astro.site).href : undefined },
+        publisher: { '@type': 'Person', name: 'Ryan Laird', url: Astro.site ? new URL('/', Astro.site).href : undefined },
+        mainEntityOfPage: { '@type': 'WebPage', '@id': Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined },
+        keywords: Array.isArray(safeTags) ? safeTags.join(', ') : undefined,
+      })} is:inline />
+    )}
+    {post && (
+      <script type="application/ld+json" set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site ? new URL('/', Astro.site).href : '/' },
+          { '@type': 'ListItem', position: 2, name: 'Blog', item: Astro.site ? new URL('/blog/', Astro.site).href : '/blog/' },
+          { '@type': 'ListItem', position: 3, name: title },
+        ],
+      })} is:inline />
+    )}
+  </Fragment>
+
+  <article class="post">
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <ol>
+        <li><a href="/">Home</a></li>
+        <li><a href="/blog/">Blog</a></li>
+        <li aria-current="page">{title}</li>
+      </ol>
+    </nav>
+
+    <header class="post-header">
+      <div class="title-wrap">
+        <h1>{title}</h1>
+      </div>
+    </header>
+
+    {resolvedHeroSrc && (
+      <figure class="hero">
+        <img src={resolvedHeroSrc} alt={resolvedHeroAlt} width="1400" height="700" />
+        {resolvedHeroCredit && <figcaption>{resolvedHeroCredit}</figcaption>}
+      </figure>
+    )}
+
+    <PostMeta
+      author={author}
+      pubDate={parsedPubDate}
+      updatedDate={parsedUpdatedDate}
+      readingTime={readingTime}
+      category={safeCategory}
+      tags={safeTags}
+    />
+
+    <div class="post-grid">
+      <aside class="sidebar">
+        <TableOfContents headings={safeHeadings} />
+      </aside>
+
+      <div class="prose">
+        <slot />
+      </div>
+    </div>
+
+    <footer class="post-footer">
+      {authorEntry && <AuthorCard name={author.name} role={author.role} avatar={authorEntry.data.avatar ?? ''} bio={authorEntry.data.bio ?? ''} compact={false} />}
+      <RelatedPosts posts={safeRelatedPosts} />
+    </footer>
+  </article>
+</Layout>

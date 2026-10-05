@@ -1,0 +1,218 @@
+---
+const items = [
+  {
+    number: "01",
+    title: "Science",
+    label: "Astrophysics",
+    description:
+      "I started in astrophysics, working with data, evidence, and the scale of the universe.",
+    icon: "✦",
+    tone: "teal",
+    motif: "Data / stars",
+  },
+  {
+    number: "02",
+    title: "Communication",
+    label: "ESA / Copernicus storytelling",
+    description:
+      "I moved into space communication, helping shape narratives that made complex missions more accessible and meaningful.",
+    icon: "◌",
+    tone: "violet",
+    motif: "Orbit / mission",
+  },
+  {
+    number: "03",
+    title: "Sustainability",
+    label: "Green Orbit Digital",
+    description:
+      "Today I lead Green Orbit Digital, helping space organisations communicate clearly while embedding sustainability into how they work.",
+    icon: "◐",
+    tone: "green",
+    motif: "Leaf / Earth observation",
+  },
+];
+---
+
+<section id="story">
+  <div class="container pg-shell">
+    <p class="sl">Brand Story</p>
+    <h2 class="story-lede">From astrophysics to sustainable space strategy.</h2>
+    <p class="story-intro">
+      Ryan Laird bridges science, communication, and sustainability to help space
+      organisations tell clearer stories and build more responsible futures.
+    </p>
+
+    <ol class="brand-story__timeline">
+      {items.map((item) => (
+        <li class={`brand-story__item brand-story__item--${item.tone}`}>
+          <div class="brand-story__top">
+            <span class="brand-story__number">{item.number}</span>
+            <span class="brand-story__motif">{item.motif}</span>
+          </div>
+
+          <div class="brand-story__visual" aria-hidden="true">
+            <span class="brand-story__icon">{item.icon}</span>
+            <span class="brand-story__glow"></span>
+          </div>
+
+          <div class="brand-story__content">
+            <h3>{item.title}</h3>
+            <p class="brand-story__label">{item.label}</p>
+            <p>{item.description}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+
+<style>
+.brand-story {
+  padding-block: 4rem;
+}
+
+.brand-story__timeline {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1rem;
+}
+
+.brand-story__item {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--bd);
+  border-radius: 0.9rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    var(--card);
+}
+
+.brand-story__item::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: var(--teal);
+}
+
+.brand-story__item--violet::before { background: var(--violet); }
+.brand-story__item--green::before { background: var(--green); }
+
+.brand-story__top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brand-story__number,
+.brand-story__motif {
+  font-family: var(--D);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--m);
+}
+
+.brand-story__visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 6.5rem;
+  border: 1px solid var(--bm);
+  border-radius: 0.9rem;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(0, 194, 168, 0.14), transparent 60%),
+    rgba(255, 255, 255, 0.02);
+}
+
+.brand-story__item--violet .brand-story__visual {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(167, 139, 250, 0.14), transparent 60%),
+    rgba(255, 255, 255, 0.02);
+}
+
+.brand-story__item--green .brand-story__visual {
+  background:
+    radial-gradient(circle at 50% 50%, rgba(74, 222, 128, 0.14), transparent 60%),
+    rgba(255, 255, 255, 0.02);
+}
+
+.brand-story__icon {
+  position: relative;
+  z-index: 1;
+  width: 3.25rem;
+  height: 3.25rem;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  border: 1px solid var(--bm);
+  background: rgba(255, 255, 255, 0.04);
+  font-size: 1.2rem;
+}
+
+.brand-story__glow {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, transparent 35%, rgba(255, 255, 255, 0.05), transparent 65%);
+  opacity: 0.65;
+}
+
+.brand-story__content h3 {
+  margin: 0 0 0.25rem;
+  font-family: var(--D);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.brand-story__label {
+  margin: 0 0 0.55rem;
+  font-family: var(--D);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.brand-story__item--teal .brand-story__label { color: var(--teal); }
+.brand-story__item--violet .brand-story__label { color: var(--violet); }
+.brand-story__item--green .brand-story__label { color: var(--green); }
+
+.brand-story__content p:last-child {
+  margin: 0;
+  max-width: 38rem;
+  color: var(--mb);
+  line-height: 1.75;
+}
+
+.story-lede {
+  margin: 0.25rem 0 0.75rem;
+  font-family: var(--D);
+  font-size: clamp(1.6rem, 3vw, 2.3rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.story-intro {
+  margin: 0 0 2rem;
+  max-width: 52rem;
+  color: var(--mb);
+  line-height: 1.8;
+}
+
+@media (min-width: 900px) {
+  .brand-story__timeline {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+</style>

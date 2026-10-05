@@ -1,0 +1,213 @@
+---
+import { cleanText, cleanLinks } from "../../lib/content-quality.mjs";
+// src/pages/events/[slug].astro
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import ProjectSidebar from "../../components/ProjectSidebar.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import ImpactStats from "../../components/ImpactStats.astro";
+import { getExperience, getEducation, getVolunteering, getAwards } from "@/lib/api";
+import YouTubeEmbed from "../../components/YouTubeEmbed.astro";
+import MapEmbed from "../../components/MapEmbed.astro";
+import videosData from "../../data/videos.json";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("events", ({ data }) => !data.draft);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as {
+  entry: CollectionEntry<"events">;
+};
+
+const slug = Astro.params.slug;
+const event = entry.data;
+const { Content } = await render(entry);
+
+const sectors = Array.isArray(event.sectors) ? event.sectors : [];
+const tools = Array.isArray(event.tools_tech) ? event.tools_tech : [];
+const features = Array.isArray(event.features) ? event.features : [];
+const links = cleanLinks(event.links || {}) as typeof event.links;
+
+const youtubeUrl = (event as any).youtubeUrl || links.youtube;
+const youtubeId = event.youtubeId;
+
+const [
+  experienceItems,
+  educationItems,
+  volunteeringItems,
+  awardsItems,
+  caseStudyItems,
+  initiativeItems,
+  projectItems,
+  eventItems,
+] = await Promise.all([
+  getExperience(),
+  getEducation(),
+  getVolunteering(),
+  getAwards(),
+  getCollection("caseStudies"),
+  getCollection("initiatives"),
+  getCollection("projects"),
+  getCollection("events"),
+]);
+
+const relatedExperienceIds = Array.isArray(event.relatedExperience) ? event.relatedExperience : [];
+const relatedEducationIds = Array.isArray(event.relatedEducation) ? event.relatedEducation : [];
+const relatedOrgIds = Array.isArray(event.relatedOrg) ? event.relatedOrg : [];
+const relatedVolunteeringIds = Array.isArray(event.relatedVolunteering) ? event.relatedVolunteering : [];
+const relatedAwardIds = Array.isArray(event.relatedAwards) ? event.relatedAwards : [];
+const relatedCaseStudyIds = Array.isArray(event.relatedCaseStudies) ? event.relatedCaseStudies : [];
+const relatedInitiativeIds = Array.isArray(event.relatedInitiatives) ? event.relatedInitiatives : [];
+const relatedProjectIds = Array.isArray(event.relatedProjects) ? event.relatedProjects : [];
+const relatedEventIds = Array.isArray(event.relatedEvents) ? event.relatedEvents : [];
+const relatedVideoIds = Array.isArray(event.relatedVideos) ? event.relatedVideos : [];
+
+const relatedExperience = experienceItems.filter((item: any) =>
+  relatedExperienceIds.includes(item.id ?? item.slug)
+);
+
+const relatedEducation = educationItems.filter((item: any) =>
+  relatedEducationIds.includes(item.id ?? item.slug)
+);
+
+const relatedOrganisations = volunteeringItems.filter((item: any) =>
+  relatedOrgIds.includes(item.id ?? item.slug)
+);
+
+const relatedVolunteering = volunteeringItems.filter((item: any) =>
+  relatedVolunteeringIds.includes(item.id ?? item.slug)
+);
+
+const relatedAwards = awardsItems.filter((item: any) =>
+  relatedAwardIds.includes(item.id ?? item.slug)
+);
+
+const relatedCaseStudies = caseStudyItems.filter((item: any) =>
+  relatedCaseStudyIds.includes(item.slug ?? item.id)
+);
+
+const relatedInitiatives = initiativeItems.filter((item: any) =>
+  relatedInitiativeIds.includes(item.slug ?? item.id)
+);
+
+const relatedProjects = projectItems.filter((item: any) =>
+  relatedProjectIds.includes(item.slug ?? item.id)
+);
+
+// Related events: from events collection, matched by ID or slug
+const relatedEvents = eventItems.filter((item: any) =>
+  relatedEventIds.includes(item.id ?? item.slug)
+);
+
+// Related videos: from local JSON
+const allVideos = Array.isArray((videosData as any).videos)
+  ? (videosData as any).videos
+  : [];
+
+const relatedVideosRich = allVideos.filter((v: any) =>
+  relatedVideoIds.includes(v.youtubeId ?? v.id)
+);
+
+// Event-specific fields for sidebar
+const organiser = (event as any).organiser;
+const coOrganisers = (event as any).coOrganisers || [];
+const speakers = (event as any).speakers || [];
+const hosts = (event as any).hosts || [];
+const location = (event as any).location;
+const format = (event as any).format;
+
+// Build address string for map embed
+const hasLocation =
+  location &&
+  (location.name ||
+    location.address ||
+    location.city ||
+    location.region ||
+    location.country ||
+    location.postalCode);
+
+const addressString = hasLocation
+  ? [
+      location.name,
+      location.address,
+      location.city,
+      location.region,
+      location.postalCode,
+      location.country,
+    ]
+      .filter(Boolean)
+      .join(", ")
+  : undefined;
+
+// If you have an explicit embed URL in frontmatter, use it; otherwise fall back to address
+const embedUrl = (event as any).locationEmbedUrl;
+
+const pageTitle = event.title || slug || "Event";
+const pageDescription = cleanText(event.description) || cleanText(event.excerpt) || `Event details for ${pageTitle}.`;
+---
+
+<ProjectLayout
+  event={entry}
+  title={pageTitle}
+  description={pageDescription}
+>
+  <section class="section publications-gallery">
+    <div class="project-layout">
+      <ProjectSidebar
+        sectors={sectors}
+        tools={tools}
+        features={features}
+        relatedExperience={relatedExperience}
+        relatedEducation={relatedEducation}
+        relatedOrganisations={relatedOrganisations}
+        relatedVolunteering={relatedVolunteering}
+        relatedAwards={relatedAwards}
+        relatedCaseStudies={relatedCaseStudies}
+        relatedInitiatives={relatedInitiatives}
+        relatedProjects={relatedProjects}
+        relatedEvents={relatedEvents}
+        relatedVideosRich={relatedVideosRich}
+        links={links}
+        organiser={organiser}
+        coOrganisers={coOrganisers}
+        speakers={speakers}
+        hosts={hosts}
+        location={location}
+        format={format}
+      />
+
+      <article class="project-content">
+        <div class="project-body">
+          <div class="pg-intro">
+            {cleanText(event.description) && <p class="pg-lead">{cleanText(event.description)}</p>}
+          </div>
+
+          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
+
+          {hasLocation && (
+            <div style="margin:1.25rem 0">
+              {embedUrl ? (
+                <MapEmbed embedUrl={embedUrl} title={`${pageTitle} location map`} height="320px" />
+              ) : addressString ? (
+                <MapEmbed address={addressString} title={`${pageTitle} location map`} height="320px" />
+              ) : null}
+            </div>
+          )}
+
+          <Content />
+        </div>
+
+        {event.impact && Object.keys(event.impact).length > 0 && (
+          <section class="sidebar-block">
+            <h2>Impact</h2>
+            <ImpactStats impact={event.impact} />
+          </section>
+        )}
+      </article>
+    </div>
+  </section>
+</ProjectLayout>

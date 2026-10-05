@@ -1,0 +1,50 @@
+---
+interface Props {
+  author?: string;
+  source?: string;
+}
+const { author, source } = Astro.props;
+---
+
+<figure class="quote">
+  <blockquote>
+    <slot />
+  </blockquote>
+  {(author || source) && (
+    <figcaption>
+      {author && <span class="author">{author}</span>}
+      {source && <cite class="source">{source}</cite>}
+    </figcaption>
+  )}
+</figure>
+
+<style>
+  .quote {
+    margin: 2.25rem 0;
+    padding-left: 1.4rem;
+    border-left: 3px solid var(--color-accent);
+  }
+  blockquote {
+    margin: 0;
+    font-family: var(--font-display, Georgia, serif);
+    font-size: 1.35rem;
+    line-height: 1.5;
+    font-style: italic;
+    color: var(--color-text);
+  }
+  figcaption {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    font-style: normal;
+  }
+  .author {
+    font-weight: 600;
+  }
+  .source {
+    font-style: italic;
+  }
+  .author + .source::before {
+    content: ' · ';
+  }
+</style>

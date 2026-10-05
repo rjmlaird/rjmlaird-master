@@ -1,0 +1,38 @@
+---
+interface SocialLink {
+  name: string;
+  url: string;
+  icon?: string; // optional: emoji, SVG class, or icon key
+}
+
+interface Props {
+  links: SocialLink[];
+  variant?: "row" | "column";
+}
+
+const {
+  links = [],
+  variant = "row"
+} = Astro.props;
+---
+
+{links.length > 0 && (
+  <nav class={`sl sl-${variant}`} aria-label="Social links">
+    {links.map((link) => (
+      <a
+        class="sl-item"
+        href={link.url}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span class="sl-icon">
+          {link.icon ?? "↗"}
+        </span>
+
+        <span class="sl-text">
+          {link.name}
+        </span>
+      </a>
+    ))}
+  </nav>
+)}

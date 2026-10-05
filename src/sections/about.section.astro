@@ -1,0 +1,91 @@
+---
+import profileData from "../data/profile.json";
+
+type ProfileLink = {
+  label: string;
+  href: string;
+};
+
+type ProfileContact = {
+  label: string;
+  href: string;
+};
+
+type ProfileData = {
+  name?: string;
+  preferredName?: string;
+  pronouns?: string;
+  headline?: string;
+  location?: string;
+  email?: string;
+  avatar?: string;
+  role?: string;
+  website?: string;
+  credentials?: string;
+  biography?: string[];
+  interests?: string[];
+  socials?: ProfileLink[];
+  portfolioLinks?: ProfileLink[];
+  contact?: ProfileContact[];
+};
+
+const profile = profileData as ProfileData;
+
+const headline = profile.headline?.trim() ?? "";
+const biography = Array.isArray(profile.biography) ? profile.biography : [];
+const credentials = profile.credentials?.trim() ?? "";
+const links = Array.isArray(profile.portfolioLinks)
+  ? profile.portfolioLinks
+  : Array.isArray(profile.socials)
+    ? profile.socials
+    : [];
+const contact = Array.isArray(profile.contact) ? profile.contact : [];
+---
+
+<section id="about" aria-labelledby="about-title">
+  <p class="sl">About</p>
+
+  <div class="about-grid">
+    <div>
+      <h2 id="about-title" class="ah fade in">
+        {profile.name ?? ""}
+        <br />
+        <em>{headline}</em>
+      </h2>
+
+      {biography.length > 0 && (
+        <div class="ab fade in">
+          {biography.map((paragraph: string) => <p>{paragraph}</p>)}
+        </div>
+      )}
+
+      {credentials && (
+        <div class="cred-row fade in" aria-label="Credentials">
+          <span class="cred-badge cb-m">{credentials}</span>
+        </div>
+      )}
+    </div>
+
+    <aside class="sp fade in" aria-label="Find me elsewhere">
+      <div class="sp-h">Find me elsewhere</div>
+
+      {links.map((link: ProfileLink) => (
+        <a class="si" href={link.href} target="_blank" rel="noopener noreferrer">
+          <div class="sl2">
+            <span class="su">{link.label}</span>
+          </div>
+          <span class="sa" aria-hidden="true">→</span>
+        </a>
+      ))}
+
+      {contact.map((item: ProfileContact) => (
+        <a class="si" href={item.href} target="_blank" rel="noopener noreferrer">
+          <div class="sl2">
+            <span class="su">{item.label}</span>
+          </div>
+          <span class="sa" aria-hidden="true">→</span>
+        </a>
+      ))}
+    </aside>
+  </div>
+</section>

@@ -1,0 +1,91 @@
+---
+// src/pages/authors/[author].astro
+
+import Layout from "../../layouts/Layout.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+
+export async function getStaticPaths() {
+  const authors = await getCollection("authors");
+
+  return authors.map((author) => ({
+    params: { author: author.id },
+    props: { author },
+  }));
+}
+
+const { author } = Astro.props as {
+  author: CollectionEntry<"authors">;
+};
+
+const { Content } = await render(author);
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft))
+  .filter((post) => {
+    const postAuthor: unknown = post.data.author;
+    if (!postAuthor) return false;
+
+    if (typeof postAuthor === "string") {
+      return (
+        postAuthor.toLowerCase() === author.data.name.toLowerCase() ||
+        postAuthor.toLowerCase() === author.id.toLowerCase()
+      );
+    }
+
+    if (typeof postAuthor === "object" && postAuthor !== null && "id" in postAuthor) {
+      return (postAuthor as { id: string }).id.toLowerCase() === author.id.toLowerCase();
+    }
+
+    return false;
+  })
+  .sort((a, b) => {
+    const aDate = a.data.pubDate instanceof Date ? a.data.pubDate.getTime() : 0;
+    const bDate = b.data.pubDate instanceof Date ? b.data.pubDate.getTime() : 0;
+    return bDate - aDate;
+  });
+
+// Treat avatar as a plain string path (e.g. "/img/person/ryan-laird.jpg")
+const avatarPath = (author.data as Record<string, unknown>).avatar as string | undefined;
+const avatarSrc = avatarPath; // no dynamic import
+const avatarAlt = (author.data as Record<string, unknown>).avatarAlt as string ?? author.data.name;
+---
+
+<Layout title={author.data.name} description={author.data.bio ?? ""}>
+  <article class="author-page">
+    <header class="container author-head">
+      {avatarSrc && (
+        <div class="author-avatar">
+          <img
+            src={avatarSrc}
+            alt={avatarAlt}
+            width="160"
+            height="160"
+          />
+        </div>
+      )}
+      <p class="eyebrow">Author</p>
+      <h1>{author.data.name}</h1>
+      {author.data.role ? <p class="lede">{author.data.role}</p> : null}
+    </header>
+
+    <div class="container author-bio">
+      <Content />
+    </div>
+
+    <section class="container author-posts" aria-labelledby="author-posts-title">
+      <h2 id="author-posts-title">Published posts</h2>
+
+      {posts.length > 0 ? (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.id}`}>{post.data.title ?? post.id}</a>
+              {post.data.description ? <p>{post.data.description}</p> : null}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>No posts found for this author yet.</p>
+      )}
+    </section>
+  </article>
+</Layout>

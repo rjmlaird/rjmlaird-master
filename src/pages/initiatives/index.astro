@@ -1,0 +1,39 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import ProjectCard from "../../components/Projects/ProjectCard.astro";
+import Filters from "../../components/Projects/Filters.astro";
+
+const initiatives = await getCollection("initiatives", ({ data }) => data.draft !== true);
+
+const sortByTitle = (a: CollectionEntry<"initiatives">, b: CollectionEntry<"initiatives">) =>
+  (a.data.title ?? "").localeCompare(b.data.title ?? "");
+
+const sortedInitiatives = initiatives.sort(sortByTitle);
+---
+
+<Layout
+  title="Initiatives"
+  description="Space, sustainability and science-communication initiatives — filter by date, client, tags, type and status."
+>
+  <section class="project-index">
+    <div class="container pg-shell">
+      <header class="pg-head">
+        <p class="eyebrow">Initiatives</p>
+
+        <h1 class="ch fade">
+          Initiatives across <em>space, sustainability &amp; science policy</em>
+        </h1>
+      </header>
+
+      <Filters items={initiatives} />
+
+      <div class="grid" id="projectGrid">
+        {sortedInitiatives.map((initiative) => (
+          <ProjectCard initiative={initiative} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+

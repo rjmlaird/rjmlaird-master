@@ -1,0 +1,66 @@
+{
+  "name": "Ryan Laird",
+  "preferredName": "Ryan",
+  "pronouns": "he/him",
+  "headline": "Astrophysicist, science communicator and strategist",
+  "location": "Leicester, United Kingdom",
+  "email": "ryan@greenorbit.space",
+  "avatar": "/img/person/ryan-laird.jpg",
+  "role": "Founder and Director, Green Orbit Digital",
+  "credentials": "MPhys (Hons) · MInstP · CMktr · MCIPR",
+  "biography": [
+    "I'm an astrophysicist, science communicator and strategist working across space, sustainability and technology. I help organisations and individuals explain complex science clearly and accurately, through strategy, writing, teaching and mentoring.",
+    "I hold an MPhys in Astrophysics and am a Chartered Marketer (CMktr), a Member of the Institute of Physics and a Member of the Chartered Institute of Public Relations. I previously led marketing for ESA Business Applications through HE Space.",
+    "I'm Founder and Director of Green Orbit Digital, a specialist communications practice for space, sustainability and mission-led organisations, and I run Leicester Space Week. Beyond client work I write, publish research and build open-source tools."
+  ],
+  "tags": [
+    "Digital Marketing",
+    "SEO",
+    "Content Marketing",
+    "Social Media Strategy",
+    "Lead Generation",
+    "Sustainability",
+    "Space Industry",
+    "Earth Observation",
+    "Brand Strategy",
+    "Data Analytics",
+    "Project Management",
+    "Leadership"
+  ],
+  "portfolioLinks": [
+    {
+      "label": "Green Orbit Digital",
+      "href": "https://greenorbit.space"
+    },
+    {
+      "label": "Space Integrity Initiative",
+      "href": "https://spaceintegrity.org"
+    },
+    {
+      "label": "Space Impact Forum",
+      "href": "https://spaceimpactforum.com"
+    },
+    {
+      "label": "Space for Neurodiversity",
+      "href": "https://spaceforneurodiversity.org"
+    },
+    {
+      "label": "CV",
+      "href": "https://rjmlaird.co.uk/cv/"
+    },
+    {
+      "label": "Open source and lab",
+      "href": "https://rjmlaird.co.uk/open-source/"
+    }
+  ],
+  "contact": [
+    {
+      "label": "E-mail",
+      "href": "mailto:mail@rjmlaird.co.uk"
+    },
+    {
+      "label": "ORCID",
+      "href": "https://orcid.org/0000-0002-5992-684X"
+    }
+  ]
+}

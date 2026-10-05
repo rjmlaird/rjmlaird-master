@@ -1,0 +1,34 @@
+{
+  "email": "mail@rjmlaird.co.uk",
+  "calUrl": "https://cal.com/rjmlaird/discovery",
+  "types": [
+    {
+      "id": "communications",
+      "label": "Discuss a communications project",
+      "hint": "Strategy, content or digital work for an organisation",
+      "subject": "Communications project enquiry",
+      "body": "Organisation and sector:\nWhat you need help with:\nTimescale:\nHow you heard about me:\n"
+    },
+    {
+      "id": "mentoring",
+      "label": "Ask about mentoring",
+      "hint": "Career reflection and direction in science, space or sustainability",
+      "subject": "Mentoring enquiry",
+      "body": "Your current role or stage:\nWhat you would like to talk through:\nPreferred format (video call, in person):\n"
+    },
+    {
+      "id": "teaching",
+      "label": "Enquire about teaching, workshops or speaking",
+      "hint": "Tutoring, guest talks, workshops and training",
+      "subject": "Teaching, workshop or speaking enquiry",
+      "body": "Who the session is for:\nTopic or subject and level:\nDate, location or online:\nApproximate audience size:\n"
+    },
+    {
+      "id": "collaboration",
+      "label": "Propose a research or editorial collaboration",
+      "hint": "Research projects, commissioned writing, interviews and press",
+      "subject": "Research, editorial or media enquiry",
+      "body": "Publication, organisation or project:\nWhat you have in mind:\nDeadline, if any:\n"
+    }
+  ]
+}

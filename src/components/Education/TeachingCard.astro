@@ -1,0 +1,178 @@
+---
+interface Props {
+  type: string;
+  title: string;
+  description: string;
+  status?: "Available" | "In development" | "Active" | "Archived";
+  tags?: string[];
+  icon?: string;
+  accent?: "teal" | "violet" | "amber" | "green" | "coral";
+  link?: string;
+}
+
+const {
+  type,
+  title,
+  description,
+  status = "Available",
+  tags = [],
+  icon = "✦",
+  accent = "teal",
+  link
+} = Astro.props;
+
+const accentClass = {
+  teal: "ac-teal",
+  violet: "ac-violet",
+  amber: "ac-amber",
+  green: "ac-green",
+  coral: "ac-coral"
+}[accent];
+---
+
+<div class={`tc ${accentClass}`}>
+  <div class="tc-h">
+    <div class="tc-top">
+      <span class="tc-icon">{icon}</span>
+      <span class="tc-type">{type}</span>
+    </div>
+
+    <h3 class="tc-title">{title}</h3>
+
+    <p class="tc-desc">{description}</p>
+
+    {tags.length > 0 && (
+      <div class="tc-tags">
+        {tags.map((tag) => (
+          <span class="tc-tag">{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div class="tc-footer">
+    <span class="tc-status">{status}</span>
+
+    {link && (
+      <a class="tc-link" href={link} target="_blank" rel="noopener noreferrer">
+        View →
+      </a>
+    )}
+  </div>
+</div>
+
+<style>
+  .tc {
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+
+  .tc:hover {
+    border-color: var(--bm);
+    transform: translateY(-2px);
+  }
+
+  .tc-h {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .tc-top {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .tc-icon {
+    font-size: 1.1rem;
+    line-height: 1;
+  }
+
+  .tc-type {
+    font-family: var(--D);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--m);
+  }
+
+  .tc-title {
+    font-family: var(--D);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--w);
+    line-height: 1.2;
+  }
+
+  .tc-desc {
+    font-size: 0.82rem;
+    color: var(--mb);
+    line-height: 1.6;
+  }
+
+  .tc-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-top: 0.25rem;
+  }
+
+  .tc-tag {
+    font-family: var(--D);
+    font-size: 0.58rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--bm);
+    color: var(--m);
+    padding: 0.15rem 0.45rem;
+    border-radius: 2px;
+  }
+
+  .tc-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.5rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .tc-status {
+    font-family: var(--D);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .tc-link {
+    font-family: var(--D);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--m);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .tc-link:hover {
+    color: var(--teal);
+  }
+
+  /* Accent variants */
+  .ac-teal .tc-status { color: var(--teal); }
+  .ac-violet .tc-status { color: var(--violet); }
+  .ac-amber .tc-status { color: var(--amber); }
+  .ac-green .tc-status { color: var(--green); }
+  .ac-coral .tc-status { color: var(--coral); }
+</style>

@@ -1,0 +1,206 @@
+---
+import { cleanText } from "../../lib/content-quality.mjs";
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+  const [posts, projects, caseStudies, initiatives, podcasts, events] = await Promise.all([
+    getCollection('blog', (p) => !p.data.draft),
+    getCollection('projects', (p) => p.data.draft !== true),
+    getCollection('caseStudies', (p) => p.data.draft !== true),
+    getCollection('initiatives', (p) => p.data.draft !== true),
+    getCollection('podcasts', (p) => p.data.draft !== true),
+    getCollection('events', (p) => p.data.draft !== true),
+  ]);
+
+  // Dynamically derive unique categories across every collection instead of blog-only
+  const categoryMap = new Map<string, string>(); // slug -> display label
+
+  for (const entry of [...posts, ...projects, ...caseStudies, ...initiatives, ...podcasts, ...events]) {
+    const cat = (entry.data as { category?: unknown }).category;
+    const cats = Array.isArray(cat) ? cat : cat ? [cat] : [];
+    for (const c of cats) {
+      if (typeof c === 'string' && c) {
+        categoryMap.set(slugify(c), c);
+      }
+    }
+  }
+
+  return Array.from(categoryMap.entries()).map(([slug, label]) => ({
+    params: { category: slug },
+    props: { label },
+  }));
+}
+
+const { category } = Astro.params;
+const { label } = Astro.props;
+
+const matchesCategory = (entryCategory: unknown) => {
+  const cats = Array.isArray(entryCategory) ? entryCategory : entryCategory ? [entryCategory] : [];
+  return cats.some((c) => typeof c === 'string' && slugify(c) === category);
+};
+
+const posts = (
+  await getCollection('blog', (p) => !p.data.draft && matchesCategory(p.data.category))
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const projects = await getCollection(
+  'projects',
+  (p) => p.data.draft !== true && matchesCategory(p.data.category)
+);
+
+const caseStudies = await getCollection(
+  'caseStudies',
+  (p) => p.data.draft !== true && matchesCategory(p.data.category)
+);
+
+const initiatives = await getCollection(
+  'initiatives',
+  (p) => p.data.draft !== true && matchesCategory(p.data.category)
+);
+
+const podcasts = await getCollection(
+  'podcasts',
+  (p) => p.data.draft !== true && matchesCategory(p.data.category)
+);
+
+const events = await getCollection(
+  'events',
+  (p) => p.data.draft !== true && matchesCategory(p.data.category)
+);
+
+const totalCount =
+  posts.length + projects.length + caseStudies.length + initiatives.length + podcasts.length + events.length;
+---
+
+<Layout
+  title={`${label} — Category`}
+  description={`Blog posts, projects, initiatives, case studies, podcasts and events in ${label}.`}
+>
+  <section class="archive">
+    <p class="eyebrow">Category</p>
+    <h1>{label}</h1>
+    <p class="count">
+      {totalCount} {totalCount === 1 ? 'item' : 'items'} in "{label}"
+    </p>
+
+    {posts.length > 0 && (
+      <>
+        <h2 class="group-title">Blog posts</h2>
+        <div class="grid">
+          {posts.map((post) => <PostCard post={post} />)}
+        </div>
+      </>
+    )}
+
+    {projects.length > 0 && (
+      <>
+        <h2 class="group-title">Projects</h2>
+        <ul class="simple-list">
+          {projects.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/projects/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {caseStudies.length > 0 && (
+      <>
+        <h2 class="group-title">Case studies</h2>
+        <ul class="simple-list">
+          {caseStudies.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/case-studies/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {initiatives.length > 0 && (
+      <>
+        <h2 class="group-title">Initiatives</h2>
+        <ul class="simple-list">
+          {initiatives.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/initiatives/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {podcasts.length > 0 && (
+      <>
+        <h2 class="group-title">Podcasts</h2>
+        <ul class="simple-list">
+          {podcasts.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/podcasts/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {events.length > 0 && (
+      <>
+        <h2 class="group-title">Events</h2>
+        <ul class="simple-list">
+          {events.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/events/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {totalCount === 0 && <p class="empty">Nothing in "{label}" yet.</p>}
+  </section>
+</Layout>
+

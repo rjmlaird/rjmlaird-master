@@ -1,0 +1,35 @@
+---
+import Timeline from "./Timeline.astro";
+
+interface Props {
+  title: string;
+  body?: string;
+  timeline: Array<{
+    id?: number;
+    date: string;
+    title: string;
+    company?: string;
+    summary?: string;
+    location?: string;
+  }>;
+}
+
+const { title, body, timeline } = Astro.props;
+const bodyHtml = body ? body : await Astro.slots.render("default");
+---
+
+<section id="story">
+  <p class="sl">Brand story</p>
+
+  <div class="story-grid">
+    <div>
+      <h2 class="story-lede fade">{title}</h2>
+
+      <div class="story-body fade">
+        {bodyHtml ? <Fragment set:html={bodyHtml} /> : null}
+      </div>
+    </div>
+
+    <Timeline items={timeline} />
+  </div>
+</section>

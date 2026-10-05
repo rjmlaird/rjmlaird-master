@@ -1,0 +1,198 @@
+---
+// src/components/ProjectMeta.astro
+import MetaList from './MetaList.astro';
+import CategoryBadge from './CategoryBadge.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  type?: string;
+  status?: string;
+  client?: string;
+  organisation?: string;
+  institution?: string;
+  startDate?: Date;
+  endDate?: Date;
+  updatedDate?: Date;
+  readingTime?: string;
+  category?: string | string[];
+  tags?: string[];
+}
+
+const {
+  type,
+  status,
+  client,
+  organisation,
+  institution,
+  startDate,
+  endDate,
+  updatedDate,
+  readingTime = '',
+  category = '',
+  tags = [],
+} = Astro.props as Props;
+
+const safeCategory = Array.isArray(category) ? category : category ? [category] : [];
+const safeTags = Array.isArray(tags) ? tags : [];
+
+const hasTime = (date?: Date) =>
+  !!date &&
+  (
+    date.getHours() !== 0 ||
+    date.getMinutes() !== 0 ||
+    date.getSeconds() !== 0 ||
+    date.getMilliseconds() !== 0
+  );
+
+const formatDate = (date?: Date) => {
+  if (!date) return '';
+  const datePart = new Intl.DateTimeFormat('en-GB', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+
+  if (!hasTime(date)) return datePart;
+
+  const timePart = new Intl.DateTimeFormat('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(date);
+
+  return `${datePart}, ${timePart}`;
+};
+
+const hasTaxonomy = Boolean(safeCategory.length > 0 || safeTags.length > 0);
+
+const metaItems = [
+  type && { label: 'Type', value: type },
+  status && { label: 'Status', value: status },
+  client && { label: 'Client', value: client },
+  organisation && { label: 'Organisation', value: organisation },
+  institution && { label: 'Institution', value: institution },
+  startDate && {
+    label: 'Start',
+    value: formatDate(startDate),
+  },
+  endDate && {
+    label: 'End',
+    value: formatDate(endDate),
+  },
+].filter(Boolean) as { label: string; value: string }[];
+---
+
+<div class="project-meta-row">
+  <div class="meta-row-inner">
+    <MetaList items={metaItems} ariaLabel="Project metadata" />
+
+    <div class="project-meta">
+      <div class="meta-content">
+        <div class="dates-row">
+          {updatedDate && (
+            <span class="updated-item">
+              Updated{' '}
+              <time datetime={updatedDate.toISOString()}>
+                {formatDate(updatedDate)}
+              </time>
+            </span>
+          )}
+
+          {readingTime && (
+            <>
+              {updatedDate && <span class="separator" aria-hidden="true">•</span>}
+              <span class="reading-item">{readingTime}</span>
+            </>
+          )}
+        </div>
+
+        {hasTaxonomy && (
+          <div class="taxonomy-row">
+            {safeCategory.map((cat) => (
+              <CategoryBadge category={cat} />
+            ))}
+            <TagList tags={safeTags} />
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .project-meta-row {
+    width: 100%;
+    padding-block: 1rem 1.5rem;
+  }
+
+  .meta-row-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .project-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .meta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .dates-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .updated-item {
+    font-size: 0.8rem;
+    color: var(--color-text-subtle);
+  }
+
+  .separator {
+    color: var(--color-border-subtle);
+    font-size: 0.75rem;
+  }
+
+  .taxonomy-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  @media (min-width: 900px) {
+    .meta-row-inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+
+    .project-meta {
+      justify-self: end;
+    }
+
+    .meta-content {
+      align-items: flex-end;
+      text-align: right;
+      flex: 1;
+    }
+
+    .dates-row {
+      justify-content: flex-end;
+    }
+
+    .taxonomy-row {
+      justify-content: flex-end;
+    }
+  }
+</style>

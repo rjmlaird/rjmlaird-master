@@ -1,0 +1,139 @@
+---
+import { cleanText, cleanLinks } from "../../lib/content-quality.mjs";
+// src/pages/case-studies/[slug].astro
+import ProjectLayout from "../../layouts/ProjectLayout.astro";
+import ProjectSidebar from "../../components/ProjectSidebar.astro";
+import { getCollection, render, type CollectionEntry } from "astro:content";
+import ImpactStats from "../../components/ImpactStats.astro";
+import { getExperience, getEducation, getVolunteering, getAwards } from "@/lib/api";
+import YouTubeEmbed from "../../components/YouTubeEmbed.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("caseStudies", ({ data }) => !data.draft);
+
+  return entries.map((entry) => ({
+    params: { slug: entry.id },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as {
+  entry: CollectionEntry<"caseStudies">;
+};
+
+const slug = Astro.params.slug;
+const caseStudy = entry.data;
+const { Content } = await render(entry);
+
+const sectors = Array.isArray(caseStudy.sectors) ? caseStudy.sectors : [];
+const tools = Array.isArray(caseStudy.tools_tech) ? caseStudy.tools_tech : [];
+const features = Array.isArray(caseStudy.features) ? caseStudy.features : [];
+const links = cleanLinks(caseStudy.links || {}) as typeof caseStudy.links;
+
+const youtubeUrl = (caseStudy as any).youtubeUrl || links.youtube;
+const youtubeId = caseStudy.youtubeId;
+
+const [
+  experienceItems,
+  educationItems,
+  volunteeringItems,
+  awardsItems,
+  projectItems,
+  eventItems,
+] = await Promise.all([
+  getExperience(),
+  getEducation(),
+  getVolunteering(),
+  getAwards(),
+  getCollection("projects"),
+  getCollection("events"),
+]);
+
+const relatedExperienceIds = Array.isArray(caseStudy.relatedExperience) ? caseStudy.relatedExperience : [];
+const relatedEducationIds = Array.isArray(caseStudy.relatedEducation) ? caseStudy.relatedEducation : [];
+const relatedOrgIds = Array.isArray(caseStudy.relatedOrg) ? caseStudy.relatedOrg : [];
+const relatedVolunteeringIds = Array.isArray(caseStudy.relatedVolunteering) ? caseStudy.relatedVolunteering : [];
+const relatedAwardIds = Array.isArray(caseStudy.relatedAwards) ? caseStudy.relatedAwards : [];
+const relatedProjectIds = Array.isArray(caseStudy.relatedProjects) ? caseStudy.relatedProjects : [];
+const relatedEventIds = Array.isArray(caseStudy.relatedEvents) ? caseStudy.relatedEvents : [];
+const relatedVideoIds = Array.isArray((caseStudy as any).relatedVideos) ? (caseStudy as any).relatedVideos : [];
+
+const relatedExperience = experienceItems.filter((item: any) =>
+  relatedExperienceIds.includes(item.id ?? item.slug)
+);
+
+const relatedEducation = educationItems.filter((item: any) =>
+  relatedEducationIds.includes(item.id ?? item.slug)
+);
+
+const relatedOrganisations = volunteeringItems.filter((item: any) =>
+  relatedOrgIds.includes(item.id ?? item.slug)
+);
+
+const relatedVolunteering = volunteeringItems.filter((item: any) =>
+  relatedVolunteeringIds.includes(item.id ?? item.slug)
+);
+
+const relatedAwards = awardsItems.filter((item: any) =>
+  relatedAwardIds.includes(item.id ?? item.slug)
+);
+
+const relatedProjects = projectItems.filter((item: any) =>
+  relatedProjectIds.includes(item.id ?? item.slug)
+);
+
+// Resolve related events from the events collection
+const relatedEvents = eventItems.filter((item: any) =>
+  relatedEventIds.includes(item.id ?? item.slug)
+);
+
+// Fallback for related videos if getVideos() isn't implemented in API yet
+const relatedVideos = relatedVideoIds;
+
+const pageTitle = caseStudy.title || slug || "Case Study";
+const pageDescription = caseStudy.description || caseStudy.excerpt || `Project details for ${pageTitle}.`;
+---
+
+<ProjectLayout
+  caseStudy={entry}
+  title={pageTitle}
+  description={pageDescription}
+>
+  <section class="section publications-gallery">
+    <div class="project-layout">
+      <ProjectSidebar
+        sectors={sectors}
+        tools={tools}
+        features={features}
+        relatedExperience={relatedExperience}
+        relatedEducation={relatedEducation}
+        relatedOrganisations={relatedOrganisations}
+        relatedVolunteering={relatedVolunteering}
+        relatedAwards={relatedAwards}
+        relatedProjects={relatedProjects}
+        relatedEvents={relatedEvents}
+        relatedVideos={relatedVideos}
+        links={links}
+      />
+
+      <article class="project-content">
+        <div class="project-body">
+          <div class="pg-intro">
+            {cleanText(caseStudy.description) && <p class="pg-lead">{cleanText(caseStudy.description)}</p>}
+          </div>
+
+          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
+
+          <Content />
+        </div>
+
+        {caseStudy.impact && Object.keys(caseStudy.impact).length > 0 && (
+          <section class="sidebar-block">
+            <h2>Impact</h2>
+            <ImpactStats impact={caseStudy.impact} />
+          </section>
+        )}
+      </article>
+    </div>
+  </section>
+</ProjectLayout>

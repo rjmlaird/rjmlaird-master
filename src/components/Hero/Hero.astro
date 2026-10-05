@@ -1,0 +1,78 @@
+---
+// src/components/Hero/Hero.astro
+import OrbitGraphic from "./OrbitGraphic.astro";
+
+interface Profile {
+  name?: string;
+  biography?: string;
+  summary?: string;
+  tags?: string[];
+  portfolioLinks?: string[];
+  headline?: string;
+  location?: string;
+  email?: string;
+  role?: string;
+  credentials?: string[];
+}
+
+interface Props {
+  profile?: Profile | null;
+  title?: string;
+  surname?: string;
+  tagline?: string;
+  description?: string;
+}
+
+const { 
+  profile, 
+  title = "Ryan", 
+  surname = "Laird", 
+  tagline = "Senior Business Development & Commercial Partnerships", 
+  description = "Specializing in space technology ecosystems, sustainability policy mapping, and commercial open-source infrastructure." 
+} = Astro.props;
+
+// Ensure we have access to the data
+const credentials: string[] = profile?.credentials ?? [];
+---
+
+<section id="hero">
+  <div class="orb" aria-hidden="true">
+    <OrbitGraphic />
+  </div>
+
+  <p class="kk">{tagline}</p>
+
+  <h1 class="nm">
+    {title}<br />
+    <span class="d">{surname}</span>
+  </h1>
+
+  {credentials.length > 0 && (
+    <p class="credentials">
+      {credentials.map((cred: string, index: number) => (
+        <>
+          <span>{cred}</span>
+          {index < credentials.length - 1 && " · "}
+        </>
+      ))}
+    </p>
+  )}
+
+  <p class="hp">{description}</p>
+
+  <div class="hb">
+    <a href="#story" class="bp">Read story</a>
+    <a href="#work" class="bo">Projects</a>
+    <a href="#journalism" class="bo">Writing</a>
+  </div>
+</section>
+
+<style>
+.credentials {
+  margin-top: 0.5em;
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+}
+</style>

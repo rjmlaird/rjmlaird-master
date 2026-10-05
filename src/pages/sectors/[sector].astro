@@ -1,0 +1,160 @@
+---
+import { cleanText } from "../../lib/content-quality.mjs";
+// src/pages/sectors/[sector].astro
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+  const [posts, projects, caseStudies, initiatives] = await Promise.all([
+    getCollection('blog', (p) => !p.data.draft),
+    getCollection('projects', (p) => p.data.draft !== true),
+    getCollection('caseStudies', (p) => p.data.draft !== true),
+    getCollection('initiatives', (p) => p.data.draft !== true),
+  ]);
+
+  const sectorMap = new Map<string, string>(); // slug -> display label
+
+  for (const entry of [...posts, ...projects, ...caseStudies, ...initiatives]) {
+    const data = entry.data as { sectors?: unknown };
+    if (Array.isArray(data.sectors)) {
+      for (const sector of data.sectors) {
+        if (typeof sector === 'string') {
+          sectorMap.set(slugify(sector), sector);
+        }
+      }
+    }
+  }
+
+  return Array.from(sectorMap.entries()).map(([slug, label]) => ({
+    params: { sector: slug },
+    props: { label },
+  }));
+}
+
+const { sector } = Astro.params;
+const { label } = Astro.props;
+
+const matchesSector = (entrySectors: unknown) =>
+  Array.isArray(entrySectors) &&
+  entrySectors.some((s) => slugify(s) === sector);
+
+const posts = (
+  await getCollection('blog', (p) =>
+    !p.data.draft && matchesSector((p.data as { sectors?: unknown }).sectors)
+  )
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const projects = await getCollection(
+  'projects',
+  (p) =>
+    p.data.draft !== true &&
+    matchesSector((p.data as { sectors?: unknown }).sectors)
+);
+
+const caseStudies = await getCollection(
+  'caseStudies',
+  (p) =>
+    p.data.draft !== true &&
+    matchesSector((p.data as { sectors?: unknown }).sectors)
+);
+
+const initiatives = await getCollection(
+  'initiatives',
+  (p) =>
+    p.data.draft !== true &&
+    matchesSector((p.data as { sectors?: unknown }).sectors)
+);
+
+const totalCount =
+  posts.length + projects.length + caseStudies.length + initiatives.length;
+---
+
+<Layout
+  title={`#${label} — Sector content`}
+  description={`Blog posts, projects, initiatives and case studies in the ${label} sector.`}
+>
+  <section class="archive">
+    <p class="eyebrow">Sector</p>
+    <h1>#{label}</h1>
+    <p class="count">
+      {totalCount} {totalCount === 1 ? 'item' : 'items'} in the "{label}" sector
+    </p>
+
+    {posts.length > 0 && (
+      <>
+        <h2 class="group-title">Blog posts</h2>
+        <div class="grid">
+          {posts.map((post) => <PostCard post={post} />)}
+        </div>
+      </>
+    )}
+
+    {projects.length > 0 && (
+      <>
+        <h2 class="group-title">Projects</h2>
+        <ul class="simple-list">
+          {projects.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/projects/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {caseStudies.length > 0 && (
+      <>
+        <h2 class="group-title">Case studies</h2>
+        <ul class="simple-list">
+          {caseStudies.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/case-studies/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {initiatives.length > 0 && (
+      <>
+        <h2 class="group-title">Initiatives</h2>
+        <ul class="simple-list">
+          {initiatives.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/initiatives/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {totalCount === 0 && <p class="empty">Nothing in the "{label}" sector yet.</p>}
+  </section>
+</Layout>
+

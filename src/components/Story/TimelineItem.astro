@@ -1,0 +1,30 @@
+---
+interface Props {
+  era: string;
+  title: string;
+  description: string;
+  colour?: "teal" | "amber" | "violet";
+}
+
+const {
+  era,
+  title,
+  description,
+  colour = "teal",
+} = Astro.props;
+---
+
+<div class="thread-item">
+  <div class="thread-dot-col">
+    <div class={`thread-dot thread-dot--${colour}`}></div>
+    <div class="thread-line"></div>
+  </div>
+
+  <div class="thread-text">
+    <p class="thread-era">{era}</p>
+
+    <p class="thread-title">{title}</p>
+
+    <p class="thread-desc">{description}</p>
+  </div>
+</div>

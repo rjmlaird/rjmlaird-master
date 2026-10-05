@@ -1,0 +1,74 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface Props {
+  headings?: Heading[];
+}
+
+// only show h2/h3 — h1 is the post title, h4+ is too granular for a TOC
+const { headings = [] } = Astro.props;
+const safeHeadings = Array.isArray(headings) ? headings : [];
+const items = safeHeadings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+{items.length > 2 && (
+  <nav class="toc" aria-label="Table of contents">
+    <p class="toc-label">On this page</p>
+    <ul>
+      {items.map((h) => (
+        <li class:list={[`depth-${h.depth}`]}>
+          <a href={`#${h.slug}`}>{h.text}</a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+)}
+
+<style>
+  .toc {
+    position: sticky;
+    top: 2rem;
+    font-size: 0.85rem;
+  }
+  .toc-label {
+    margin: 0 0 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px solid var(--color-border);
+  }
+  li a {
+    display: block;
+    padding: 0.3rem 0 0.3rem 0.9rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    margin-left: -1px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  li a:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .depth-3 a {
+    padding-left: 1.8rem;
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 900px) {
+    .toc {
+      position: static;
+    }
+  }
+</style>

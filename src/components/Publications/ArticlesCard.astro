@@ -1,0 +1,100 @@
+---
+interface Article {
+  id?: number;
+  title?: string;
+  excerpt?: string;
+  publication?: string;
+  date?: string;
+  topic?: string;
+  topics?: string[];
+  image?: string;
+  imageCredit?: string;
+  url?: string;
+  variant?: "teal" | "violet" | "coral";
+  video?: string;
+}
+
+interface Props {
+  article?: Article;
+}
+
+const { article } = Astro.props as Props;
+const data = article ?? {};
+
+const number = data.id ? String(data.id).padStart(2, "0") : "";
+const title = data.title ?? "Untitled";
+const excerpt = data.excerpt ?? "";
+const publication = data.publication ?? "";
+const date = data.date ?? "";
+const topic = data.topic ?? "";
+const topics = data.topics ?? (topic ? [topic] : []);
+const imageCredit = data.imageCredit ?? "";
+const link = data.url || "#";
+
+const getYouTubeId = (url: string) => {
+  try {
+    const u = new URL(url);
+    if (u.pathname.startsWith("/embed/")) return u.pathname.split("/embed/")[1]?.split("?")[0] ?? "";
+    if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "").split("?")[0];
+    const v = u.searchParams.get("v");
+    if (v) return v;
+    const shorts = u.pathname.match(/\/shorts\/([^/]+)/);
+    return shorts?.[1] ?? "";
+  } catch {
+    return "";
+  }
+};
+
+const videoUrl = data.video ?? data.url ?? "";
+const videoId = videoUrl ? getYouTubeId(videoUrl) : "";
+const embedUrl = videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : "";
+const fallbackThumb = data.image || (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "");
+---
+
+<article class="pr pub">
+  <p class="pn">{number}</p>
+
+  {embedUrl ? (
+    <div class="pub-media pub-video">
+      <iframe
+        src={embedUrl}
+        title={title}
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      />
+    </div>
+  ) : fallbackThumb ? (
+    <div class="pub-media pub-image">
+      <img src={fallbackThumb} alt={title} loading="lazy" />
+      {imageCredit && <span class="image-credit">{imageCredit}</span>}
+    </div>
+  ) : null}
+
+  <div class="pm">
+    <div class="pub-top">
+      <h3>{title}</h3>
+      {date && <span class="date">{date}</span>}
+    </div>
+
+    {publication && <div class="client-badge">{publication}</div>}
+
+    {excerpt && <p>{excerpt}</p>}
+
+    {topics.length > 0 && (
+      <div class="pt">
+        {topics.map((t) => (
+          <span class="tag">{t}</span>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <a href={link} class="pa" target="_blank" rel="noopener noreferrer">
+    <span class="pa-i">↗</span>
+    <span>View</span>
+  </a>
+</article>
+
+

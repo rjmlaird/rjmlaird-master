@@ -1,0 +1,208 @@
+---
+import { cleanText } from "../../lib/content-quality.mjs";
+// src/pages/tags/[tag].astro
+import Layout from '../../layouts/Layout.astro';
+import PostCard from '../../components/PostCard.astro';
+import { getCollection } from 'astro:content';
+import { slugify } from '../../utils/slugify';
+
+export async function getStaticPaths() {
+  const [posts, projects, caseStudies, initiatives, podcasts, events] = await Promise.all([
+    getCollection('blog', (p) => !p.data.draft),
+    getCollection('projects', (p) => p.data.draft !== true),
+    getCollection('caseStudies', (p) => p.data.draft !== true),
+    getCollection('initiatives', (p) => p.data.draft !== true),
+    getCollection('podcasts', (p) => p.data.draft !== true),
+    getCollection('events', (p) => p.data.draft !== true),
+  ]);
+
+  const tagMap = new Map<string, string>(); // slug -> display label
+
+  for (const entry of [...posts, ...projects, ...caseStudies, ...initiatives, ...podcasts, ...events]) {
+    // Narrow tags safely
+    const data = entry.data as { tags?: unknown };
+    if (Array.isArray(data.tags)) {
+      for (const tag of data.tags) {
+        if (typeof tag === 'string') {
+          tagMap.set(slugify(tag), tag);
+        }
+      }
+    }
+  }
+
+  return Array.from(tagMap.entries()).map(([slug, label]) => ({
+    params: { tag: slug },
+    props: { label },
+  }));
+}
+
+const { tag } = Astro.params;
+const { label } = Astro.props;
+
+const matchesTag = (entryTags: unknown) =>
+  Array.isArray(entryTags) && entryTags.some((t) => slugify(t) === tag);
+
+const posts = (
+  await getCollection('blog', (p) =>
+    !p.data.draft && matchesTag((p.data as { tags?: unknown }).tags)
+  )
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const projects = await getCollection(
+  'projects',
+  (p) => p.data.draft !== true && matchesTag((p.data as { tags?: unknown }).tags)
+);
+
+const caseStudies = await getCollection(
+  'caseStudies',
+  (p) => p.data.draft !== true && matchesTag((p.data as { tags?: unknown }).tags)
+);
+
+const initiatives = await getCollection(
+  'initiatives',
+  (p) => p.data.draft !== true && matchesTag((p.data as { tags?: unknown }).tags)
+);
+
+const podcasts = await getCollection(
+  'podcasts',
+  (p) => p.data.draft !== true && matchesTag((p.data as { tags?: unknown }).tags)
+);
+
+const events = await getCollection(
+  'events',
+  (p) => p.data.draft !== true && matchesTag((p.data as { tags?: unknown }).tags)
+);
+
+const totalCount =
+  posts.length + projects.length + caseStudies.length + initiatives.length + podcasts.length + events.length;
+---
+
+<Layout
+  title={`#${label} — Tagged content`}
+  description={`Blog posts, projects, initiatives, case studies, podcasts and events tagged ${label}.`}
+>
+  <section class="archive">
+    <p class="eyebrow">Tag</p>
+    <h1>#{label}</h1>
+    <p class="count">
+      {totalCount} {totalCount === 1 ? 'item' : 'items'} tagged "{label}"
+    </p>
+
+    {posts.length > 0 && (
+      <>
+        <h2 class="group-title">Blog posts</h2>
+        <div class="grid">
+          {posts.map((post) => <PostCard post={post} />)}
+        </div>
+      </>
+    )}
+
+    {projects.length > 0 && (
+      <>
+        <h2 class="group-title">Projects</h2>
+        <ul class="simple-list">
+          {projects.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/projects/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {caseStudies.length > 0 && (
+      <>
+        <h2 class="group-title">Case studies</h2>
+        <ul class="simple-list">
+          {caseStudies.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/case-studies/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {initiatives.length > 0 && (
+      <>
+        <h2 class="group-title">Initiatives</h2>
+        <ul class="simple-list">
+          {initiatives.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/initiatives/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {podcasts.length > 0 && (
+      <>
+        <h2 class="group-title">Podcasts</h2>
+        <ul class="simple-list">
+          {podcasts.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/podcasts/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {events.length > 0 && (
+      <>
+        <h2 class="group-title">Events</h2>
+        <ul class="simple-list">
+          {events.map((entry) => {
+            const data = entry.data as { title?: string; description?: string };
+            return (
+              <li>
+                <a href={`/events/${entry.id}/`}>
+                  <span class="item-title">{data.title}</span>
+                  {cleanText(data.description) && (
+                    <span class="item-desc">{cleanText(data.description)}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </>
+    )}
+
+    {totalCount === 0 && <p class="empty">Nothing tagged "{label}" yet.</p>}
+  </section>
+</Layout>
+

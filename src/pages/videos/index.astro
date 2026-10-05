@@ -1,0 +1,248 @@
+---
+import videos from "../../data/videos.json";
+import Layout from "../../layouts/Layout.astro";
+import VideosCard from "../../components/VideosCard.astro";
+
+type VideoItem = {
+  youtubeId?: string;
+  slug?: string;
+  title?: string;
+  summary?: string;
+  description?: string;
+  client?: string;
+  published?: string;
+  tags?: string[];
+  thumbnail_image?: string;
+  url?: string;
+};
+
+const toTime = (value: string | number | Date | null | undefined) => {
+  const time = new Date(value ?? 0).getTime();
+  return Number.isFinite(time) ? time : 0;
+};
+
+const normalize = (value: string | number | null | undefined) =>
+  (value ?? "").toString().trim();
+
+const sortedVideos = [...(videos as VideoItem[])].sort(
+  (a, b) => toTime(b.published) - toTime(a.published),
+);
+
+const clients = [...new Set(sortedVideos.map((v) => normalize(v.client)).filter(Boolean))].sort();
+const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize).filter(Boolean))].sort();
+---
+
+<Layout>
+  <section class="section video-gallery">
+    <div class="container vg-shell">
+      <header class="vg-head">
+        <p class="eyebrow">Selected video work</p>
+        <h2>Video Gallery</h2>
+
+        <div class="vg-intro">
+          <p class="vg-lead">
+            These projects were created for organisations including Mercator Ocean, ECMWF, ESA, EUMETSAT, and DLR.
+            They combine editorial storytelling, motion design, and science communication to make complex environmental
+            and space data more accessible.
+          </p>
+
+          <p class="vg-note">
+            Most entries below are embedded directly from YouTube, so you can watch them in place while scanning the title,
+            date, client, and short description.
+          </p>
+        </div>
+
+        <div class="vg-filters" aria-label="Video filters">
+          <label class="filter-field" for="clientSelect">
+            <span>Client</span>
+            <select id="clientSelect">
+              <option value="all">All clients</option>
+              {clients.map((client) => <option value={client}>{client}</option>)}
+            </select>
+          </label>
+
+          <label class="filter-field" for="tagSelect">
+            <span>Tag</span>
+            <select id="tagSelect">
+              <option value="all">All tags</option>
+              {tags.map((tag) => <option value={tag}>{tag}</option>)}
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <div class="vg-grid" id="videoGrid">
+        {sortedVideos.map((video, index) => {
+          const rawId = video.youtubeId || "";
+          const cleanId = rawId.replace(/^v=/, "");
+          const videoSlug = video.slug || cleanId || video.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+          const videoUrl = videoSlug ? `/videos/${videoSlug}/` : (video.url || "");
+
+          return (
+            <div
+              class="video-item"
+              data-client={normalize(video.client)}
+              data-tags={(video.tags ?? []).map(normalize).join(",")}
+            >
+              <VideosCard
+                article={{
+                  id: index + 1,
+                  title: video.title || "Untitled",
+                  excerpt: video.summary || video.description || "",
+                  publication: normalize(video.client),
+                  date: video.published || "",
+                  tag: normalize(video.tags?.[0]),
+                  image: video.thumbnail_image || "",
+                  url: videoUrl,
+                  video: video.url || "",
+                  variant: "teal",
+                }}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<script is:inline>
+  /** @type {(s: string | null | undefined) => string} */
+  const norm = (s) => (s ?? "").toLowerCase().trim();
+
+  /** @type {HTMLSelectElement | null} */
+  const clientSelect = document.getElementById("clientSelect");
+
+  /** @type {HTMLSelectElement | null} */
+  const tagSelect = document.getElementById("tagSelect");
+
+  /** @type {NodeListOf<HTMLElement>} */
+  const items = document.querySelectorAll("#videoGrid .video-item");
+
+  const applyFilters = () => {
+    const activeClient = norm(clientSelect?.value || "all");
+    const activeTag = norm(tagSelect?.value || "all");
+
+    items.forEach((el) => {
+      const client = norm(el.dataset.client);
+      const tagList = (el.dataset.tags || "")
+        .split(",")
+        .map((t) => t.trim())
+        .filter(Boolean)
+        .map(norm);
+
+      const clientOk = activeClient === "all" || client === activeClient;
+      const tagOk = activeTag === "all" || tagList.includes(activeTag);
+
+      el.hidden = !(clientOk && tagOk);
+    });
+  };
+
+  clientSelect?.addEventListener("change", applyFilters);
+  tagSelect?.addEventListener("change", applyFilters);
+  applyFilters();
+</script>
+
+<style>
+  .video-gallery {
+    padding-block: clamp(4rem, 7vw, 7rem);
+  }
+
+  .vg-shell {
+    display: grid;
+    gap: clamp(1.5rem, 3vw, 2.5rem);
+  }
+
+  .vg-head {
+    max-width: 78rem;
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  .vg-head h2 {
+    margin: 0;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+  }
+
+  .vg-intro {
+    max-width: 72ch;
+    padding: 1rem 1.25rem;
+    border-left: 3px solid color-mix(in srgb, currentColor 28%, transparent);
+    background: color-mix(in srgb, currentColor 4%, transparent);
+    border-radius: 0.9rem;
+    display: grid;
+    gap: 0.85rem;
+  }
+
+  .vg-lead,
+  .vg-note {
+    margin: 0;
+    line-height: 1.65;
+  }
+
+  .vg-lead {
+    font-size: 1.08rem;
+    font-weight: 500;
+    opacity: 0.96;
+  }
+
+  .vg-note {
+    font-size: 0.98rem;
+    opacity: 0.84;
+  }
+
+  .vg-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .filter-field span {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+
+  .filter-field select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    background: transparent;
+    color: currentColor;
+    font: inherit;
+  }
+
+  .filter-field select option {
+    color: #111;
+    background: #fff;
+  }
+
+  .vg-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .video-item[hidden] {
+    display: none;
+  }
+</style>

@@ -1,0 +1,11 @@
+{
+  "_note": "Curated homepage selection. Only fields Ryan has confirmed are shown. Add `role` and `outcome` once each case study has real evidence, then set evidenceReady: true in the entry's front matter.",
+  "items": [
+    { "collection": "projects", "slug": "esa-ba-newsletter", "sector": "Space communications", "year": "", "role": "Marketing lead, via HE Space", "outcome": "" },
+    { "collection": "projects", "slug": "gerb", "sector": "Earth observation research", "year": "2008", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "copernicus-hackathon-leics", "sector": "Earth observation and public engagement", "year": "2019", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "bake-in-space", "sector": "Space technology communications", "year": "2017", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "discovair", "sector": "Atmosphere data and public information", "year": "2018", "role": "", "outcome": "" },
+    { "collection": "initiatives", "slug": "leicesterspaceweek", "sector": "Public engagement", "year": "", "role": "Runs the festival", "outcome": "" }
+  ]
+}

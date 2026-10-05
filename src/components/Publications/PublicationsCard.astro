@@ -1,0 +1,149 @@
+---
+interface Props {
+  item?: Record<string, unknown>;
+  index?: number;
+  bibText?: string;
+}
+
+const { item = {}, index, bibText = "" } = Astro.props;
+
+const number = index ? String(index).padStart(2, "0") : "";
+
+const clean = (value: unknown) => (value == null ? "" : String(value).trim());
+
+const normalizeAuthors = (authors: unknown) => {
+  if (!Array.isArray(authors)) return "";
+  return authors
+    .map((author) => {
+      if (!author || typeof author !== "object") return "";
+      const data = author as Record<string, unknown>;
+      return [clean(data.given), clean(data.family)].filter(Boolean).join(" ");
+    })
+    .filter(Boolean)
+    .join(", ");
+};
+
+const normalizeYear = (entry: Record<string, unknown>) =>
+  (entry.issued as { ["date-parts"]?: unknown[][] } | undefined)?.["date-parts"]?.[0]?.[0] ||
+  entry.year ||
+  "";
+
+const normalizeTitle = (entry: Record<string, unknown>) =>
+  Array.isArray(entry.title) ? entry.title.map(String).join(" ") : clean(entry.title) || "Untitled";
+
+const normalizeContainer = (entry: Record<string, unknown>) =>
+  clean(entry["container-title"]) || clean(entry.journal) || clean(entry.booktitle) || clean(entry.publisher);
+
+const normalizeType = (entry: Record<string, unknown>) => {
+  switch (entry.type) {
+    case "article-journal":
+      return "Journal article";
+    case "paper-conference":
+      return "Conference paper";
+    case "report":
+      return "Report";
+    case "webpage":
+      return "Web page";
+    case "thesis":
+      return "Thesis";
+    default:
+      return clean(entry.type) || "Publication";
+  }
+};
+
+const normalizeUrl = (entry: Record<string, unknown>) => clean(entry.URL) || clean(entry.url);
+const normalizeDoi = (entry: Record<string, unknown>) => clean(entry.DOI) || clean(entry.doi);
+const normalizeAbstract = (entry: Record<string, unknown>) => clean(entry.abstract);
+
+const normalizeKeywords = (entry: Record<string, unknown>) => {
+  const raw = entry.keyword ?? entry.keywords ?? "";
+  if (Array.isArray(raw)) return raw.map(String).map(clean).filter(Boolean);
+  if (typeof raw === "string") return raw.split(/[;,]/).map(clean).filter(Boolean);
+  return [];
+};
+
+const excerptWords = (text: string, count = 40) => {
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= count) return { text, more: false };
+  return { text: `${words.slice(0, count).join(" ")}...`, more: true };
+};
+
+const pdfUrlFromItem = (entry: Record<string, unknown>) => {
+  const file = entry.file;
+  if (!file) return "";
+  const raw = Array.isArray(file) ? String(file[0] ?? "") : String(file);
+  const match = raw.match(/^[^:]+:([^:]+):application\/pdf$/i);
+  return match ? `/${match[1]}` : "";
+};
+
+const title = normalizeTitle(item);
+const authors = normalizeAuthors(item.author);
+const year = normalizeYear(item);
+const publication = normalizeContainer(item);
+const type = normalizeType(item);
+const abstract = normalizeAbstract(item);
+const preview = excerptWords(abstract, 40);
+const url = normalizeUrl(item);
+const doi = normalizeDoi(item);
+const recordUrl = url || (doi ? `https://doi.org/${doi}` : "");
+const pdf = pdfUrlFromItem(item);
+const keywords = normalizeKeywords(item);
+const titleUrl = doi ? `https://doi.org/${doi}` : url;
+const bibtexHref = `data:text/x-bibtex;charset=utf-8,${encodeURIComponent(bibText)}`;
+---
+
+<article class="pr pub">
+  <p class="pn">{number}</p>
+
+  <div class="pm">
+    <div class="pub-top">
+      <h3>
+        {titleUrl ? (
+          <a href={titleUrl} target="_blank" rel="noopener noreferrer">{title}</a>
+        ) : (
+          title
+        )}
+      </h3>
+      {year && <span class="date">{year}</span>}
+    </div>
+
+    {publication && <div class="client-badge">{publication}</div>}
+
+    {authors && <p class="authors">{authors}</p>}
+
+    {preview.text && <p class="abstract">{preview.text}</p>}
+
+    {keywords.length > 0 && (
+      <div class="pt">
+        {keywords.map((keyword) => <span class="tag">{keyword}</span>)}
+      </div>
+    )}
+
+    {type && (
+      <div class="detail-line">
+        <span class="type-pill">{type}</span>
+      </div>
+    )}
+
+    <div class="action-row">
+      <a class="pa" href={bibtexHref} download="publications.bib" target="_blank" rel="noopener noreferrer">
+        <span>BibTeX</span>
+      </a>
+      {doi && (
+        <a class="pa" href={`https://doi.org/${doi}`} target="_blank" rel="noopener noreferrer">
+          <span>DOI</span>
+        </a>
+      )}
+      {pdf && (
+        <a class="pa" href={pdf} target="_blank" rel="noopener noreferrer">
+          <span>Download</span>
+        </a>
+      )}
+      {recordUrl && (
+        <a class="pa pa-primary" href={recordUrl} target="_blank" rel="noopener noreferrer">
+          <span>View</span>
+        </a>
+      )}
+    </div>
+  </div>
+</article>

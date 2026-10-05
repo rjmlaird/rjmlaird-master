@@ -1,0 +1,159 @@
+---
+// src/components/PostMeta.astro
+import AuthorCard from './AuthorCard.astro';
+import CategoryBadge from './CategoryBadge.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  author: { name: string; role: string; avatar: any };
+  pubDate: Date;
+  updatedDate?: Date;
+  readingTime: string;
+  category?: string;
+  tags?: string[];
+}
+
+const {
+  author,
+  pubDate,
+  updatedDate,
+  readingTime,
+  category = '',
+  tags = [],
+} = Astro.props;
+
+const safeCategory = category ? [category] : [];
+const safeTags = Array.isArray(tags) ? tags : [];
+
+const dateFormat: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+};
+
+const avatarSrc =
+  typeof author.avatar === 'string'
+    ? author.avatar
+    : (author.avatar as { src?: string })?.src || '';
+
+const authorProps = {
+  name: author.name ?? '',
+  role: author.role ?? '',
+  avatar: avatarSrc,
+};
+
+const hasAuthorDetails = Boolean(author.name);
+const hasTaxonomy = Boolean(
+  safeCategory.length > 0 ||
+    safeTags.length > 0
+);
+---
+
+<div class="post-meta">
+  {hasAuthorDetails && (
+    <div class="meta-author">
+      <AuthorCard {...authorProps} compact />
+    </div>
+  )}
+
+  <div class="meta-content">
+    <div class="dates-row">
+      <time datetime={pubDate.toISOString()} class="date-item">
+        {pubDate.toLocaleDateString('en-GB', dateFormat)}
+      </time>
+
+      {updatedDate && (
+        <>
+          {' · '}
+          <time datetime={updatedDate.toISOString()}>
+            Updated {updatedDate.toLocaleDateString('en-GB', dateFormat)}
+          </time>
+        </>
+      )}
+
+      {readingTime && (
+        <>
+          {' · '}
+          <span class="reading-item">{readingTime}</span>
+        </>
+      )}
+    </div>
+
+    {hasTaxonomy && (
+      <div class="taxonomy-row">
+        {safeCategory.map((cat) => (
+          <CategoryBadge category={cat} />
+        ))}
+
+        <TagList tags={safeTags} />
+      </div>
+    )}
+  </div>
+</div>
+
+<style>
+  .post-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    padding-block: 1.25rem 1.5rem;
+    width: 100%;
+  }
+
+  .meta-author {
+    display: flex;
+    align-items: center;
+  }
+
+  .meta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .dates-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .separator {
+    color: var(--color-border-subtle);
+    font-size: 0.75rem;
+  }
+
+  .taxonomy-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  @media (min-width: 640px) {
+    .post-meta {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1.5rem;
+    }
+
+    .meta-content {
+      align-items: flex-end;
+      text-align: right;
+      flex: 1;
+    }
+
+    .dates-row {
+      justify-content: flex-end;
+    }
+
+    .taxonomy-row {
+      justify-content: flex-end;
+    }
+  }
+</style>

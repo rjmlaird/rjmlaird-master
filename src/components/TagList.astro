@@ -1,0 +1,53 @@
+---
+import { slugify } from '../utils/slugify';
+
+interface Props {
+  tags: string[];
+  limit?: number;
+}
+
+const { tags = [], limit } = Astro.props;
+const safeTags = Array.isArray(tags) ? tags : [];
+const visible = limit ? safeTags.slice(0, limit) : safeTags;
+const overflow = limit && safeTags.length > limit ? safeTags.length - limit : 0;
+---
+
+{visible.length > 0 && (
+  <ul class="tag-list" aria-label="Tags">
+    {visible.map((tag) => (
+      <li>
+        <a href={`/tags/${slugify(tag)}/`} class="tag">#{tag}</a>
+      </li>
+    ))}
+    {overflow > 0 && <li class="overflow" aria-label={`and ${overflow} more tags`}>+{overflow}</li>}
+  </ul>
+)}
+
+<style>
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tag {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    padding: 0.15rem 0.5rem;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .tag:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+  .overflow {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    padding: 0.15rem 0.3rem;
+  }
+</style>

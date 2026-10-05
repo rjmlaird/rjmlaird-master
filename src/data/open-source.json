@@ -1,0 +1,27 @@
+{
+  "profiles": [{ "label": "GitHub (rjmlaird)", "url": "https://github.com/rjmlaird" }],
+  "groups": [
+    {
+      "title": "Data and Earth observation experiments",
+      "items": [
+        { "name": "Leicestershire Atmosphere Watch", "status": "Experiment", "text": "Air-quality monitoring for Leicestershire that pairs AURN station data with a Python analysis pipeline, served by a Cloudflare Worker.", "url": "" },
+        { "name": "research-feeds", "status": "Prototype", "text": "A research intake pipeline that gathers papers from arXiv, ADS, IEEE and RSS sources on Cloudflare Workers.", "url": "" },
+        { "name": "greenorbit-audit-reports", "status": "In use", "text": "An Astro site with an automated pipeline that checks CO₂ and green hosting for audited websites.", "url": "" }
+      ]
+    },
+    {
+      "title": "Astronomy and physics tools",
+      "items": [
+        { "name": "Astro Mission Control (astrodash)", "status": "Prototype", "text": "A Python and Streamlit astronomy dashboard.", "url": "" },
+        { "name": "N-body orbital mechanics simulator", "status": "Prototype", "text": "A web app for simulating orbits, with a React Native mobile port.", "url": "" },
+        { "name": "Mechanics Lab", "status": "Prototype", "text": "An Astro, React and p5 simulator for inclined-plane mechanics: friction, drag, collisions and energy.", "url": "" }
+      ]
+    },
+    {
+      "title": "Web and infrastructure",
+      "items": [
+        { "name": "rjmlaird-api", "status": "In use", "text": "The Cloudflare Worker and Hono API behind this site’s data.", "url": "https://github.com/rjmlaird/rjmlaird-api" }
+      ]
+    }
+  ]
+}

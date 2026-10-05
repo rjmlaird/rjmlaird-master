@@ -1,0 +1,29 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import PodcastCard from "../../components/PodcastCard.astro";
+
+const podcasts = await getCollection("podcasts");
+---
+
+<Layout>
+  <section class="section podcast-gallery">
+    <div class="container pg-shell">
+      <header class="pg-head">
+        <p class="eyebrow">Podcast archive</p>
+        <h2>Podcasts</h2>
+        <div class="pg-intro">
+          <p class="pg-lead">
+            Browse the podcast collection and open each show’s dedicated page for episodes, metadata, and links.
+          </p>
+        </div>
+      </header>
+
+      <div class="pg-grid">
+        {podcasts.map((entry) => (
+          <PodcastCard entry={entry} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

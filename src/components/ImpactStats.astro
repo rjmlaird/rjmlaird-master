@@ -1,0 +1,68 @@
+---
+export interface Props {
+  impact?: Record<string, unknown> | null;
+}
+
+const { impact } = Astro.props as Props;
+
+const humanize = (key: string) =>
+  key
+    .replace(/([a-z])([A-Z])/g, "$1 $2")
+    .replace(/[_-]+/g, " ")
+    .replace(/^./, (c) => c.toUpperCase());
+
+const formatValue = (value: unknown) => {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "string" || typeof value === "number") return String(value);
+  if (typeof value === "boolean") return value ? "Yes" : "No";
+  if (Array.isArray(value)) return value.join(", ");
+  return JSON.stringify(value);
+};
+
+const entries = impact
+  ? Object.entries(impact).filter(([, value]) => formatValue(value) !== "")
+  : [];
+---
+
+{entries.length > 0 && (
+  <ul class="impact-stats">
+    {entries.map(([key, value]) => (
+      <li class="stat">
+        <p class="stat-label">{humanize(key)}</p>
+        <p class="stat-value">{formatValue(value)}</p>
+      </li>
+    ))}
+  </ul>
+)}
+
+<style>
+  .impact-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.75rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .stat {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    padding: 0.85rem 1rem;
+  }
+  .stat-label {
+    margin: 0;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+  .stat-value {
+    margin: 0.35rem 0 0;
+    font-size: 1.05rem;
+    font-weight: 600;
+    line-height: 1.4;
+    color: var(--color-text);
+  }
+</style>

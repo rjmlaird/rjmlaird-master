@@ -1,0 +1,259 @@
+---
+import MetaList from './MetaList.astro';
+import CategoryBadge from './CategoryBadge.astro';
+import TagList from './TagList.astro';
+
+interface Props {
+  podcastPublisher?: string;
+  podcastLanguage?: string;
+  podcastWebsite?: string;
+  podcastFeedUrl?: string;
+  podcastCategories?: string[];
+  tags?: string | string[];
+  podcastApplePodcasts?: string;
+  podcastSpotify?: string;
+  podcastYouTube?: string;
+  podcastTitle?: string;
+  podcastDescription?: string;
+  episodeNumber?: number | string;
+  season?: number | string;
+  publishedDate?: Date | string;
+  duration?: string;
+  host?: string;
+  guest?: string;
+  updatedDate?: Date | string;
+}
+
+const {
+  podcastPublisher,
+  podcastLanguage,
+  podcastWebsite,
+  podcastFeedUrl,
+  podcastCategories = [],
+  tags = [],
+  podcastApplePodcasts,
+  podcastSpotify,
+  podcastYouTube,
+  podcastTitle = '',
+  podcastDescription = '',
+  episodeNumber,
+  season,
+  publishedDate,
+  duration = '',
+  host,
+  guest,
+  updatedDate,
+} = Astro.props as Props;
+
+const safeCategories = Array.isArray(podcastCategories) ? podcastCategories : [];
+const safeTags = Array.isArray(tags) ? tags : tags ? [tags] : [];
+
+const dateFormat: Intl.DateTimeFormatOptions = {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+};
+
+const episodeDate =
+  publishedDate instanceof Date
+    ? publishedDate
+    : publishedDate
+      ? new Date(publishedDate)
+      : null;
+
+const updated =
+  updatedDate instanceof Date
+    ? updatedDate
+    : updatedDate
+      ? new Date(updatedDate)
+      : null;
+
+const metaItems = [
+  podcastTitle && { label: 'Podcast', value: podcastTitle },
+  podcastPublisher && { label: 'Publisher', value: podcastPublisher },
+  podcastLanguage && { label: 'Language', value: podcastLanguage.toUpperCase() },
+  podcastWebsite && { label: 'Website', value: podcastWebsite },
+  podcastFeedUrl && { label: 'Feed', value: podcastFeedUrl },
+  episodeNumber && { label: 'Episode', value: String(episodeNumber) },
+  season && { label: 'Season', value: String(season) },
+  host && { label: 'Host', value: host },
+  guest && { label: 'Guest', value: guest },
+].filter(Boolean) as { label: string; value: string }[];
+
+const hasTaxonomy = Boolean(safeCategories.length > 0 || safeTags.length > 0);
+const hasSocials = Boolean(podcastApplePodcasts || podcastSpotify || podcastYouTube);
+---
+
+<div class="podcast-meta-row">
+  <div class="meta-row-inner">
+    <MetaList items={metaItems} ariaLabel="Podcast metadata" />
+
+    <div class="podcast-meta">
+      <div class="meta-content">
+        <div class="dates-row">
+          {episodeDate && (
+            <span class="updated-item">
+              Published{' '}
+              <time datetime={episodeDate.toISOString()}>
+                {episodeDate.toLocaleDateString('en-GB', dateFormat)}
+              </time>
+            </span>
+          )}
+
+          {duration && (
+            <>
+              {episodeDate && <span class="separator" aria-hidden="true">•</span>}
+              <span class="reading-item">{duration}</span>
+            </>
+          )}
+        </div>
+
+        {updated && (
+          <div class="dates-row">
+            <span class="updated-item">
+              Updated{' '}
+              <time datetime={updated.toISOString()}>
+                {updated.toLocaleDateString('en-GB', dateFormat)}
+              </time>
+            </span>
+          </div>
+        )}
+
+        {podcastDescription && (
+          <p class="podcast-description">{podcastDescription}</p>
+        )}
+
+        {hasTaxonomy && (
+          <div class="taxonomy-row">
+            {safeCategories.map((cat) => (
+              <CategoryBadge category={cat} />
+            ))}
+            <TagList tags={safeTags} />
+          </div>
+        )}
+
+        {hasSocials && (
+          <div class="social-row" aria-label="Podcast platform links">
+            {podcastApplePodcasts && (
+              <a href={podcastApplePodcasts} target="_blank" rel="noopener noreferrer">
+                Apple Podcasts
+              </a>
+            )}
+            {podcastSpotify && (
+              <a href={podcastSpotify} target="_blank" rel="noopener noreferrer">
+                Spotify
+              </a>
+            )}
+            {podcastYouTube && (
+              <a href={podcastYouTube} target="_blank" rel="noopener noreferrer">
+                YouTube
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .podcast-meta-row {
+    width: 100%;
+    padding-block: 1rem 1.5rem;
+  }
+
+  .meta-row-inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+  }
+
+  .podcast-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+  }
+
+  .meta-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+
+  .dates-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .updated-item {
+    font-size: 0.8rem;
+    color: var(--color-text-subtle);
+  }
+
+  .separator {
+    color: var(--color-border-subtle);
+    font-size: 0.75rem;
+  }
+
+  .podcast-description {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .taxonomy-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .social-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    font-size: 0.875rem;
+  }
+
+  .social-row a {
+    color: var(--color-link);
+    text-decoration: none;
+  }
+
+  .social-row a:hover {
+    text-decoration: underline;
+  }
+
+  @media (min-width: 900px) {
+    .meta-row-inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+    }
+
+    .podcast-meta {
+      justify-self: end;
+    }
+
+    .meta-content {
+      align-items: flex-end;
+      text-align: right;
+      flex: 1;
+    }
+
+    .dates-row {
+      justify-content: flex-end;
+    }
+
+    .taxonomy-row,
+    .social-row {
+      justify-content: flex-end;
+    }
+  }
+</style>

@@ -1,0 +1,74 @@
+---
+// src/components/MapEmbed.astro
+export interface Props {
+  /**
+   * Either:
+   * - `embedUrl`: a full embed URL (e.g. "https://www.google.com/maps/embed?pb=...")
+   * - or `address`: a plain address string that will be embedded via Google Maps
+   */
+  embedUrl?: string;
+  address?: string;
+
+  /** Map frame title (for accessibility) */
+  title?: string;
+
+  /** Height in CSS units (e.g. "300px", "20rem") */
+  height?: string;
+
+  /** Loading strategy: "lazy" or "eager" */
+  loading?: "lazy" | "eager";
+
+  /** Optional className for wrapper */
+  class?: string;
+}
+
+const {
+  embedUrl,
+  address,
+  title = "Map",
+  height = "300px",
+  loading = "lazy",
+  class: className,
+} = Astro.props as Props;
+
+const resolvedEmbedUrl =
+  embedUrl ??
+  (address
+    ? `https://www.google.com/maps?q=${encodeURIComponent(address)}&output=embed`
+    : undefined);
+
+if (!resolvedEmbedUrl) {
+  throw new Error("EmbedMap requires either `embedUrl` or `address`");
+}
+---
+
+<div class:list={["embed-map-wrapper", className]}>
+  <iframe
+    class="embed-map"
+    src={resolvedEmbedUrl}
+    width="100%"
+    height={height}
+    style={`height:${height}`}
+    loading={loading}
+    referrerpolicy="no-referrer-when-downgrade"
+    allowfullscreen
+    aria-label={title}
+    title={title}
+  ></iframe>
+</div>
+
+<style>
+  .embed-map-wrapper {
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    background: #f5f5f5;
+  }
+
+  .embed-map {
+    display: block;
+    width: 100%;
+    border: 0;
+    border-radius: 6px;
+  }
+</style>

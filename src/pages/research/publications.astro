@@ -1,0 +1,157 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Citation from "citation-js";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import Card from "../../components/Publications/PublicationsCard.astro";
+
+type CslItem = {
+  type?: string;
+  title?: string | string[];
+  issued?: { "date-parts"?: number[][] };
+  year?: string | number;
+  publisher?: string;
+  "container-title"?: string;
+  journal?: string;
+  booktitle?: string;
+};
+
+const bibPath = path.join(process.cwd(), "src/data/publications.bib");
+const bibText = await readFile(bibPath, "utf8");
+
+const input = new Citation(bibText);
+const items = input.format("data", { format: "object" }) as CslItem[];
+
+const getYear = (item: CslItem) => {
+  const y = item?.issued?.["date-parts"]?.[0]?.[0] || item?.year || "";
+  return y ? Number(y) : 0;
+};
+
+const getType = (item: CslItem) => {
+  if (item.type === "article-journal") return "Journal article";
+  if (item.type === "paper-conference") return "Conference paper";
+  if (item.type === "report") return "Report";
+  if (item.type === "webpage") return "Web page";
+  if (item.type === "thesis") return "Thesis";
+  return item.type || "Publication";
+};
+
+const getPublisher = (item: CslItem) =>
+  item.publisher || item["container-title"] || item.journal || item.booktitle || "";
+
+const publications = items
+  .map((item) => ({
+    item,
+    year: getYear(item),
+    type: getType(item),
+    publisher: getPublisher(item),
+  }))
+  .sort((a, b) => b.year - a.year || String(a.item.title ?? "").localeCompare(String(b.item.title ?? "")));
+
+const types = [...new Set(publications.map((p) => p.type).filter(Boolean))].sort();
+const years = [...new Set(publications.map((p) => p.year).filter(Boolean))].sort((a, b) => b - a);
+const publishers = [...new Set(publications.map((p) => p.publisher).filter(Boolean))].sort();
+---
+
+<Layout
+  title="Publications"
+  description="Selected bibliography of journal articles, conference papers, reports and outreach publications by Ryan Laird."
+>
+  <div class="wrap" style="padding-top:1.5rem"><nav class="crumbs" aria-label="Breadcrumb"><a href="/research/">Research</a> / Publications</nav></div>
+  <section class="section research-page">
+    <div class="container rp-shell">
+      <header class="rp-head">
+        <p class="eyebrow">Research</p>
+        <h1>Publications</h1>
+
+        <div class="rp-intro">
+          <p class="rp-lead">
+            A selected bibliography of journal articles, conference papers, reports, and outreach publications.
+          </p>
+          <p class="rp-note">
+            Browse by publication type, publisher, or year.
+          </p>
+        </div>
+
+        <div class="rp-filters" aria-label="Research filters">
+          <label class="filter-field" for="typeSelect">
+            <span>Type</span>
+            <select id="typeSelect">
+              <option value="all">All types</option>
+              {types.map((type) => <option value={type}>{type}</option>)}
+            </select>
+          </label>
+
+          <label class="filter-field" for="publisherSelect">
+            <span>Publisher</span>
+            <select id="publisherSelect">
+              <option value="all">All publishers</option>
+              {publishers.map((publisher) => <option value={publisher}>{publisher}</option>)}
+            </select>
+          </label>
+
+          <label class="filter-field" for="yearSelect">
+            <span>Year</span>
+            <select id="yearSelect">
+              <option value="all">All years</option>
+              {years.map((year) => <option value={String(year)}>{year}</option>)}
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <div class="rp-grid" id="researchGrid">
+        {publications.map((pub, index) => (
+          <div
+            class="research-item"
+            data-type={pub.type}
+            data-year={String(pub.year)}
+            data-publisher={pub.publisher}
+          >
+            <Card item={pub.item} index={index + 1} bibText={bibText} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    /** @type {(s: string | null | undefined) => string} */
+    const norm = (s) => (s ?? "").toLowerCase().trim();
+
+    /** @type {HTMLSelectElement | null} */
+    const typeSelect = document.getElementById("typeSelect");
+
+    /** @type {HTMLSelectElement | null} */
+    const yearSelect = document.getElementById("yearSelect");
+
+    /** @type {HTMLSelectElement | null} */
+    const publisherSelect = document.getElementById("publisherSelect");
+
+    /** @type {NodeListOf<HTMLElement>} */
+    const items = document.querySelectorAll("#researchGrid .research-item");
+
+    const applyFilters = () => {
+      const activeType = norm(typeSelect?.value || "all");
+      const activeYear = norm(yearSelect?.value || "all");
+      const activePublisher = norm(publisherSelect?.value || "all");
+
+      items.forEach((el) => {
+        const type = norm(el.dataset.type);
+        const year = norm(el.dataset.year);
+        const publisher = norm(el.dataset.publisher);
+
+        const typeOk = activeType === "all" || type === activeType;
+        const yearOk = activeYear === "all" || year === activeYear;
+        const publisherOk = activePublisher === "all" || publisher === activePublisher;
+
+        el.hidden = !(typeOk && yearOk && publisherOk);
+      });
+    };
+
+    typeSelect?.addEventListener("change", applyFilters);
+    yearSelect?.addEventListener("change", applyFilters);
+    publisherSelect?.addEventListener("change", applyFilters);
+    applyFilters();
+  </script>
+</Layout>

@@ -1,0 +1,205 @@
+---
+// src/components/Publications/BlogCard.astro
+import TagList from '../TagList.astro';
+
+interface Props {
+  post?: {
+    id?: string;
+    slug?: string;
+    collection?: string;
+    data?: {
+      title?: string;
+      excerpt?: string;
+      description?: string;
+      date?: Date | string;
+      author?: string;
+      avatar?: string;
+      tags?: string[];
+      tag?: string;
+      image?: string;
+      imageCredit?: string;
+    };
+  };
+}
+
+const { post } = Astro.props as Props;
+const data = post?.data ?? {};
+
+const collection = post?.collection ?? 'blog';
+const slug = post?.slug ?? post?.id ?? 'untitled';
+const href = `/${collection}/${slug}`;
+
+const title = data.title ?? 'Untitled';
+const excerpt = data.excerpt ?? data.description ?? '';
+
+const dateValue = data.date ? new Date(data.date) : null;
+const formattedDate =
+  dateValue && !Number.isNaN(dateValue.getTime())
+    ? dateValue.toLocaleDateString('en-GB', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      })
+    : '';
+
+const authorSlug = typeof data.author === 'string' ? data.author.trim() : '';
+const authorLabel = authorSlug
+  ? authorSlug.replace(/(^|-)\w/g, (m) => m.toUpperCase()).replace(/-/g, ' ')
+  : '';
+
+const avatar = typeof data.avatar === 'string' ? data.avatar.trim() : '';
+const tags = Array.isArray(data.tags) ? data.tags : data.tag ? [data.tag] : [];
+const image = data.image || '/images/placeholder.jpg';
+const imageCredit = data.imageCredit ?? '';
+---
+
+<article class="pr pub">
+  {image ? (
+    <a href={href} class="pub-media pub-image" aria-label={title}>
+      <img src={image} alt={title} loading="lazy" />
+      {imageCredit && <span class="image-credit">{imageCredit}</span>}
+    </a>
+  ) : null}
+
+  <div class="pm">
+    <div class="pub-top">
+      <div>
+        <h3>
+          <a href={href} class="pub-title-link">{title}</a>
+        </h3>
+        {formattedDate && <time class="date">{formattedDate}</time>}
+      </div>
+
+      {authorSlug && (
+        <div class="author-badge">
+          {avatar ? (
+            <img
+              class="author-avatar"
+              src={avatar}
+              alt={authorLabel || authorSlug}
+              width="32"
+              height="32"
+              loading="lazy"
+            />
+          ) : null}
+
+          <span class="author-by">By</span>
+          <a class="author-link" href={`/authors/${authorSlug}`}>
+            {authorLabel || authorSlug}
+          </a>
+        </div>
+      )}
+    </div>
+
+    {excerpt && <p class="excerpt">{excerpt}</p>}
+
+    {tags.length > 0 && (
+      <div class="pt">
+        <TagList tags={tags} limit={4} />
+      </div>
+    )}
+  </div>
+
+  <a href={href} class="pa">
+    <span class="pa-i">↗</span>
+    <span>View</span>
+  </a>
+</article>
+
+<style>
+  .pr.pub {
+    display: grid;
+    gap: 0.9rem;
+    padding: 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    background: var(--color-surface);
+  }
+  .pub-media {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    border-radius: 10px;
+    text-decoration: none;
+  }
+  .pub-image img {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+  .image-credit {
+    position: absolute;
+    right: 0.5rem;
+    bottom: 0.5rem;
+    font-size: 0.7rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 0.15rem 0.35rem;
+    border-radius: 999px;
+  }
+  .pm {
+    display: grid;
+    gap: 0.75rem;
+  }
+  .pub-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  h3 {
+    margin: 0 0 0.25rem;
+    font-size: 1.15rem;
+    line-height: 1.25;
+  }
+  .pub-title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .pub-title-link:hover {
+    color: var(--color-accent);
+  }
+  .date {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+  }
+  .excerpt {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+  .author-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex-wrap: wrap;
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+  }
+  .author-avatar {
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  .author-link {
+    color: inherit;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .author-link:hover {
+    color: var(--color-accent);
+  }
+  .pt {
+    margin-top: 0.2rem;
+  }
+  .pa {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    justify-self: start;
+    font-size: 0.85rem;
+    text-decoration: none;
+    color: var(--color-accent);
+  }
+</style>

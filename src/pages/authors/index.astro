@@ -1,0 +1,28 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const authors = await getCollection("authors");
+---
+
+<Layout>
+  <article class="authors-page">
+    <header class="container">
+      <p class="eyebrow">Authors</p>
+      <h1>Authors</h1>
+      <p class="lede">People who write for this site.</p>
+    </header>
+
+    <section class="container">
+      <ul class="author-list">
+        {authors.map((author) => (
+          <li>
+            <a href={`/authors/${author.id}`}>{author.data.name}</a>
+            {author.data.role ? <p>{author.data.role}</p> : null}
+            {author.data.bio ? <p>{author.data.bio}</p> : null}
+          </li>
+        ))}
+      </ul>
+    </section>
+  </article>
+</Layout>

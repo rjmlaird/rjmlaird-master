@@ -1,0 +1,83 @@
+---
+import Layout from "../layouts/Layout.astro";
+import cv from "../data/cv.json";
+import profile from "../data/profile.json";
+
+const siteUrl = "https://rjmlaird.co.uk";
+const jsonLd = [
+  {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    mainEntity: {
+      "@id": `${siteUrl}/#person`,
+      "@type": "Person",
+      name: profile.name,
+      hasCredential: cv.credentials.map((c) => ({ "@type": "EducationalOccupationalCredential", name: c })),
+    },
+  },
+];
+---
+
+<Layout
+  title="CV"
+  description="Curriculum vitae of Ryan Laird: experience, education, credentials, memberships and skills across space, science communication and digital strategy."
+  noindex={!cv.complete}
+  jsonLd={jsonLd}
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <h1>Ryan Laird: CV</h1>
+      <p class="lead">{cv.summary}</p>
+      <div class="cta-row no-print">
+        <button class="bp" type="button" onclick="window.print()">Print or save as PDF</button>
+        <a class="bo" href="/contact/">Get in touch</a>
+      </div>
+      {!cv.complete && (
+        <p class="note no-print" style="margin-top:1.25rem">
+          This page is being completed. The full role history is currently at
+          <a href={cv.legacyUrl}>{cv.legacyUrl.replace("https://", "")}</a>.
+        </p>
+      )}
+    </header>
+
+    <section class="cv-section" aria-labelledby="cv-exp">
+      <h2 id="cv-exp">Experience</h2>
+      {cv.experience.map((e) => (
+        <div class="cv-item">
+          <h3>{e.title}</h3>
+          <p class="sub">{[e.org, e.dates].filter(Boolean).join(" · ")}</p>
+          <p>{e.summary}</p>
+        </div>
+      ))}
+    </section>
+
+    <section class="cv-section" aria-labelledby="cv-edu">
+      <h2 id="cv-edu">Education</h2>
+      {cv.education.map((e) => (
+        <div class="cv-item">
+          <h3>{e.title}</h3>
+          <p class="sub">{[e.org, e.dates].filter(Boolean).join(" · ")}</p>
+          <p>{e.summary}</p>
+        </div>
+      ))}
+    </section>
+
+    <section class="cv-section" aria-labelledby="cv-cred">
+      <h2 id="cv-cred">Credentials and memberships</h2>
+      <ul class="plain-list">{cv.credentials.map((c) => <li>{c}</li>)}</ul>
+    </section>
+
+    <section class="cv-section" aria-labelledby="cv-pub">
+      <h2 id="cv-pub">Publications</h2>
+      <p class="prose">
+        <a href={cv.publications.listUrl}>Selected bibliography</a> ·
+        <a href={cv.publications.orcid} rel="noopener">ORCID</a>
+      </p>
+    </section>
+
+    <section class="cv-section" aria-labelledby="cv-skills">
+      <h2 id="cv-skills">Skills</h2>
+      <ul class="plain-list">{cv.skills.map((s) => <li>{s}</li>)}</ul>
+    </section>
+  </div>
+</Layout>

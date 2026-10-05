@@ -1,0 +1,176 @@
+---
+// src/components/PostCard.astro
+import type { CollectionEntry } from 'astro:content';
+import { getEntry } from 'astro:content';
+import CategoryBadge from './CategoryBadge.astro';
+import AuthorCard from './AuthorCard.astro';
+import TagList from './TagList.astro';
+import { getReadingTime } from '../utils/readingTime';
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+  featured?: boolean;
+}
+
+const { post, featured = false } = Astro.props;
+const { title, description, pubDate, category, heroImage, author: authorRef, tags } = post.data;
+const readingTime = getReadingTime(post.body || '');
+const safeCategory = Array.isArray(category) ? category[0] || '' : category;
+const safeTags = Array.isArray(tags) ? tags : [];
+
+const imageSrc = heroImage;
+
+let authorEntry = null;
+if (authorRef && typeof authorRef === 'string') {
+  try {
+    authorEntry = await getEntry('authors', authorRef);
+  } catch {
+    authorEntry = null;
+  }
+}
+
+const authorName =
+  authorEntry?.data.name ??
+  (typeof authorRef === 'string'
+    ? authorRef.trim().replace(/(^|-)\w/g, (m) => m.toUpperCase()).replace(/-/g, ' ')
+    : '');
+
+const authorRole = authorEntry?.data.role ?? '';
+const authorAvatar =
+  typeof authorEntry?.data.avatar === 'string'
+    ? authorEntry.data.avatar.trim()
+    : '';
+
+---
+
+<article class:list={['post-card', { featured }]}>
+  {imageSrc && (
+    <a href={`/blog/${post.id}`} class="post-card-image-link" tabindex="-1" aria-hidden="true">
+      <img
+        src={imageSrc}
+        alt=""
+        width={featured ? 800 : 400}
+        height={featured ? 450 : 225}
+        class="thumb"
+      />
+    </a>
+  )}
+
+  <div class="body">
+    {safeCategory && <CategoryBadge category={safeCategory} as="span" />}
+
+    <h2>
+      <a href={`/blog/${post.id}`} class="title-link">{title}</a>
+    </h2>
+
+    {description && <p class="description">{description}</p>}
+
+    {(authorName || safeTags.length > 0) && (
+      <div class="meta-block">
+        {authorName && (
+          <AuthorCard
+            name={authorName}
+            role={authorRole}
+            avatar={authorAvatar}
+            compact
+          />
+        )}
+
+        {safeTags.length > 0 && <TagList tags={safeTags} limit={3} />}
+      </div>
+    )}
+
+    <div class="footer">
+      <time datetime={pubDate.toISOString()}>
+        {pubDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}
+      </time>
+      {readingTime && <span>· {readingTime}</span>}
+    </div>
+  </div>
+</article>
+
+<style>
+  .post-card {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: border-color 0.15s ease, transform 0.15s ease;
+  }
+  .post-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+  }
+  .post-card-image-link {
+    display: block;
+  }
+  .thumb {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    display: block;
+  }
+  .body {
+    padding: 1.1rem 1.2rem 1.3rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.3;
+  }
+  .featured h2 {
+    font-size: 1.5rem;
+  }
+  .title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+  .title-link:hover {
+    color: var(--color-accent);
+  }
+  .description {
+    margin: 0;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .meta-block {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    margin-top: 0.2rem;
+  }
+  .footer {
+    font-size: 0.78rem;
+    color: var(--color-text-muted);
+    margin-top: 0.3rem;
+  }
+  .featured {
+    grid-column: 1 / -1;
+  }
+  @media (min-width: 800px) {
+    .featured {
+      flex-direction: row;
+    }
+    .featured .post-card-image-link {
+      width: 65%;
+    }
+    .featured .thumb {
+      aspect-ratio: auto;
+      height: 100%;
+    }
+    .featured .body {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

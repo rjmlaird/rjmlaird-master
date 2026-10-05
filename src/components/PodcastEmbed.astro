@@ -1,0 +1,58 @@
+---
+interface Props {
+  src?: string;
+  title?: string;
+  height?: number | string;
+  mode?: "single" | "latest" | "playlist";
+  color?: string;
+  background?: string;
+  fullWidth?: boolean;
+}
+
+const {
+  src = "https://share.transistor.fm/s/cc1168d5",
+  title = "Podcast player",
+  height,
+  mode = "single",
+  color,
+  background,
+  fullWidth = true,
+} = Astro.props as Props;
+
+const resolvedSrc = (() => {
+  try {
+    const url = new URL(src);
+
+    url.pathname = url.pathname.replace(/^\/s\//, "/e/");
+
+    if (mode === "latest") {
+      const basePath = url.pathname.replace(/\/$/, "");
+      if (!basePath.endsWith("/latest")) url.pathname = `${basePath}/latest`;
+    }
+
+    if (mode === "playlist") {
+      const basePath = url.pathname.replace(/\/$/, "");
+      if (!basePath.endsWith("/playlist")) url.pathname = `${basePath}/playlist`;
+    }
+
+    if (color) url.searchParams.set("color", color.replace("#", ""));
+    if (background) url.searchParams.set("background", background.replace("#", ""));
+
+    return url.toString();
+  } catch {
+    return src.replace("/s/", "/e/");
+  }
+})();
+
+const resolvedHeight = height ?? (mode === "playlist" ? 390 : 180);
+---
+
+<iframe
+  src={resolvedSrc}
+  width={fullWidth ? "100%" : undefined}
+  height={resolvedHeight}
+  title={title}
+  loading="lazy"
+  referrerpolicy="no-referrer-when-downgrade"
+  style="border: 0; display: block;"
+/>

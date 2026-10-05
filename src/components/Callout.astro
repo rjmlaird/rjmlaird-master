@@ -1,0 +1,84 @@
+---
+type CalloutType = 'note' | 'tip' | 'warning';
+
+interface Props {
+  type?: CalloutType;
+}
+
+const { type = 'note' } = Astro.props;
+
+const config: Record<CalloutType, { icon: string; label: string }> = {
+  note: { icon: 'ℹ', label: 'Note' },
+  tip: { icon: '✦', label: 'Tip' },
+  warning: { icon: '▲', label: 'Warning' },
+};
+
+const { icon, label } = config[type];
+---
+
+<div class:list={['callout', type]} role="note">
+  <span class="icon" aria-hidden="true">{icon}</span>
+  <div class="body">
+    <p class="label">{label}</p>
+    <div class="content">
+      <slot />
+    </div>
+  </div>
+</div>
+
+<style>
+  .callout {
+    display: flex;
+    gap: 0.75rem;
+    margin-block: 1.75rem;
+    padding: 1rem 1.2rem;
+    border-radius: 6px;
+    border: 1px solid transparent;
+  }
+  .callout .icon {
+    font-size: 1rem;
+    line-height: 1.5;
+    flex-shrink: 0;
+  }
+  .label {
+    margin: 0 0 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+
+  .note {
+    background: var(--sd);
+    border-color: var(--sb);
+  }
+  .note .label,
+  .note .icon {
+    color: var(--sky);
+  }
+
+  .tip {
+    background: var(--gd);
+    border-color: var(--gb);
+  }
+  .tip .label,
+  .tip .icon {
+    color: var(--green);
+  }
+
+  .warning {
+    background: var(--ad);
+    border-color: var(--ab);
+  }
+  .warning .label,
+  .warning .icon {
+    color: var(--amber);
+  }
+</style>

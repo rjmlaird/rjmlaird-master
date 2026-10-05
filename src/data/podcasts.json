@@ -1,0 +1,40 @@
+{
+  "podcast": {
+    "title": "The EcoSend Podcast",
+    "description": "A podcast about building a truly climate-conscious business, exploring sustainability, marketing, startups, software, and space.",
+    "website": "https://ecosend.io",
+    "feedUrl": "https://feeds.transistor.fm/the-ecosend-podcast",
+    "publisher": "EcoSend",
+    "language": "en",
+    "coverImage": "https://img.transistorcdn.com/HSGyGCJJvXs6RIHZ0ewY5dv5CT6iQ0qSBDHMghe8FMrs/fill-001/w800/h800/q60.webp",
+    "categories": [
+      "climate",
+      "technology",
+      "marketing",
+      "startups",
+      "software"
+    ],
+    "socialLinks": {
+      "applePodcasts": "https://podcasts.apple.com/us/podcast/the-ecosend-podcast/id1652526977?uo=4",
+      "spotify": "https://open.spotify.com/show/3H1QJE8bcXmLwRReyxEJsS",
+      "youtube": "https://www.youtube.com/@ecosend"
+    },
+    "episodes": [
+      {
+        "id": 41,
+        "season": 4,
+        "episodeNumber": 10,
+        "title": "Sustainability and Space?!",
+        "guest": "Ryan Laird",
+        "host": "James Gill",
+        "publishedDate": "2024-04-03",
+        "duration": "PT36M48S",
+        "audioUrl": "https://media.transistor.fm/cc1168d5237c5bfd.mp3",
+        "shareUrl": "https://share.transistor.fm/s/cc1168d5",
+        "transcriptUrl": "https://share.transistor.fm/s/cc1168d5/transcript",
+        "artwork": "https://img.transistorcdn.com/8GZdVNpg8WNINKeco1CyhQai63F2CKcRs5EjDwINYaQ/fill-001/w400/h400/q60.webp",
+        "summary": "An episode about sustainability and space, including satellite data, space debris, and climate impact."
+      }
+    ]
+  }
+}

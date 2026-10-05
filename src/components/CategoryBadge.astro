@@ -1,0 +1,38 @@
+---
+// src/components/CategoryBadge.astro
+import { slugify } from '../utils/slugify';
+
+interface Props {
+  category: string;
+  as?: 'link' | 'span';
+}
+
+const { category, as = 'link' } = Astro.props as Props;
+const label = category.replace(/-/g, ' ');
+const href = `/category/${slugify(category)}`;
+const Tag = as === 'link' ? 'a' : 'span';
+---
+
+<Tag href={as === 'link' ? href : undefined} class="category-badge">
+  {label}
+</Tag>
+
+<style>
+  .category-badge {
+    display: inline-block;
+    padding: 0.2rem 0.65rem;
+    border-radius: 999px;
+    background: var(--color-accent-subtle);
+    color: var(--color-accent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+    text-decoration: none;
+    transition: background 0.15s ease;
+  }
+  a.category-badge:hover {
+    background: var(--color-accent);
+    color: white;
+  }
+</style>

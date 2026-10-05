@@ -1,0 +1,76 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        if: hashFiles('package-lock.json') != ''
+        run: npm ci
+
+      - name: Build or copy files
+        run: |
+          rm -rf dist
+
+          if [ -f package.json ]; then
+            echo "Detected package.json → Running build"
+            npm run build
+          else
+            echo "Static site detected → Copying files"
+            mkdir dist
+            find . -maxdepth 1 \
+              ! -name "dist" \
+              ! -name ".git" \
+              ! -name ".github" \
+              ! -name "." \
+              -exec cp -R {} dist/ \;
+          fi
+
+          echo "Dist directory contents:"
+          ls -al dist
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

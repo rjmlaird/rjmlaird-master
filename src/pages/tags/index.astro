@@ -1,0 +1,59 @@
+---
+// src/pages/tags/index.astro
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { slugify } from "../../utils/slugify";
+
+// Only use collections that have `tags` and `draft`
+const [posts, projects, caseStudies, initiatives] = await Promise.all([
+  getCollection("blog", ({ data }) => !data.draft),
+  getCollection("projects", ({ data }) => !data.draft),
+  getCollection("caseStudies", ({ data }) => !data.draft),
+  getCollection("initiatives", ({ data }) => !data.draft),
+]);
+
+const allEntries = [...posts, ...projects, ...caseStudies, ...initiatives];
+
+const tagMap = new Map<string, { label: string; count: number }>();
+
+for (const entry of allEntries) {
+  // Narrow type by checking tags field
+  const data = entry.data as { tags?: unknown };
+  if (!Array.isArray(data.tags)) continue;
+
+  for (const tag of data.tags) {
+    if (typeof tag !== "string") continue;
+    const slug = slugify(tag);
+    const existing = tagMap.get(slug);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      tagMap.set(slug, { label: tag, count: 1 });
+    }
+  }
+}
+
+const allTags = Array.from(tagMap.entries())
+  .map(([slug, { label, count }]) => ({ slug, label, count }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+---
+
+<Layout title="Tags" description="Browse every tag across blog posts, projects, initiatives and case studies.">
+  <section class="taxonomy-index">
+    <p class="eyebrow">Browse by tag</p>
+    <h1>Tags</h1>
+    <p class="intro">All {allTags.length} tags used across blog posts, projects, initiatives and case studies.</p>
+
+    <ul class="pill-list" aria-label="All tags">
+      {allTags.map(({ slug, label, count }) => (
+        <li>
+          <a href={`/tags/${slug}/`}>
+            <span class="tag-label">#{label}</span>
+            <span class="pill-count">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+

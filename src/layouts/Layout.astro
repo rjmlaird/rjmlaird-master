@@ -1,0 +1,155 @@
+---
+// src/layouts/Layout.astro
+import "../styles/global.css";
+import "../styles/pages.css";
+import Nav from "../components/Nav.astro";
+import Footer from "../components/Footer.astro";
+import JsonLd from "../components/JsonLd.astro";
+import type { CollectionEntry } from 'astro:content';
+import profile from "../data/profile.json";
+import socials from "../data/socials.json";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  noindex?: boolean;
+  canonical?: string;
+  post?: CollectionEntry<'blog'> | CollectionEntry<'projects'> | CollectionEntry<'caseStudies'>;
+  headings?: { depth: number; slug: string; text: string }[];
+  relatedPosts?: CollectionEntry<'blog'>[];
+  /** Page-specific structured data (Article, PodcastEpisode, CreativeWork, BreadcrumbList...)
+   *  merged alongside the site-wide WebSite + Person schema below. */
+  jsonLd?: Record<string, any> | Record<string, any>[];
+}
+
+const {
+  title = "Ryan Laird — CMktr MInstP",
+  description = "Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology.",
+  image = "/images/og-default.jpg",
+  noindex = false,
+  canonical,
+  post,
+  jsonLd,
+} = Astro.props as Props;
+
+const postData = post?.data as Record<string, any> | undefined;
+
+const resolvedTitle = postData?.title ?? title;
+const resolvedDescription = postData?.description ?? description;
+const resolvedImage = postData?.heroImage?.src ?? postData?.image ?? image;
+const resolvedNoindex = postData?.noindex ?? noindex;
+
+const siteTitle = "Ryan Laird — CMktr MInstP";
+const fullTitle = resolvedTitle === siteTitle ? resolvedTitle : `${resolvedTitle} · ${siteTitle}`;
+
+const baseUrl = Astro.site?.href;
+const canonicalUrl =
+  canonical ?? postData?.canonical ?? (baseUrl ? new URL(Astro.url.pathname, baseUrl).href : Astro.url.href);
+
+const ogImage = baseUrl ? new URL(resolvedImage, baseUrl).href : resolvedImage;
+
+// Real, non-placeholder profile links only — several entries in socials.json are
+// unfilled template placeholders (fake IDs/usernames) and must never be emitted
+// as structured data.
+const PLACEHOLDER_MARKERS = ["your-user-id", "441234567890", "0000-0000-0000-0000", "XXXXXXXXXXX", "YourName"];
+const isRealSocial = (s: { url: string }) => !PLACEHOLDER_MARKERS.some((m) => s.url.includes(m));
+const sameAs = (socials as { url: string }[]).filter(isRealSocial).map((s) => s.url);
+
+const siteUrl = baseUrl ?? "https://rjmlaird.co.uk";
+const personId = `${siteUrl}#person`;
+
+const personSchema = {
+  "@type": "Person",
+  "@id": personId,
+  name: profile.name,
+  alternateName: profile.preferredName,
+  jobTitle: profile.role,
+  description: profile.biography?.[0],
+  url: siteUrl,
+  image: baseUrl ? new URL(profile.avatar, baseUrl).href : profile.avatar,
+  email: `mailto:${profile.email}`,
+  address: { "@type": "PostalAddress", addressLocality: "Leicester", addressCountry: "GB" },
+  sameAs,
+};
+
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      url: siteUrl,
+      name: siteTitle,
+      description,
+      publisher: { "@id": personId },
+      inLanguage: "en-GB",
+    },
+    personSchema,
+  ],
+};
+
+const pageJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+---
+
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={resolvedDescription} />
+    {resolvedNoindex ? <meta name="robots" content="noindex, nofollow" /> : null}
+    <link rel="canonical" href={canonicalUrl} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={resolvedDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImage} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={resolvedDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <JsonLd id="jsonld-site" json={websiteSchema} />
+    {pageJsonLd.length > 0 && <JsonLd id="jsonld-page" json={pageJsonLd} />}
+
+    <slot name="head" />
+  </head>
+
+  <body>
+    <a href="#content" class="skip-link">Skip to content</a>
+    <Nav />
+    <main id="content">
+      <slot />
+    </main>
+    <Footer />
+
+    <script is:inline>
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("in");
+              io.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.07 }
+      );
+
+      document.querySelectorAll(".fade").forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>
+

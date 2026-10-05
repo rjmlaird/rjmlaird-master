@@ -1,0 +1,625 @@
+---
+// src/components/ProjectSidebar.astro
+export interface Props {
+  sectors?: string[];
+  tools?: string[];
+  features?: string[];
+  relatedExperience?: any[];
+  relatedEducation?: any[];
+  relatedOrganisations?: any[];
+  relatedVolunteering?: any[];
+  relatedAwards?: any[];
+  relatedCaseStudies?: any[];
+  relatedProjects?: any[];
+  relatedInitiatives?: any[];
+
+  // Legacy string-based videos (IDs or simple objects)
+  relatedVideos?: any[];
+
+  // New rich relations
+  relatedEvents?: any[];
+  relatedVideosRich?: any[];
+  relatedArticles?: any[];
+
+  links?: {
+    github?: string;
+    web?: string;
+    demo?: string;
+    docs?: string;
+    youtube?: string;
+    store?: string;
+    api?: string;
+    eventPage?: string;
+    meetup?: string;
+    luMa?: string;
+  };
+
+  // Event-specific fields (from event data)
+  organiser?: string | any[];
+  coOrganisers?: any[];
+  speakers?: string[];
+  hosts?: string[];
+  location?: {
+    name?: string;
+    address?: string;
+    city?: string;
+    region?: string;
+    country?: string;
+    postalCode?: string;
+    online?: boolean;
+    onlineUrl?: string;
+  };
+  format?: "in-person" | "online" | "hybrid" | string;
+}
+
+const {
+  sectors = [],
+  tools = [],
+  features = [],
+  relatedExperience = [],
+  relatedEducation = [],
+  relatedOrganisations = [],
+  relatedVolunteering = [],
+  relatedAwards = [],
+  relatedCaseStudies = [],
+  relatedProjects = [],
+  relatedInitiatives = [],
+  relatedVideos = [],
+  relatedEvents = [],
+  relatedVideosRich = [],
+  relatedArticles = [],
+  links = {},
+  organiser,
+  coOrganisers = [],
+  speakers = [],
+  hosts = [],
+  location,
+  format,
+} = Astro.props as Props;
+
+// Normalise organiser to array of displayable items
+const organiserList = organiser
+  ? Array.isArray(organiser)
+    ? organiser
+    : [organiser]
+  : [];
+
+const hasEventDetails =
+  organiserList.length > 0 ||
+  coOrganisers.length > 0 ||
+  speakers.length > 0 ||
+  hosts.length > 0 ||
+  format;
+
+const hasLocation =
+  location &&
+  (location.name ||
+    location.address ||
+    location.city ||
+    location.region ||
+    location.country ||
+    location.postalCode ||
+    (location.online && location.onlineUrl));
+
+// Combine legacy and rich video arrays cleanly
+const allRelatedVideos = [...relatedVideos, ...relatedVideosRich];
+---
+
+<aside class="project-sidebar" aria-label="Project sidebar">
+  {hasEventDetails && (
+    <section class="sidebar-block">
+      <h2>Event details</h2>
+
+      {organiserList.length > 0 && (
+        <>
+          <h3 class="sidebar-subheading">Organiser</h3>
+          <ul class="bullet-list">
+            {organiserList.map((org: any) => {
+              const label =
+                typeof org === "string"
+                  ? org
+                  : (org.name ?? org.organisation ?? "Organisation");
+              const href =
+                typeof org === "string"
+                  ? "#"
+                  : (org.website ?? org.url ?? "#");
+
+              return (
+                <li>
+                  {href !== "#" ? (
+                    <a href={href} target="_blank" rel="noreferrer">
+                      {label} <span class="sr-only">(opens in new tab)</span>
+                    </a>
+                  ) : (
+                    <span>{label}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+
+      {coOrganisers.length > 0 && (
+        <>
+          <h3 class="sidebar-subheading">Co‑organisers</h3>
+          <ul class="bullet-list">
+            {coOrganisers.map((org: any) => {
+              const label = org.name ?? org.organisation ?? "Co‑organiser";
+              const href = org.website ?? org.url ?? "#";
+
+              return (
+                <li>
+                  {href !== "#" ? (
+                    <a href={href} target="_blank" rel="noreferrer">
+                      {label} <span class="sr-only">(opens in new tab)</span>
+                    </a>
+                  ) : (
+                    <span>{label}</span>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+
+      {speakers.length > 0 && (
+        <>
+          <h3 class="sidebar-subheading">Speakers</h3>
+          <ul class="bullet-list">
+            {speakers.map((s: string) => (
+              <li>{s}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {hosts.length > 0 && (
+        <>
+          <h3 class="sidebar-subheading">Hosts</h3>
+          <ul class="bullet-list">
+            {hosts.map((h: string) => (
+              <li>{h}</li>
+            ))}
+          </ul>
+        </>
+      )}
+
+      {format && (
+        <>
+          <h3 class="sidebar-subheading">Format</h3>
+          <ul class="bullet-list">
+            <li>
+              {format === "in-person"
+                ? "In person"
+                : format === "online"
+                ? "Online"
+                : format === "hybrid"
+                ? "Hybrid"
+                : format}
+            </li>
+          </ul>
+        </>
+      )}
+    </section>
+  )}
+
+  {hasLocation && (
+    <section class="sidebar-block">
+      <h2>Location</h2>
+      <div class="location-block">
+        {location.name && <div class="location-line">{location.name}</div>}
+        {location.address && <div class="location-line">{location.address}</div>}
+        {location.city && <div class="location-line">{location.city}</div>}
+        {location.region && <div class="location-line">{location.region}</div>}
+        {location.country && <div class="location-line">{location.country}</div>}
+        {location.postalCode && <div class="location-line">{location.postalCode}</div>}
+        {location.online && location.onlineUrl && (
+          <div class="location-line">
+            <a href={location.onlineUrl} target="_blank" rel="noreferrer">
+              Online event <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {sectors.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Sectors</h2>
+      <ul class="chip-list">
+        {sectors.map((sector: string) => {
+          const slug = sector
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-|-$/g, '');
+          return (
+            <li>
+              <a href={`/sectors/${slug}`} style="border: none; padding: 0; background: none;">
+                {sector}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {tools.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Tools</h2>
+      <ul class="chip-list">
+        {tools.map((tool: string) => <li>{tool}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {features.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Features</h2>
+      <ul class="bullet-list">
+        {features.map((feature: string) => <li>{feature}</li>)}
+      </ul>
+    </section>
+  )}
+
+  {relatedExperience.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Experience</h2>
+      <ul class="bullet-list">
+        {relatedExperience.map((item: any) => {
+          const label = item.title ?? item.name ?? item.role ?? "Experience item";
+          const href = item.id
+            ? `https://cv.rjmlaird.co.uk/#${item.id}`
+            : "https://cv.rjmlaird.co.uk/";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedEducation.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Education</h2>
+      <ul class="bullet-list">
+        {relatedEducation.map((item: any) => {
+          const label = item.title ?? item.name ?? item.school ?? "Education item";
+          const href = item.id
+            ? `https://cv.rjmlaird.co.uk/#${item.id}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedVolunteering.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Volunteering</h2>
+      <ul class="bullet-list">
+        {relatedVolunteering.map((item: any) => {
+          const label = item.title ?? item.name ?? item.role ?? "Volunteering";
+          const href = item.id
+            ? `https://cv.rjmlaird.co.uk/#${item.id}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedOrganisations.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Organisations</h2>
+      <ul class="bullet-list">
+        {relatedOrganisations.map((item: any) => {
+          const label = item.title ?? item.name ?? "Organisation";
+          const href = item.id
+            ? `https://cv.rjmlaird.co.uk/#${item.id}`
+            : item.url ?? item.website ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedAwards.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Awards</h2>
+      <ul class="bullet-list">
+        {relatedAwards.map((item: any) => {
+          const label = item.title ?? item.name ?? "Award";
+          const href = item.id
+            ? `https://cv.rjmlaird.co.uk/#${item.id}`
+            : item.url ?? item.website ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedCaseStudies.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Case Studies</h2>
+      <ul class="bullet-list">
+        {relatedCaseStudies.map((item: any) => {
+          const label = item.data?.title ?? item.title ?? item.name ?? "Case Study";
+          const href = item.slug
+            ? `/case-studies/${item.slug}`
+            : item.data?.slug
+            ? `/case-studies/${item.data.slug}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedProjects.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Projects</h2>
+      <ul class="bullet-list">
+        {relatedProjects.map((item: any) => {
+          const label = item.data?.title ?? item.title ?? item.name ?? "Project";
+          const href = item.slug
+            ? `/projects/${item.slug}`
+            : item.data?.slug
+            ? `/projects/${item.data.slug}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedInitiatives.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Initiatives</h2>
+      <ul class="bullet-list">
+        {relatedInitiatives.map((item: any) => {
+          const label = item.data?.title ?? item.title ?? item.name ?? "Initiative";
+          const href = item.slug
+            ? `/initiatives/${item.slug}`
+            : item.data?.slug
+            ? `/initiatives/${item.data.slug}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedEvents.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Events</h2>
+      <ul class="bullet-list">
+        {relatedEvents.map((item: any) => {
+          const label = item.data?.title ?? item.title ?? "Event";
+          const href = item.slug
+            ? `/events/${item.slug}`
+            : item.data?.slug
+            ? `/events/${item.data.slug}`
+            : item.url ?? item.href ?? "#";
+
+          return (
+            <li>
+              <a href={href}>{label}</a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+{allRelatedVideos.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Videos</h2>
+      <ul class="bullet-list">
+        {allRelatedVideos.map((item: any) => {
+          // Check root title, then data?.title, then fallback string/object fields
+          const label = item.title ?? item.data?.title ?? item.name ?? "Video";
+          
+          // Clean youtubeId in case it includes 'v='
+          const rawId = item.youtubeId ?? item.data?.youtubeId;
+          const cleanId = rawId ? rawId.replace(/^v=/, '') : null;
+
+          const href =
+            item.url ??
+            item.data?.url ??
+            (cleanId
+              ? `https://www.youtube.com/watch?v=${cleanId}`
+              : "#");
+
+          return (
+            <li>
+              <a href={href} target="_blank" rel="noreferrer">
+                {label} <span class="sr-only">(opens in new tab)</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {relatedArticles.length > 0 && (
+    <section class="sidebar-block">
+      <h2>Related Articles</h2>
+      <ul class="bullet-list">
+        {relatedArticles.map((item: any) => {
+          const label = item.title ?? "Article";
+          const href = item.url ?? "#";
+
+          return (
+            <li>
+              <a href={href} target="_blank" rel="noreferrer">
+                {label} <span class="sr-only">(opens in new tab)</span>
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  )}
+
+  {(links?.github ||
+    links?.web ||
+    links?.youtube ||
+    links?.demo ||
+    links?.docs ||
+    links?.store ||
+    links?.api ||
+    links?.eventPage ||
+    links?.meetup ||
+    links?.luMa) && (
+    <section class="sidebar-block">
+      <h2>Links</h2>
+      <ul class="link-list">
+        {links?.github && (
+          <li>
+            <a href={links.github} target="_blank" rel="noreferrer">
+              GitHub <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.web && (
+          <li>
+            <a href={links.web} target="_blank" rel="noreferrer">
+              Website <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.demo && (
+          <li>
+            <a href={links.demo} target="_blank" rel="noreferrer">
+              Demo <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.docs && (
+          <li>
+            <a href={links.docs} target="_blank" rel="noreferrer">
+              Docs <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.youtube && (
+          <li>
+            <a href={links.youtube} target="_blank" rel="noreferrer">
+              YouTube <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.store && (
+          <li>
+            <a href={links.store} target="_blank" rel="noreferrer">
+              Store <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.api && (
+          <li>
+            <a href={links.api} target="_blank" rel="noreferrer">
+              API <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.eventPage && (
+          <li>
+            <a href={links.eventPage} target="_blank" rel="noreferrer">
+              Event page <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.meetup && (
+          <li>
+            <a href={links.meetup} target="_blank" rel="noreferrer">
+              Meetup <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+
+        {links?.luMa && (
+          <li>
+            <a href={links.luMa} target="_blank" rel="noreferrer">
+              Lu.ma <span class="sr-only">(opens in new tab)</span>
+            </a>
+          </li>
+        )}
+      </ul>
+    </section>
+  )}
+</aside>
+
+<style>
+  .project-sidebar .sidebar-subheading {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin: 0.6rem 0 0.25rem;
+    color: var(--color-text, inherit);
+  }
+
+  .project-sidebar .location-block {
+    font-size: 0.9rem;
+    line-height: 1.4;
+  }
+
+  .project-sidebar .location-line {
+    margin: 0.15rem 0;
+  }
+
+  .project-sidebar .location-line a {
+    color: inherit;
+    text-decoration: underline;
+  }
+</style>

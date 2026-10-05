@@ -1,0 +1,249 @@
+{
+  "expertise": [
+    {
+      "name": "Brand strategy",
+      "slug": "brand-strategy",
+      "description": "Positioning, messaging, and brand systems that make a brand clearer and more memorable.",
+      "category": "Brand",
+      "priority": 1
+    },
+    {
+      "name": "Personal branding",
+      "slug": "personal-branding",
+      "description": "Building a credible public identity across website, social channels, and media touchpoints.",
+      "category": "Brand",
+      "priority": 2
+    },
+    {
+      "name": "Content strategy",
+      "slug": "content-strategy",
+      "description": "Planning and structuring content to support visibility, authority, and conversion.",
+      "category": "Content",
+      "priority": 3
+    },
+    {
+      "name": "Editorial systems",
+      "slug": "editorial-systems",
+      "description": "Repeatable content workflows, publishing systems, and editorial planning.",
+      "category": "Content",
+      "priority": 4
+    },
+    {
+      "name": "Writing and storytelling",
+      "slug": "writing-storytelling",
+      "description": "Clear, audience-focused communication that turns complex ideas into engaging narratives.",
+      "category": "Content",
+      "priority": 5
+    },
+    {
+      "name": "Editorial design",
+      "slug": "editorial-design",
+      "description": "Layout, structure, and presentation for content-rich pages and publications.",
+      "category": "Design",
+      "priority": 6
+    },
+    {
+      "name": "Information design",
+      "slug": "information-design",
+      "description": "Organizing information so it is easy to understand, scan, and use.",
+      "category": "Design",
+      "priority": 7
+    },
+    {
+      "name": "Visual identity",
+      "slug": "visual-identity",
+      "description": "Typography, color, layout, and brand systems that create a consistent look and feel.",
+      "category": "Design",
+      "priority": 8
+    },
+    {
+      "name": "Media relations",
+      "slug": "media-relations",
+      "description": "Working with journalists, editors, and media teams to shape stories and coverage.",
+      "category": "Media",
+      "priority": 9
+    },
+    {
+      "name": "Press kits",
+      "slug": "press-kits",
+      "description": "Creating media-ready pages and assets including bios, facts, logos, and images.",
+      "category": "Media",
+      "priority": 10
+    },
+    {
+      "name": "Brand guidelines",
+      "slug": "brand-guidelines",
+      "description": "Defining logo, typography, color, imagery, and voice rules for consistent use.",
+      "category": "Media",
+      "priority": 11
+    },
+    {
+      "name": "Website architecture",
+      "slug": "website-architecture",
+      "description": "Planning site structure, page hierarchy, and collection-based content models.",
+      "category": "Web",
+      "priority": 12
+    },
+    {
+      "name": "Astro",
+      "slug": "astro",
+      "description": "Building fast, content-driven websites with Astro and structured content collections.",
+      "category": "Web",
+      "priority": 13
+    },
+    {
+      "name": "Structured data",
+      "slug": "structured-data",
+      "description": "Using schema markup and JSON-LD to help search engines understand identity and content.",
+      "category": "SEO",
+      "priority": 14
+    },
+    {
+      "name": "SEO strategy",
+      "slug": "seo-strategy",
+      "description": "Improving discoverability through search-focused site structure and content planning.",
+      "category": "SEO",
+      "priority": 15
+    },
+    {
+      "name": "Knowledge graphs",
+      "slug": "knowledge-graphs",
+      "description": "Entity-based search and structured identity across search and AI systems.",
+      "category": "SEO",
+      "priority": 16
+    },
+    {
+      "name": "Strategic planning",
+      "slug": "strategic-planning",
+      "description": "Long-term planning for content, brand, and communication priorities.",
+      "category": "Strategy",
+      "priority": 17
+    },
+    {
+      "name": "Audience positioning",
+      "slug": "audience-positioning",
+      "description": "Defining who the work is for and how it should be understood.",
+      "category": "Strategy",
+      "priority": 18
+    },
+    {
+      "name": "Messaging frameworks",
+      "slug": "messaging-frameworks",
+      "description": "Core messages, value propositions, and narrative frameworks for consistent communication.",
+      "category": "Strategy",
+      "priority": 19
+    },
+    {
+      "name": "Space science",
+      "slug": "space-science",
+      "description": "Topics related to space science, space systems, and space-based applications.",
+      "category": "Science",
+      "priority": 20
+    },
+    {
+      "name": "Space communication",
+      "slug": "space-communication",
+      "description": "Communicating space-related ideas, projects, and applications to broad audiences.",
+      "category": "Space",
+      "priority": 21
+    },
+    {
+      "name": "Earth observation",
+      "slug": "earth-observation",
+      "description": "Using satellite data and remote sensing to understand the Earth system.",
+      "category": "Space",
+      "priority": 22
+    },
+    {
+      "name": "Satellite applications",
+      "slug": "satellite-applications",
+      "description": "Practical uses of satellite systems for climate, communications, and monitoring.",
+      "category": "Space",
+      "priority": 23
+    },
+    {
+      "name": "Astronomy",
+      "slug": "astronomy",
+      "description": "Scientific work and communication related to the study of space and celestial objects.",
+      "category": "Science",
+      "priority": 24
+    },
+    {
+      "name": "Science communication",
+      "slug": "science-communication",
+      "description": "Translating technical or scientific ideas into clear, accessible public-facing communication.",
+      "category": "Science",
+      "priority": 25
+    },
+    {
+      "name": "Scientific storytelling",
+      "slug": "scientific-storytelling",
+      "description": "Making scientific ideas understandable and engaging through narrative and structure.",
+      "category": "Science",
+      "priority": 26
+    },
+    {
+      "name": "Climate science",
+      "slug": "climate-science",
+      "description": "Topics and communication around climate systems, evidence, and impacts.",
+      "category": "Climate",
+      "priority": 27
+    },
+    {
+      "name": "Climate communication",
+      "slug": "climate-communication",
+      "description": "Sharing climate-related ideas clearly with audiences outside the field.",
+      "category": "Climate",
+      "priority": 28
+    },
+    {
+      "name": "Climate literacy",
+      "slug": "climate-literacy",
+      "description": "Helping audiences understand climate concepts, risks, and actions.",
+      "category": "Climate",
+      "priority": 29
+    },
+    {
+      "name": "Sustainability",
+      "slug": "sustainability",
+      "description": "Broad sustainability thinking across environmental, social, and operational contexts.",
+      "category": "Sustainability",
+      "priority": 30
+    },
+    {
+      "name": "Sustainable development",
+      "slug": "sustainable-development",
+      "description": "Long-term development approaches that balance people, planet, and performance.",
+      "category": "Sustainability",
+      "priority": 31
+    },
+    {
+      "name": "Environmental communication",
+      "slug": "environmental-communication",
+      "description": "Communicating environmental topics, impacts, and solutions in a clear way.",
+      "category": "Sustainability",
+      "priority": 32
+    },
+    {
+      "name": "Systems thinking",
+      "slug": "systems-thinking",
+      "description": "Connecting complex parts of a problem to improve strategy and decision-making.",
+      "category": "Strategy",
+      "priority": 33
+    },
+    {
+      "name": "Research synthesis",
+      "slug": "research-synthesis",
+      "description": "Turning multiple sources and ideas into a coherent, usable summary.",
+      "category": "Science",
+      "priority": 34
+    },
+    {
+      "name": "Thought leadership",
+      "slug": "thought-leadership",
+      "description": "Creating authoritative, insight-led content that builds trust and visibility.",
+      "category": "Brand",
+      "priority": 35
+    }
+  ]
+}

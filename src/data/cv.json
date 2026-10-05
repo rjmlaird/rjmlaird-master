@@ -1,0 +1,37 @@
+{
+  "complete": false,
+  "legacyUrl": "https://cv.rjmlaird.co.uk",
+  "summary": "Astrophysicist, science communicator and strategist working across space, sustainability and technology. Founder and Director of Green Orbit Digital. Based in Leicester, UK.",
+  "experience": [
+    {
+      "title": "Founder and Director",
+      "org": "Green Orbit Digital (Impact Orbit Collective Ltd)",
+      "dates": "Since October 2023",
+      "summary": "Specialist communications practice for space, sustainability and mission-led organisations.",
+      "url": "https://greenorbit.space"
+    },
+    {
+      "title": "Marketing lead, ESA Business Applications",
+      "org": "HE Space",
+      "dates": "",
+      "summary": "Led marketing for the European Space Agency's Business Applications programme."
+    }
+  ],
+  "education": [
+    {
+      "title": "MPhys (Hons), Physics with Astrophysics",
+      "org": "University of Leicester",
+      "dates": "",
+      "summary": "Includes research experience on cometary nuclei."
+    }
+  ],
+  "credentials": [
+    "Chartered Marketer (CMktr), Chartered Institute of Marketing",
+    "Member of the Institute of Physics (MInstP)",
+    "Member of the Chartered Institute of Public Relations (MCIPR)",
+    "Fellow of the Royal Astronomical Society (FRAS)",
+    "Associate Member of the Association for Project Management (AMAPM)"
+  ],
+  "publications": { "orcid": "https://orcid.org/0000-0002-5992-684X", "listUrl": "/research/publications/" },
+  "skills": ["Strategic communications", "Content and editorial strategy", "Digital strategy and measurement", "Science and sustainability communication", "Astro, TypeScript and Python development"]
+}

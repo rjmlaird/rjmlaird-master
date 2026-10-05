@@ -1,0 +1,146 @@
+---
+import type { CollectionEntry } from "astro:content";
+import PodcastMeta from "./PodcastMeta.astro";
+
+type PodcastData = CollectionEntry<"podcasts">["data"];
+
+interface Props {
+  entry?: CollectionEntry<"podcasts">;
+  episodeIndex?: number;
+  featured?: boolean;
+}
+
+const { entry, episodeIndex = 0, featured = false } = Astro.props as Props;
+const data = (entry?.data ?? {}) as Partial<PodcastData>;
+const episode = data.relatedEpisodes?.[episodeIndex] ?? {};
+
+const title =
+  episode.title ??
+  data.title ??
+  data.podcastTitle ??
+  "Untitled Episode";
+
+const description =
+  episode.description ??
+  episode.summary ??
+  data.description ??
+  data.podcastDescription ??
+  "";
+
+const image = episode.artwork ?? data.heroImage ?? "";
+const href =
+  episode.shareUrl || episode.audioUrl || `/podcasts/${entry?.id ?? ""}/`;
+
+const publishedDate =
+  episode.publishedDate ??
+  data.publishedDate ??
+  data.updatedDate ??
+  null;
+---
+
+<article class:list={["podcast-card", { featured }]}>
+  {image && (
+    <a href={href} class="podcast-card-image-link" aria-label={title}>
+      <img class="podcast-card-image" src={image} alt={title} loading="lazy" />
+    </a>
+  )}
+
+  <div class="body">
+    <h2>
+      <a href={href} class="title-link">{title}</a>
+    </h2>
+
+    {description && <p class="description">{description}</p>}
+
+    <PodcastMeta
+      podcastCategories={data.podcastCategories}
+      tags={data.tags}
+      publishedDate={publishedDate ?? undefined}
+    />
+  </div>
+</article>
+
+<style>
+  .podcast-card {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--color-surface);
+    transition: border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .podcast-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  }
+
+  .podcast-card-image-link {
+    flex: 0 0 280px;
+    display: block;
+    align-self: stretch;
+  }
+
+  .podcast-card-image {
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 1rem 1.1rem;
+  }
+
+  h2 {
+    margin: 0;
+    font-size: 1.1rem;
+    line-height: 1.25;
+  }
+
+  .title-link {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .title-link:hover {
+    color: var(--color-accent);
+  }
+
+  .description {
+    margin: 0;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+  }
+
+  @media (max-width: 720px) {
+    .podcast-card {
+      flex-direction: column;
+    }
+
+    .podcast-card-image-link {
+      flex-basis: auto;
+      width: 100%;
+    }
+
+    .podcast-card-image {
+      aspect-ratio: 16 / 9;
+      height: auto;
+    }
+
+    .body {
+      padding: 0.9rem 1rem 1rem;
+    }
+  }
+</style>

@@ -1,0 +1,196 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { isEvidenceReady, cleanText } from "../lib/content-quality.mjs";
+import selected from "../data/selected-work.json";
+import enquiries from "../data/enquiries.json";
+import { TOPICS } from "../lib/topics";
+
+const resolved = (
+  await Promise.all(
+    selected.items.map(async (item) => {
+      const entries = await getCollection(item.collection as "projects" | "initiatives", ({ data }) => data.draft !== true);
+      const entry = entries.find((e) => (e.data.slug ?? e.id) === item.slug);
+      return entry ? { ...item, entry } : null;
+    })
+  )
+).filter((x): x is NonNullable<typeof x> => x !== null);
+
+const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+const latest = posts[0];
+
+const pathways = [
+  {
+    tone: "teal",
+    title: "Strategy and communication",
+    text: "Positioning, content and digital strategy for organisations that handle technical, scientific or environmental subject matter.",
+    proof: "Led marketing for ESA Business Applications, delivered through HE Space.",
+    href: "/consulting/",
+    cta: "See how I work with organisations",
+  },
+  {
+    tone: "sky",
+    title: "Research and writing",
+    text: "Publications, articles and commentary on space, climate, Earth observation and how science reaches the public.",
+    proof: "MPhys in Astrophysics, including research experience on cometary nuclei.",
+    href: "/research/",
+    cta: "Read the research and writing",
+  },
+  {
+    tone: "violet",
+    title: "Teaching and mentoring",
+    text: "Tutoring, talks, workshops and one-to-one mentoring for students, teams and people changing direction.",
+    proof: "I run Leicester Space Week, a citywide space festival.",
+    href: "/work-with-me/#teaching-and-mentoring",
+    cta: "Explore teaching and mentoring",
+  },
+  {
+    tone: "amber",
+    title: "Digital systems and open work",
+    text: "Websites, data pipelines and small tools, built in the open where I can.",
+    proof: "Code and experiments on GitHub at rjmlaird.",
+    href: "/open-source/",
+    cta: "Browse the lab",
+  },
+];
+---
+
+<Layout
+  title="Ryan Laird — CMktr MInstP"
+  description="Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology. Strategy, writing, teaching and mentoring."
+>
+  <div class="home">
+    <section class="home-hero" aria-labelledby="home-title">
+      <div>
+        <h1 id="home-title">Science, communication and digital strategy for complex ideas.</h1>
+        <p class="lead">
+          I’m Ryan Laird: an astrophysicist, communicator and strategist working across space, sustainability and technology.
+        </p>
+        <p class="support">
+          I help organisations and individuals explain difficult science clearly and accurately, through strategy,
+          writing, teaching and mentoring. Based in Leicester, working across the UK and Europe.
+        </p>
+        <div class="cta-row">
+          <a href="/work-with-me/" class="bp">Work with me</a>
+          <a href="/research/" class="bo">Research and writing</a>
+          <a href="/projects/" class="bo">Selected projects</a>
+        </div>
+      </div>
+      <div class="portrait">
+        <img src="/img/person/ryan-laird.jpg" alt="Portrait of Ryan Laird" width="720" height="900" loading="eager" fetchpriority="high" decoding="async" />
+      </div>
+    </section>
+
+    <section class="cred-strip" aria-label="Credentials">
+      <ul>
+        <li><strong>MPhys</strong> Astrophysics</li>
+        <li><strong>CMktr</strong> Chartered Marketer</li>
+        <li><strong>MInstP</strong> Institute of Physics</li>
+        <li><strong>MCIPR</strong> Chartered Institute of Public Relations</li>
+        <li><strong>Founder and Director</strong> Green Orbit Digital</li>
+      </ul>
+    </section>
+
+    <section class="home-block" aria-labelledby="what-i-do">
+      <h2 id="what-i-do">What I do</h2>
+      <p class="intro">Four connected strands of work. Pick the one that matches what you need.</p>
+      <div class="pathway-grid">
+        {pathways.map((p) => (
+          <article class="pathway" data-tone={p.tone}>
+            <h3>{p.title}</h3>
+            <p>{p.text}</p>
+            <p class="proof"><strong>Evidence:</strong> {p.proof}</p>
+            <a class="go" href={p.href}>{p.cta}</a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section class="home-block" aria-labelledby="selected-work">
+      <h2 id="selected-work">Selected work</h2>
+      <p class="intro">
+        A short selection across space communications, Earth observation and public engagement. Fuller case studies are
+        being added one at a time.
+      </p>
+      <div class="work-grid">
+        {resolved.map(({ entry, sector, year, role, outcome, collection }) => {
+          const summary = outcome || cleanText(entry.data.description);
+          const short = summary.length > 170 ? summary.slice(0, summary.lastIndexOf(" ", 167)) + "…" : summary;
+          const ready = isEvidenceReady(entry.data, entry.body ?? "");
+          return (
+            <a class="work-card" href={`/${collection}/${entry.data.slug ?? entry.id}/`}>
+              <h3>{entry.data.title}</h3>
+              <p class="meta">{[sector, entry.data.client, year].filter(Boolean).join(" · ")}</p>
+              {short && <p>{short}</p>}
+              {role && <p class="role"><strong>My role:</strong> {role}</p>}
+              {!ready && <p class="role">Full case study in preparation.</p>}
+            </a>
+          );
+        })}
+      </div>
+      <div class="cta-row">
+        <a href="/projects/" class="bo">All projects</a>
+      </div>
+    </section>
+
+    <section class="home-block" aria-labelledby="research-writing">
+      <h2 id="research-writing">Research and writing</h2>
+      <p class="intro">Formal publications, public writing and independent analysis, kept clearly separate.</p>
+      <ul class="theme-list">
+        {TOPICS.slice(0, 6).map((t) => (
+          <li><a href={`/writing/?topic=${t.slug}`}>{t.label}</a></li>
+        ))}
+      </ul>
+      {latest && (
+        <p class="prose" style="margin-top:1.5rem">
+          Latest: <a href={`/blog/${latest.data.slug ?? latest.id}/`}>{latest.data.title}</a>
+        </p>
+      )}
+      <div class="cta-row">
+        <a href="/research/" class="bo">Research</a>
+        <a href="/writing/" class="bo">Writing</a>
+      </div>
+    </section>
+
+    <section class="home-block" aria-labelledby="teach-mentor">
+      <h2 id="teach-mentor">Teaching, mentoring and public engagement</h2>
+      <p class="intro">
+        If you want to understand a subject, change direction, or bring a speaker or workshop to your group, start here.
+      </p>
+      <div class="split">
+        <article class="route" data-tone="violet">
+          <h3>Mentoring</h3>
+          <p>One-to-one conversations for early- and mid-career people in space, sustainability, science communication and mission-led digital work.</p>
+          <a class="go" href="/mentoring/">How mentoring works</a>
+        </article>
+        <article class="route" data-tone="violet">
+          <h3>Tutoring, talks and workshops</h3>
+          <p>Physics and astronomy tutoring, guest lectures, and workshops on communicating complex topics, for schools, universities, charities and teams.</p>
+          <a class="go" href="/teaching/">Teaching, tutoring and workshops</a>
+        </article>
+      </div>
+    </section>
+
+    <section class="home-block" aria-labelledby="green-orbit">
+      <h2 id="green-orbit">Green Orbit Digital</h2>
+      <p class="prose">
+        I am also Founder and Director of Green Orbit Digital, a specialist communications practice for space,
+        sustainability and mission-led organisations. Organisation-level projects are delivered through
+        <a href="https://greenorbit.space">Green Orbit Digital</a>; this site is where I write, teach, mentor and share research.
+      </p>
+    </section>
+
+    <section class="route-cta" aria-labelledby="next-step">
+      <h2 id="next-step">Where would you like to start?</h2>
+      <p class="intro">Choose the closest match and I’ll reply with the right next step.</p>
+      <div class="options">
+        {enquiries.types.map((t) => (
+          <a href={`/contact/#${t.id}`}>{t.label}<span>{t.hint}</span></a>
+        ))}
+      </div>
+    </section>
+    <div class="home-end"></div>
+  </div>
+</Layout>

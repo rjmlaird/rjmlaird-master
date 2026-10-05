@@ -1,0 +1,43 @@
+---
+interface Props {
+  title?: string;
+}
+const { title = 'Fact box' } = Astro.props;
+---
+
+<aside class="fact-box">
+  <p class="label">{title}</p>
+  <div class="content">
+    <slot />
+  </div>
+</aside>
+
+<style>
+  .fact-box {
+    margin-block: 1.75rem;
+    padding: 1.1rem 1.3rem;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--color-accent);
+    border-radius: 4px;
+  }
+  .label {
+    margin: 0 0 0.5rem;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+  }
+  .content {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+  .content :global(ul) {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  .content :global(p:last-child) {
+    margin-bottom: 0;
+  }
+</style>

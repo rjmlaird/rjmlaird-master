@@ -1,0 +1,69 @@
+---
+interface Props {
+  id?: string | number;
+  title: string;
+  description: string;
+  category?: string;
+  tags?: string[];
+  link?: string;
+  status?: "active" | "paused" | "completed";
+  variant?: "teal" | "violet" | "coral";
+}
+
+const {
+  id,
+  title,
+  description,
+  category,
+  tags = [],
+  link,
+  status = "active",
+  variant = "teal",
+} = Astro.props;
+
+const safeTags = Array.isArray(tags) ? tags : [];
+const href = link || "#";
+---
+
+<article class={`initiative initiative--${variant}`}>
+  <header class="initiative-header">
+    {id && <span class="initiative-id">{String(id).padStart(2, "0")}</span>}
+
+    <div class="initiative-meta">
+      <h3 class="initiative-title">{title}</h3>
+
+      {category && (
+        <p class="initiative-category">{category}</p>
+      )}
+    </div>
+
+    <span class={`initiative-status initiative-status--${status}`}>
+      {status}
+    </span>
+  </header>
+
+  <div class="initiative-body">
+    <p class="initiative-description">{description}</p>
+
+    {safeTags.length > 0 && (
+      <div class="initiative-tags">
+        {safeTags.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )}
+  </div>
+
+  {link && (
+    <footer class="initiative-footer">
+      <a
+        class="initiative-link"
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        View initiative →
+      </a>
+    </footer>
+  )}
+</article>

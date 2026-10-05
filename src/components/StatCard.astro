@@ -1,0 +1,44 @@
+---
+export interface Props {
+  label: string;
+  value: string | number;
+  note?: string;
+}
+
+const { label, value, note } = Astro.props as Props;
+---
+
+<div class="stat-card">
+  <p class="stat-label">{label}</p>
+  <p class="stat-value">{value}</p>
+  {note && <p class="stat-note">{note}</p>}
+</div>
+
+<style>
+  .stat-card {
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: var(--color-surface);
+    padding: 1.1rem 1.3rem;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+  }
+  .stat-label {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+  .stat-value {
+    margin: 0.4rem 0 0;
+    font-size: 1.9rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+  }
+  .stat-note {
+    margin: 0.5rem 0 0;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--color-text-muted);
+  }
+</style>

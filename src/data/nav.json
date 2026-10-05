@@ -1,0 +1,14 @@
+{
+  "primary": [
+    { "label": "Home", "href": "/" },
+    { "label": "Work with me", "href": "/work-with-me/" },
+    { "label": "Research & writing", "href": "/research/" },
+    { "label": "Projects", "href": "/projects/" },
+    { "label": "About", "href": "/about/" },
+    { "label": "Contact", "href": "/contact/" }
+  ],
+  "utility": [
+    { "label": "CV", "href": "/cv/" },
+    { "label": "Open source", "href": "/open-source/" }
+  ]
+}

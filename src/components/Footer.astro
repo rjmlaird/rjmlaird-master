@@ -1,0 +1,179 @@
+---
+import socials from "../data/socials.json";
+import { Icon } from "astro-icon/components";
+
+const year = new Date().getFullYear();
+const selectedSocials = socials.filter((item) => item.type === "social");
+---
+
+<footer class="footer">
+  <div class="footer__top">
+    <div class="footer__brand">
+      <a class="footer__logo" href="/" aria-label="Home">
+        <a href="/" class="logo">RJM<span>Laird</span></a>
+      </a>
+      <p class="footer__copy">
+        Astrophysicist, science communicator and strategist. Founder and Director of <a href="https://greenorbit.space">Green Orbit Digital</a>.
+      </p>
+
+
+      <ul class="socials__list" role="list">
+        {selectedSocials.map((item) => (
+          <li class="socials__item">
+            <a
+              class={`socials__link socials__link--${item.key}`}
+              href={item.url}
+              aria-label={item.label}
+              target="_blank"
+              rel="noreferrer noopener"
+              title={item.name}
+            >
+              <span class="socials__icon" aria-hidden="true">
+                <Icon name={item.icon} class="socials__svg" />
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
+        </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p>© {year} Ryan J. M. Laird. All rights reserved.</p>
+    <nav class="footer__links" aria-label="Footer"><a href="/work-with-me/">Work with me</a><a href="/cv/">CV</a><a href="/open-source/">Open source</a><a href="/press/">Press</a><a href="/contact/">Contact</a></nav>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding: 2rem 2.5rem;
+    border-top: 1px solid var(--bd);
+    background: var(--ink);
+  }
+
+  .footer__top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 2rem;
+    align-items: start;
+  }
+
+  .footer__brand {
+    display: grid;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  .footer__logo {
+    font-family: var(--D);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: var(--w);
+    text-decoration: none;
+    line-height: 1;
+  }
+
+  .footer__logo span {
+    color: var(--teal);
+  }
+
+  .footer__copy {
+    margin: 0;
+    max-width: 32rem;
+    color: var(--m);
+    line-height: 1.75;
+  }
+
+  .footer__socials {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+  }
+
+  .socials__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .socials__item {
+    display: inline-flex;
+    margin: 0;
+  }
+
+  .footer__bottom {
+    margin-top: 1.75rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--bd);
+    color: var(--m);
+    font-size: 0.75rem;
+  }
+
+  .footer__bottom p {
+    margin: 0;
+  }
+
+  .footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--bd);
+    font-size: 0.8rem;
+    color: var(--m);
+  }
+
+  .footer__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .footer__links a,
+  .footer__copy a {
+    color: var(--m);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .footer__links a:hover,
+  .footer__copy a:hover {
+    color: var(--teal);
+  }
+
+  @media (max-width: 900px) {
+    .footer {
+      padding: 1.75rem 1.25rem;
+    }
+
+    .footer__top {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .footer__socials {
+      justify-content: flex-start;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .footer__copy {
+      max-width: 100%;
+    }
+
+    .socials__list {
+      gap: 0.45rem;
+    }
+
+    .footer__bottom {
+      margin-top: 1.25rem;
+    }
+  }
+</style>

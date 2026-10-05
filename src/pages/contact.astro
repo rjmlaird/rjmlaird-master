@@ -1,0 +1,39 @@
+---
+import Layout from "../layouts/Layout.astro";
+import enquiries from "../data/enquiries.json";
+
+const mailto = (t: (typeof enquiries.types)[number]) =>
+  `mailto:${enquiries.email}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(t.body)}`;
+---
+
+<Layout title="Contact" description="Contact Ryan Laird about communications projects, mentoring, teaching and speaking, or research and editorial collaboration.">
+  <div class="wrap page">
+    <header class="page-head">
+      <h1>Contact</h1>
+      <p class="lead">
+        Pick the option that matches your enquiry. Each opens an email with a few prompts so I have what I need to reply
+        usefully. I aim to respond within a few working days.
+      </p>
+    </header>
+
+    <div class="route-grid">
+      {enquiries.types.map((t, i) => (
+        <article class="route" id={t.id} data-tone={["teal", "violet", "sky", "amber"][i]}>
+          <h3>{t.label}</h3>
+          <p>{t.hint}.</p>
+          <a class="go" href={mailto(t)}>Email about this</a>
+        </article>
+      ))}
+    </div>
+
+    <section class="block">
+      <h2>Other ways to reach me</h2>
+      <ul class="plain-list">
+        <li>Email: <a class="link" href={`mailto:${enquiries.email}`}>{enquiries.email}</a></li>
+        <li>Book a short discovery call: <a class="link" href={enquiries.calUrl} rel="noopener">cal.com/rjmlaird/discovery</a></li>
+        <li>Organisation-level communications projects: <a class="link" href="https://greenorbit.space">Green Orbit Digital</a></li>
+        <li>Press and media: <a class="link" href="/press/">press kit</a></li>
+      </ul>
+    </section>
+  </div>
+</Layout>
