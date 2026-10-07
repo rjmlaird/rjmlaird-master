@@ -1,0 +1,51 @@
+---
+// Wraps the shared rjmlaird layout (nav, footer, SEO) and adds the tuition sub-navigation.
+import Layout from '../../layouts/Layout.astro';
+import '../styles/tutoring.css';
+import { site } from '../data/site';
+import { policyLinks } from '../data/policy-links';
+
+interface Props { title?: string; description?: string; }
+const { title, description = site.description } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  { href: '/tutoring/subjects/physics/', label: 'Physics' },
+  { href: '/tutoring/subjects/astronomy/', label: 'Astronomy' },
+  { href: '/tutoring/levels/gcse/', label: 'GCSE' },
+  { href: '/tutoring/levels/a-level/', label: 'A-level' },
+  { href: '/tutoring/approach/how-tuition-works/', label: 'How it works' },
+  { href: '/tutoring/pricing/', label: 'Pricing' },
+  { href: '/tutoring/faq/', label: 'FAQ' },
+  { href: '/tutoring/book/', label: 'Book' },
+];
+---
+<!-- noindex until prices, policies and safeguarding are finalised (see the launch checklist in README) -->
+<Layout title={title ? `${title} · Tuition` : 'Physics and astronomy tuition'} description={description} noindex={true}>
+  <div class="wrap page">
+    <nav class="tt-subnav" aria-label="Tuition sections">
+      <a class="tt-subnav-home" href="/tutoring/" aria-current={path === '/tutoring/' ? 'page' : undefined}>{site.name}</a>
+      <ul>{nav.map((n) => <li><a href={n.href} aria-current={path === n.href ? 'page' : undefined}>{n.label}</a></li>)}</ul>
+    </nav>
+    <div class="tt">
+      <slot />
+      <footer class="tt-foot">
+        <ul>
+          <li><a href="/tutoring/parents-and-carers/">Parents and carers</a></li>
+          <li><a href="/tutoring/about/">About Ryan</a></li>
+          <li><a href="/tutoring/contact/">Contact</a></li>
+          {policyLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      </footer>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .tt-subnav{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;margin-bottom:1.25rem;font-size:.9rem}
+  .tt-subnav ul{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none}
+  .tt-subnav a{color:var(--mb);text-decoration:none}
+  .tt-subnav a:hover,.tt-subnav a[aria-current=page]{color:var(--teal)}
+  .tt-subnav-home{font-family:var(--font-display);font-weight:700;color:var(--w)!important}
+  .tt-foot{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--rule);font-family:var(--sans);font-size:.88rem}
+  .tt-foot ul{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;list-style:none;padding:0;margin:0}
+</style>

@@ -1,0 +1,22 @@
+---
+import PageLayout from '../../research/layouts/PageLayout.astro';
+import { getProjects, fmt } from '../../research/lib/content';
+import { licences } from '../../research/data/licences';
+const projects = await getProjects();
+const rows = projects.flatMap((p) => p.data.dataSources.map((s) => ({ ...s, pid: p.id, ptitle: p.data.title })));
+---
+<PageLayout title="Data" lede="Sources, licences, ethics and reproducibility across projects." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Data' }]}>
+  <h2 id="sources">Data sources</h2>
+  {rows.length === 0 ? <p class="muted">No sources finalised yet.</p> : (
+    <div class="table-scroll"><table>
+      <thead><tr><th scope="col">Source</th><th scope="col">Project</th><th scope="col">Licence</th><th scope="col">Accessed</th></tr></thead>
+      <tbody>{rows.map((r) => <tr><td>{r.url ? <a href={r.url}>{r.name}</a> : r.name}</td><td><a href={`/research/projects/${r.pid}/`}>{r.ptitle}</a></td><td>{r.licence ?? 'To be confirmed'}</td><td>{r.accessedAt ? fmt(r.accessedAt) : 'Not yet'}</td></tr>)}</tbody>
+    </table></div>
+  )}
+  <h2 id="licences">Licences</h2>
+  <ul>{licences.map((l) => <li><strong>{l.name}.</strong> {l.use} {l.url && <a href={l.url}>Licence text</a>}</li>)}</ul>
+  <h2 id="ethics">Ethics</h2>
+  <p class="prose">Projects use open or public data and do not involve personal data. If that changes, the project page will say what is collected, why, and how it is protected.</p>
+  <h2 id="reproducibility">Reproducibility</h2>
+  <p class="prose">Each project records data access dates, tools and steps. Where possible, environments are pinned and notebooks run from top to bottom. See <a href="/research/methods/research-reproducibility/">research reproducibility</a>.</p>
+</PageLayout>

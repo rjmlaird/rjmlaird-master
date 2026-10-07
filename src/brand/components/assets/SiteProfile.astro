@@ -1,0 +1,33 @@
+---
+import { getCollection } from 'astro:content';
+import type { SiteProfile } from '../../lib/schemas';
+import { siteUrl, url } from '../../lib/urls';
+interface Props { profile: SiteProfile }
+const { profile: p } = Astro.props;
+const all = await getCollection('brandSites');
+const related = all.filter((s) => p.relatedSites.includes(s.data.id));
+---
+<div class="profile" data-site={p.id}>
+  <dl>
+    <dt>Address</dt><dd><a href={siteUrl(p.host)}>{p.host}</a></dd>
+    <dt>Purpose</dt><dd>{p.purpose}</dd>
+    <dt>Audience</dt><dd>{p.audience}</dd>
+    <dt>Voice</dt><dd>{p.voice}</dd>
+    <dt>Visual</dt><dd>{p.visual}</dd>
+    <dt>Main actions</dt><dd>{p.actions.join(', ')}</dd>
+    <dt>Accent</dt><dd><i class="dot" style={`background:var(--color-site-${p.id})`}></i><code>--color-site-{p.id}</code></dd>
+  </dl>
+</div>
+<div class="two" style="margin-top:0.75rem">
+  <div class="do"><b>Approved content</b><ul>{p.allowedContent.map((x) => <li>{x}</li>)}</ul></div>
+  <div class="dont"><b>Restricted content</b><ul>{p.restrictedContent.map((x) => <li>{x}</li>)}</ul></div>
+</div>
+<h2>Set the accent</h2>
+<pre><code>{`<html data-site="${p.id}">`}</code></pre>
+<p>Use <code>var(--color-accent-site)</code> for highlights and borders. Text, links and buttons keep the shared tokens.</p>
+{related.length > 0 && (
+  <>
+    <h2>Related sites</h2>
+    <ul>{related.map((s) => <li><a href={url(`sites/${s.id}`)}>{s.data.name}</a>, {s.data.purpose}</li>)}</ul>
+  </>
+)}

@@ -1,0 +1,29 @@
+---
+title: Colour tokens
+description: Primitive, semantic and component colour tokens, with light and dark values.
+order: 1
+status: review
+lastReviewed: 2026-09-30
+relatedPages: [identity/colour]
+---
+import TokenTable from '@brand/components/tokens/TokenTable.astro';
+
+## Semantic
+
+<TokenTable prefix="color." layer="semantic" swatches />
+
+## Primitives
+
+<TokenTable prefix="color." layer="primitive" swatches />
+
+## Use
+
+```css
+@import '@rjmlaird/brand-tokens/tokens.css';
+
+.note {
+  color: var(--color-text-muted);
+  background: var(--color-background-surface);
+  border: 1px solid var(--color-border-default);
+}
+```

@@ -1,0 +1,101 @@
+[
+  {
+    "id": "main", "order": 1, "name": "Main site", "host": "rjmlaird.co.uk",
+    "purpose": "Professional identity, services, selected work and contact.",
+    "audience": "Visitors, clients and collaborators",
+    "voice": "Calm, credible, editorial",
+    "visual": "Calm, credible, editorial. Deep blue accent.",
+    "actions": ["Book time", "Get in touch"],
+    "allowedContent": ["Services", "Selected work", "Contact details"],
+    "restrictedContent": ["Full case studies (link to portfolio)", "Long-form photography (link to images)"],
+    "relatedSites": ["booking", "portfolio"]
+  },
+  {
+    "id": "astro", "order": 2, "name": "Astro", "host": "astro.rjmlaird.co.uk",
+    "purpose": "Observing, astrophotography and practical astronomy.",
+    "audience": "Hobbyists and beginners",
+    "voice": "Practical, warm, observational",
+    "visual": "Practical, warm, observational. Moonlit blue and amber accent.",
+    "actions": ["Read a guide", "Join a session"],
+    "allowedContent": ["Observing guides", "Astrophotography write-ups", "Equipment notes"],
+    "restrictedContent": ["Client work", "Sector commentary (link to space)"],
+    "relatedSites": ["space", "images"]
+  },
+  {
+    "id": "space", "order": 3, "name": "Space", "host": "space.rjmlaird.co.uk",
+    "purpose": "Space science, missions, Earth observation and sustainability.",
+    "audience": "Educators, industry and curious readers",
+    "voice": "Technical, cosmic, evidence-led",
+    "visual": "Technical, cosmic, evidence-led. Signal blue and violet accent.",
+    "actions": ["Read an explainer", "Invite a talk"],
+    "allowedContent": ["Explainers", "Mission and sector analysis", "Sustainability notes"],
+    "restrictedContent": ["Unsourced claims", "Personal observing logs (link to astro)"],
+    "relatedSites": ["research", "astro"]
+  },
+  {
+    "id": "portfolio", "order": 4, "name": "Portfolio", "host": "portfolio.rjmlaird.co.uk",
+    "purpose": "Finished visual case studies and selected work.",
+    "audience": "Commissioners and peers",
+    "voice": "Visual, expressive, project-led",
+    "visual": "Visual, expressive, project-led. Each project may set its own accent.",
+    "actions": ["View a case study"],
+    "allowedContent": ["Finished case studies", "Approved project images"],
+    "restrictedContent": ["Work without client approval", "Work in progress (link to labs)"],
+    "relatedSites": ["main", "images"]
+  },
+  {
+    "id": "research", "order": 5, "name": "Research", "host": "research.rjmlaird.co.uk",
+    "purpose": "Methods, data, research notes and reproducible projects.",
+    "audience": "Researchers and analysts",
+    "voice": "Methodical, precise, academic",
+    "visual": "Methodical, precise, academic. Teal and graphite accent.",
+    "actions": ["Read a note", "Reuse the data"],
+    "allowedContent": ["Research notes", "Datasets with licences", "Method write-ups"],
+    "restrictedContent": ["Results without methods", "Data without a stated licence"],
+    "relatedSites": ["space", "labs"]
+  },
+  {
+    "id": "tutoring", "order": 6, "name": "Tutoring", "host": "tutoring.rjmlaird.co.uk",
+    "purpose": "Teaching, learning and curriculum support.",
+    "audience": "Students and parents",
+    "voice": "Clear, supportive, friendly",
+    "visual": "Clear, supportive, friendly. Green and blue accent.",
+    "actions": ["Book a lesson"],
+    "allowedContent": ["Lesson information", "Learning resources", "Availability"],
+    "restrictedContent": ["Student names or images", "Guaranteed-outcome claims"],
+    "relatedSites": ["booking", "main"]
+  },
+  {
+    "id": "booking", "order": 7, "name": "Booking", "host": "booking.rjmlaird.co.uk",
+    "purpose": "Scheduling, payment and service conversion.",
+    "audience": "Ready-to-book clients",
+    "voice": "Minimal, transactional, reassuring",
+    "visual": "Minimal, transactional, reassuring. Uses the main-site blue.",
+    "actions": ["Book or enquire"],
+    "allowedContent": ["Services and prices", "Scheduling", "Payment and terms"],
+    "restrictedContent": ["Editorial content", "Promotional banners"],
+    "relatedSites": ["main", "tutoring"]
+  },
+  {
+    "id": "images", "order": 8, "name": "Images", "host": "images.rjmlaird.co.uk",
+    "purpose": "Public photography and visual archive.",
+    "audience": "Photography and astronomy fans",
+    "voice": "Quiet, immersive, image-led",
+    "visual": "Quiet, immersive, image-led. Warm off-white and charcoal.",
+    "actions": ["Browse", "Credit and licence"],
+    "allowedContent": ["Approved photography", "Captions and credits"],
+    "restrictedContent": ["Unlicensed images", "Images of identifiable people without consent"],
+    "relatedSites": ["astro", "portfolio"]
+  },
+  {
+    "id": "labs", "order": 9, "name": "Labs", "host": "labs.rjmlaird.co.uk",
+    "purpose": "Experiments, prototypes and work in progress.",
+    "audience": "Developers and the curious",
+    "voice": "Experimental, technical, playful",
+    "visual": "Experimental, technical, playful. High-signal accent, still using the shared type and spacing.",
+    "actions": ["Try a prototype"],
+    "allowedContent": ["Prototypes", "Experiments", "Build notes"],
+    "restrictedContent": ["Client work", "Anything presented as finished"],
+    "relatedSites": ["research", "portfolio"]
+  }
+]

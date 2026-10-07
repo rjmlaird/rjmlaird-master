@@ -1,0 +1,44 @@
+---
+// Wraps the shared rjmlaird layout (nav, footer, SEO) and adds the research section sub-navigation.
+import Layout from '../../layouts/Layout.astro';
+import '../styles/research.css';
+import { site } from '../data/site';
+
+interface Props { title?: string; description?: string; noindex?: boolean; schema?: object[]; }
+const { title, description = site.description, noindex = true, schema = [] } = Astro.props;
+const path = Astro.url.pathname;
+const nav = [
+  ['/research/projects/', 'Projects'], ['/research/themes/', 'Themes'], ['/research/methods/', 'Methods'],
+  ['/research/outputs/', 'Outputs'], ['/research/notebooks/', 'Notebooks'], ['/research/notes/', 'Notes'],
+  ['/research/data/', 'Data'],
+];
+const footer = [
+  ['/research/policy/', 'Research policy'], ['/research/data-policy/', 'Data policy'],
+  ['/research/accessibility/', 'Accessibility'], ['/research/changelog/', 'Changelog'],
+];
+---
+<Layout title={title ? `${title} · Research` : 'Research lab'} description={description} noindex={noindex} jsonLd={schema as any}>
+  <div class="wrap page">
+    <nav class="rs-subnav" aria-label="Research sections">
+      <a class="rs-subnav-home" href="/research/lab/" aria-current={path === '/research/lab/' ? 'page' : undefined}>Research lab</a>
+      <ul>{nav.map(([h, l]) => <li><a href={h} aria-current={path.startsWith(h) ? 'page' : undefined}>{l}</a></li>)}</ul>
+    </nav>
+    <div class="rs">
+      <slot />
+      <footer class="rs-foot">
+        <ul>{footer.map(([h, l]) => <li><a href={h}>{l}</a></li>)}</ul>
+        <p>{site.independence}</p>
+      </footer>
+    </div>
+  </div>
+</Layout>
+
+<style is:global>
+  .rs-subnav{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;margin-bottom:1.25rem;font-size:.9rem}
+  .rs-subnav ul{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none}
+  .rs-subnav a{color:var(--mb);text-decoration:none}
+  .rs-subnav a:hover,.rs-subnav a[aria-current=page]{color:var(--teal)}
+  .rs-subnav-home{font-family:var(--font-display);font-weight:700;color:var(--w)!important}
+  .rs-foot{margin-top:3rem;padding-top:1.25rem;border-top:1px solid var(--rule);font-family:var(--sans);font-size:.88rem;color:var(--ink-soft)}
+  .rs-foot ul{display:flex;flex-wrap:wrap;gap:.3rem 1.2rem;list-style:none;padding:0;margin:0 0 .75rem}
+</style>

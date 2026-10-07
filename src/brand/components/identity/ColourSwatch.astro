@@ -1,0 +1,8 @@
+---
+interface Props { name: string; value: string; note?: string }
+const { name, value, note } = Astro.props;
+---
+<button class="sw" type="button" data-copy={value}>
+  <i style={`background:${value}`}></i>
+  <span>{name}<small>{value}{note ? ` · ${note}` : ''}</small></span>
+</button>

@@ -1,0 +1,10 @@
+---
+import PageLayout from '../../tutoring/layouts/PageLayout.astro';
+import SessionCard from '../../tutoring/components/SessionCard.astro';
+import { sessions } from '../../tutoring/data/sessions';
+---
+<PageLayout title="Pricing and session types" lede="Pick the session that fits, or start with a free consultation.">
+  <p class="notice draft">Prices are not set yet. Add them in <code>src/data/sessions.ts</code>.</p>
+  <div class="grid">{sessions.map((s) => <SessionCard session={s} />)}</div>
+  <p>Payment is taken when you book. See the <a href="/tutoring/cancellations/">cancellation policy</a> for changes and refunds.</p>
+</PageLayout>

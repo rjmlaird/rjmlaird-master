@@ -1,0 +1,10 @@
+---
+import PageLayout from '../../../research/layouts/PageLayout.astro';
+import ProjectCard from '../../../research/components/ProjectCard.astro';
+import { getProjects } from '../../../research/lib/content';
+const wanted = ['in-progress', 'idea'];
+const projects = (await getProjects()).filter((p) => wanted.includes(p.data.status));
+---
+<PageLayout title="Active projects" lede="Projects that are in progress or planned." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Projects', href: '/research/projects/' }, { label: 'Active projects' }]}>
+  {projects.length === 0 ? <p class="muted">No projects here yet.</p> : <div class="grid">{projects.map((p) => <ProjectCard project={p} />)}</div>}
+</PageLayout>

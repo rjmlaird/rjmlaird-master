@@ -1,0 +1,130 @@
+{
+  "title": "ADHD-informed coaching – Ryan Laird",
+  "hub": "/coaching/",
+  "base": "/coaching/",
+  "nav": [
+    {
+      "label": "Home",
+      "href": "/coaching/"
+    },
+    {
+      "label": "About",
+      "children": [
+        {
+          "label": "Approach",
+          "href": "/coaching/about/approach/"
+        },
+        {
+          "label": "Evidence",
+          "href": "/coaching/about/evidence/"
+        },
+        {
+          "label": "FAQ",
+          "href": "/coaching/about/faq/"
+        }
+      ]
+    },
+    {
+      "label": "Services",
+      "children": [
+        {
+          "label": "1-to-1 coaching",
+          "href": "/coaching/services/1-to-1-coaching/"
+        },
+        {
+          "label": "Group coaching",
+          "href": "/coaching/services/group-coaching/"
+        },
+        {
+          "label": "Workshops",
+          "href": "/coaching/services/workshops/"
+        }
+      ]
+    },
+    {
+      "label": "How it works",
+      "children": [
+        {
+          "label": "First steps",
+          "href": "/coaching/how-it-works/first-steps/"
+        },
+        {
+          "label": "Session structure",
+          "href": "/coaching/how-it-works/session-structure/"
+        },
+        {
+          "label": "Confidentiality",
+          "href": "/coaching/how-it-works/confidentiality/"
+        }
+      ]
+    },
+    {
+      "label": "Methods",
+      "children": [
+        {
+          "label": "Goal setting",
+          "href": "/coaching/methods/goal-setting/"
+        },
+        {
+          "label": "Executive function",
+          "href": "/coaching/methods/executive-function/"
+        },
+        {
+          "label": "Environment design",
+          "href": "/coaching/methods/environment-design/"
+        },
+        {
+          "label": "Tools",
+          "href": "/coaching/methods/tools/"
+        }
+      ]
+    },
+    {
+      "label": "Resources",
+      "children": [
+        {
+          "label": "Getting started",
+          "href": "/coaching/resources/getting-started/"
+        },
+        {
+          "label": "Worksheets",
+          "href": "/coaching/resources/worksheets/"
+        },
+        {
+          "label": "Guides",
+          "href": "/coaching/resources/guides/"
+        },
+        {
+          "label": "Reading list",
+          "href": "/coaching/resources/reading-list/"
+        }
+      ]
+    },
+    {
+      "label": "Stories",
+      "children": [
+        {
+          "label": "Client stories",
+          "href": "/coaching/stories/client-stories/"
+        },
+        {
+          "label": "Coach reflections",
+          "href": "/coaching/stories/coach-reflections/"
+        }
+      ]
+    },
+    {
+      "label": "Contact",
+      "children": [
+        {
+          "label": "Enquiry",
+          "href": "/coaching/contact/enquiry/"
+        },
+        {
+          "label": "For organisations",
+          "href": "/coaching/contact/for-organisations/"
+        }
+      ]
+    }
+  ]
+}

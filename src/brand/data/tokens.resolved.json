@@ -1,0 +1,531 @@
+{
+  "tokens": [
+    {
+      "name": "color.blue.400",
+      "cssVar": "--color-blue-400",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#3B7DD8"
+    },
+    {
+      "name": "color.blue.500",
+      "cssVar": "--color-blue-500",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#4B9CFF"
+    },
+    {
+      "name": "color.blue.700",
+      "cssVar": "--color-blue-700",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#1D4E89"
+    },
+    {
+      "name": "color.blue.900",
+      "cssVar": "--color-blue-900",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#0B1B35"
+    },
+    {
+      "name": "color.neutral.0",
+      "cssVar": "--color-neutral-0",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#FFFFFF"
+    },
+    {
+      "name": "color.neutral.50",
+      "cssVar": "--color-neutral-50",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#F7F4ED"
+    },
+    {
+      "name": "color.neutral.200",
+      "cssVar": "--color-neutral-200",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#D9D4C7"
+    },
+    {
+      "name": "color.neutral.300",
+      "cssVar": "--color-neutral-300",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#B4C0CF"
+    },
+    {
+      "name": "color.neutral.700",
+      "cssVar": "--color-neutral-700",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#4A5568"
+    },
+    {
+      "name": "color.neutral.800",
+      "cssVar": "--color-neutral-800",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#22304A"
+    },
+    {
+      "name": "color.neutral.900",
+      "cssVar": "--color-neutral-900",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#111A2A"
+    },
+    {
+      "name": "color.neutral.950",
+      "cssVar": "--color-neutral-950",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#0A0F1A"
+    },
+    {
+      "name": "color.status.positive",
+      "cssVar": "--color-status-positive",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#3FA76A"
+    },
+    {
+      "name": "color.status.negative",
+      "cssVar": "--color-status-negative",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#E5626F"
+    },
+    {
+      "name": "color.site.main",
+      "cssVar": "--color-site-main",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#3B7DD8"
+    },
+    {
+      "name": "color.site.astro",
+      "cssVar": "--color-site-astro",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#E0A030"
+    },
+    {
+      "name": "color.site.space",
+      "cssVar": "--color-site-space",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#8B7CF6"
+    },
+    {
+      "name": "color.site.portfolio",
+      "cssVar": "--color-site-portfolio",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#E5626F"
+    },
+    {
+      "name": "color.site.research",
+      "cssVar": "--color-site-research",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#2AA79B"
+    },
+    {
+      "name": "color.site.tutoring",
+      "cssVar": "--color-site-tutoring",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#3FA76A"
+    },
+    {
+      "name": "color.site.booking",
+      "cssVar": "--color-site-booking",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#3B7DD8",
+      "alias": "color.site.main"
+    },
+    {
+      "name": "color.site.images",
+      "cssVar": "--color-site-images",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#C9BFA8"
+    },
+    {
+      "name": "color.site.labs",
+      "cssVar": "--color-site-labs",
+      "type": "color",
+      "layer": "primitive",
+      "value": "#F0C419"
+    },
+    {
+      "name": "space.1",
+      "cssVar": "--space-1",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.25rem"
+    },
+    {
+      "name": "space.2",
+      "cssVar": "--space-2",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.5rem"
+    },
+    {
+      "name": "space.3",
+      "cssVar": "--space-3",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.75rem"
+    },
+    {
+      "name": "space.4",
+      "cssVar": "--space-4",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "1rem"
+    },
+    {
+      "name": "space.6",
+      "cssVar": "--space-6",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "1.5rem"
+    },
+    {
+      "name": "space.8",
+      "cssVar": "--space-8",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "2rem"
+    },
+    {
+      "name": "space.12",
+      "cssVar": "--space-12",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "3rem"
+    },
+    {
+      "name": "space.16",
+      "cssVar": "--space-16",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "4rem"
+    },
+    {
+      "name": "font.family.sans",
+      "cssVar": "--font-family-sans",
+      "type": "fontFamily",
+      "layer": "primitive",
+      "value": [
+        "system-ui",
+        "-apple-system",
+        "Segoe UI",
+        "Roboto",
+        "sans-serif"
+      ]
+    },
+    {
+      "name": "font.family.mono",
+      "cssVar": "--font-family-mono",
+      "type": "fontFamily",
+      "layer": "primitive",
+      "value": [
+        "ui-monospace",
+        "Menlo",
+        "Consolas",
+        "monospace"
+      ]
+    },
+    {
+      "name": "font.weight.regular",
+      "cssVar": "--font-weight-regular",
+      "type": "fontWeight",
+      "layer": "primitive",
+      "value": 400
+    },
+    {
+      "name": "font.weight.semibold",
+      "cssVar": "--font-weight-semibold",
+      "type": "fontWeight",
+      "layer": "primitive",
+      "value": 600
+    },
+    {
+      "name": "font.weight.bold",
+      "cssVar": "--font-weight-bold",
+      "type": "fontWeight",
+      "layer": "primitive",
+      "value": 800
+    },
+    {
+      "name": "font.size.0",
+      "cssVar": "--font-size-0",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "1rem"
+    },
+    {
+      "name": "font.size.1",
+      "cssVar": "--font-size-1",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "1.25rem"
+    },
+    {
+      "name": "font.size.2",
+      "cssVar": "--font-size-2",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "1.5rem"
+    },
+    {
+      "name": "font.size.3",
+      "cssVar": "--font-size-3",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "2rem"
+    },
+    {
+      "name": "font.size.4",
+      "cssVar": "--font-size-4",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "3rem"
+    },
+    {
+      "name": "font.size.small",
+      "cssVar": "--font-size-small",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.875rem"
+    },
+    {
+      "name": "font.leading.tight",
+      "cssVar": "--font-leading-tight",
+      "type": "number",
+      "layer": "primitive",
+      "value": 1.15
+    },
+    {
+      "name": "font.leading.body",
+      "cssVar": "--font-leading-body",
+      "type": "number",
+      "layer": "primitive",
+      "value": 1.6
+    },
+    {
+      "name": "radius.sm",
+      "cssVar": "--radius-sm",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.5rem"
+    },
+    {
+      "name": "radius.md",
+      "cssVar": "--radius-md",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "0.75rem"
+    },
+    {
+      "name": "radius.pill",
+      "cssVar": "--radius-pill",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "999px"
+    },
+    {
+      "name": "layout.width.content",
+      "cssVar": "--layout-width-content",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "42rem"
+    },
+    {
+      "name": "layout.width.page",
+      "cssVar": "--layout-width-page",
+      "type": "dimension",
+      "layer": "primitive",
+      "value": "70rem"
+    },
+    {
+      "name": "color.background.page",
+      "cssVar": "--color-background-page",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#F7F4ED",
+      "alias": "color.neutral.50",
+      "dark": "#0A0F1A"
+    },
+    {
+      "name": "color.background.surface",
+      "cssVar": "--color-background-surface",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#FFFFFF",
+      "alias": "color.neutral.0",
+      "dark": "#111A2A"
+    },
+    {
+      "name": "color.text.primary",
+      "cssVar": "--color-text-primary",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#0A0F1A",
+      "alias": "color.neutral.950",
+      "dark": "#F7F4ED"
+    },
+    {
+      "name": "color.text.muted",
+      "cssVar": "--color-text-muted",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#4A5568",
+      "alias": "color.neutral.700",
+      "dark": "#B4C0CF"
+    },
+    {
+      "name": "color.text.link",
+      "cssVar": "--color-text-link",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#1D4E89",
+      "alias": "color.blue.700",
+      "dark": "#4B9CFF"
+    },
+    {
+      "name": "color.border.default",
+      "cssVar": "--color-border-default",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#D9D4C7",
+      "alias": "color.neutral.200",
+      "dark": "#22304A"
+    },
+    {
+      "name": "color.accent.default",
+      "cssVar": "--color-accent-default",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#1D4E89",
+      "alias": "color.blue.700",
+      "dark": "#4B9CFF"
+    },
+    {
+      "name": "color.accent.on",
+      "cssVar": "--color-accent-on",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#FFFFFF",
+      "alias": "color.neutral.0",
+      "dark": "#0A0F1A"
+    },
+    {
+      "name": "color.accent.site",
+      "cssVar": "--color-accent-site",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#3B7DD8",
+      "alias": "color.site.main"
+    },
+    {
+      "name": "color.feedback.positive",
+      "cssVar": "--color-feedback-positive",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#3FA76A",
+      "alias": "color.status.positive"
+    },
+    {
+      "name": "color.feedback.negative",
+      "cssVar": "--color-feedback-negative",
+      "type": "color",
+      "layer": "semantic",
+      "value": "#E5626F",
+      "alias": "color.status.negative"
+    },
+    {
+      "name": "button.background",
+      "cssVar": "--button-background",
+      "type": "color",
+      "layer": "component",
+      "value": "#1D4E89",
+      "alias": "color.accent.default",
+      "dark": "#4B9CFF"
+    },
+    {
+      "name": "button.text",
+      "cssVar": "--button-text",
+      "type": "color",
+      "layer": "component",
+      "value": "#FFFFFF",
+      "alias": "color.accent.on",
+      "dark": "#0A0F1A"
+    },
+    {
+      "name": "button.radius",
+      "cssVar": "--button-radius",
+      "type": "dimension",
+      "layer": "component",
+      "value": "0.5rem",
+      "alias": "radius.sm"
+    },
+    {
+      "name": "button.padding-x",
+      "cssVar": "--button-padding-x",
+      "type": "dimension",
+      "layer": "component",
+      "value": "1rem",
+      "alias": "space.4"
+    },
+    {
+      "name": "button.padding-y",
+      "cssVar": "--button-padding-y",
+      "type": "dimension",
+      "layer": "component",
+      "value": "0.5rem",
+      "alias": "space.2"
+    },
+    {
+      "name": "card.background",
+      "cssVar": "--card-background",
+      "type": "color",
+      "layer": "component",
+      "value": "#FFFFFF",
+      "alias": "color.background.surface",
+      "dark": "#111A2A"
+    },
+    {
+      "name": "card.border",
+      "cssVar": "--card-border",
+      "type": "color",
+      "layer": "component",
+      "value": "#D9D4C7",
+      "alias": "color.border.default",
+      "dark": "#22304A"
+    },
+    {
+      "name": "card.radius",
+      "cssVar": "--card-radius",
+      "type": "dimension",
+      "layer": "component",
+      "value": "0.75rem",
+      "alias": "radius.md"
+    },
+    {
+      "name": "card.padding",
+      "cssVar": "--card-padding",
+      "type": "dimension",
+      "layer": "component",
+      "value": "1rem",
+      "alias": "space.4"
+    }
+  ]
+}

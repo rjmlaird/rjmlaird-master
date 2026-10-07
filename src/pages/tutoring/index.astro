@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../tutoring/layouts/BaseLayout.astro';
+import BookingCTA from '../../tutoring/components/BookingCTA.astro';
+import SubjectCard from '../../tutoring/components/SubjectCard.astro';
+import LevelCard from '../../tutoring/components/LevelCard.astro';
+import SafeguardingNotice from '../../tutoring/components/SafeguardingNotice.astro';
+import { liveSubjects } from '../../tutoring/data/subjects';
+import { levels } from '../../tutoring/data/levels';
+import { site } from '../../tutoring/data/site';
+---
+<BaseLayout>
+  <section class="hero">
+    <div class="wrap">
+      <div>
+        <h1>{site.tagline}</h1>
+        <p class="lede">One-to-one online tuition for students following the UK curriculum, focused on understanding, confidence and problem-solving.</p>
+        <BookingCTA />
+        <p><a href="/tutoring/approach/how-tuition-works/">See how a session works</a></p>
+      </div>
+      <aside class="worked" aria-label="Example of a worked problem with a tutor's note">
+        <h2>Worked example</h2>
+        <p class="q">A satellite orbits 400 km above the Earth's surface. Earth's radius is 6370 km. What is its orbital radius?</p>
+        <p class="step">r = 400 + 6370</p>
+        <p class="step">r = 6770 km</p>
+        <p class="note">Gravity acts from the centre of the Earth, so add the radius. Then convert to metres before using any equation.</p>
+      </aside>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <h2>What I teach</h2>
+    <div class="grid">{liveSubjects.map((s) => <SubjectCard subject={s} />)}</div>
+
+    <h2>Who it's for</h2>
+    <div class="grid">{levels.map((l) => <LevelCard level={l} />)}</div>
+
+    <h2>About your tutor</h2>
+    <div class="prose">
+      <p>I'm Ryan Laird, a Chartered Marketer with an MPhys in Physics with Astrophysics and more than a decade working in the space sector. I teach the way I like to be taught: understand the idea first, then practise until it holds up under exam pressure.</p>
+      <p><a href="/tutoring/about/">More about me</a></p>
+    </div>
+    <SafeguardingNotice />
+  </div>
+</BaseLayout>

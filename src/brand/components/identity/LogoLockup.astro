@@ -1,0 +1,5 @@
+---
+interface Props { size?: string }
+const { size = '2rem' } = Astro.props;
+---
+<div class="mark" style={`font-size:${size}`}>Ryan Laird<span>.</span></div>

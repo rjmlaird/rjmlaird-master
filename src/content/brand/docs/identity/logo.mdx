@@ -1,0 +1,22 @@
+---
+title: Logo
+description: Name treatment and usage rules. The wordmark here is a text placeholder.
+order: 1
+status: draft
+---
+import LogoLockup from '@brand/components/identity/LogoLockup.astro';
+import ComponentPreview from '@brand/components/components/ComponentPreview.astro';
+import DoDont from '@brand/components/components/DoDont.astro';
+
+<ComponentPreview label="Text wordmark placeholder. Replace with the final logo files.">
+  <LogoLockup size="2.5rem" />
+</ComponentPreview>
+
+## Usage
+
+Keep clear space of at least one cap-height on every side. Use the accent colour only for the full stop.
+
+<DoDont
+  do={['Use the supplied files once they exist', 'Keep the name treatment identical on every site']}
+  dont={['Recolour the wordmark per site', 'Stretch, rotate or add effects', 'Place it on low-contrast backgrounds']}
+/>

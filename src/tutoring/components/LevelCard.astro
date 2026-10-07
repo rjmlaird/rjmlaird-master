@@ -1,0 +1,9 @@
+---
+import type { Level } from '../data/levels';
+interface Props { level: Level; }
+const { level } = Astro.props;
+---
+<article class="panel">
+  <h3><a href={`/tutoring/levels/${level.slug}/`}>{level.name}</a></h3>
+  <p>{level.summary}</p>
+</article>

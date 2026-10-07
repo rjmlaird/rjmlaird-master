@@ -1,0 +1,25 @@
+---
+import { display, tokensByPrefix, type ResolvedToken } from '../../lib/tokens';
+interface Props { prefix: string; layer?: ResolvedToken['layer']; swatches?: boolean }
+const { prefix, layer, swatches = false } = Astro.props;
+const rows = tokensByPrefix(prefix, layer);
+const hasDark = rows.some((r) => r.dark !== undefined);
+const isColour = (r: ResolvedToken) => r.type === 'color';
+---
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>Token</th><th>CSS variable</th><th>{hasDark ? 'Light' : 'Value'}</th>{hasDark && <th>Dark</th>}</tr>
+    </thead>
+    <tbody>
+      {rows.map((r) => (
+        <tr>
+          <td><code>{r.name}</code>{r.alias && <small class="alias"> = {r.alias}</small>}</td>
+          <td><code>{r.cssVar}</code></td>
+          <td>{swatches && isColour(r) && <i class="dot" style={`background:${display(r.value)}`}></i>}<code>{display(r.value)}</code></td>
+          {hasDark && <td>{r.dark !== undefined ? <>{swatches && isColour(r) && <i class="dot" style={`background:${display(r.dark)}`}></i>}<code>{display(r.dark)}</code></> : <small>same</small>}</td>}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

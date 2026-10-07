@@ -1,0 +1,22 @@
+---
+title: Buttons and links
+description: When to use a button, a link, and how they behave across sites.
+order: 1
+status: review
+lastReviewed: 2026-09-30
+relatedPages: [tokens/colour]
+---
+import ComponentPreview from '@brand/components/components/ComponentPreview.astro';
+
+<ComponentPreview label="Primary and secondary buttons">
+  <a class="btn" href="#">Book time</a>
+  <a class="btn alt" href="#">Read the guide</a>
+</ComponentPreview>
+
+## Rules
+
+- A button starts an action. A link goes somewhere. Do not style one as the other.
+- Name the result: "Book time", not "Submit".
+- Links inside text are underlined and use the shared link colour on every site.
+- Focus is always visible. Do not remove outlines.
+- Buttons use the `--button-*` tokens. Site accents do not change button colour.

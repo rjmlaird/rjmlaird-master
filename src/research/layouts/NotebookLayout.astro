@@ -1,0 +1,17 @@
+---
+import PageLayout from './PageLayout.astro';
+import { fmt } from '../lib/content';
+interface Props { title: string; summary: string; state: string; area: string; tools: string[]; repositoryUrl?: string; updatedAt: Date; project?: { id: string; title: string }; draft: boolean; }
+const { title, summary, state, area, tools, repositoryUrl, updatedAt, project, draft } = Astro.props;
+---
+<PageLayout title={title} lede={summary} noindex={draft} crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Notebooks', href: '/research/notebooks/' }, { label: title }]}>
+  <dl class="facts">
+    <div><dt>State</dt><dd><span class={`badge ${state}`}>{state}</span></dd></div>
+    <div><dt>Area</dt><dd>{area}</dd></div>
+    <div><dt>Tools</dt><dd>{tools.join(', ') || 'To be confirmed'}</dd></div>
+    <div><dt>Updated</dt><dd>{fmt(updatedAt)}</dd></div>
+    {project && <div><dt>Project</dt><dd><a href={`/research/projects/${project.id}/`}>{project.title}</a></dd></div>}
+    <div><dt>Repository</dt><dd>{repositoryUrl ? <a href={repositoryUrl}>View repository</a> : 'Not yet available'}</dd></div>
+  </dl>
+  <div class="prose"><slot /></div>
+</PageLayout>

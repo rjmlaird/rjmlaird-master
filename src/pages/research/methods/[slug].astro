@@ -1,0 +1,18 @@
+---
+import { render } from 'astro:content';
+import PageLayout from '../../../research/layouts/PageLayout.astro';
+import ProjectCard from '../../../research/components/ProjectCard.astro';
+import { getMethods, getProjects } from '../../../research/lib/content';
+export async function getStaticPaths() {
+  const methods = await getMethods();
+  const projects = await getProjects();
+  return methods.map((method) => ({ params: { slug: method.id }, props: { method, used: projects.filter((p) => p.data.methods.includes(method.id)) } }));
+}
+const { method, used } = Astro.props;
+const { Content } = await render(method);
+---
+<PageLayout title={method.data.title} lede={method.data.summary} noindex={method.data.draft} crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Methods', href: '/research/methods/' }, { label: method.data.title }]}>
+  <div class="prose"><Content /></div>
+  <h2>Projects using this method</h2>
+  {used.length === 0 ? <p class="muted">None yet.</p> : <div class="grid">{used.map((p) => <ProjectCard project={p} />)}</div>}
+</PageLayout>

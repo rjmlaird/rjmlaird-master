@@ -1,0 +1,7 @@
+---
+import PageLayout from '../../research/layouts/PageLayout.astro';
+import { changelog } from '../../research/data/changelog';
+---
+<PageLayout title="Changelog" lede="Changes and corrections to the site." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Changelog' }]}>
+  <ul>{changelog.map((c) => <li><strong>{c.date}.</strong> {c.text}</li>)}</ul>
+</PageLayout>

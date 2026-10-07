@@ -1,0 +1,10 @@
+---
+import { render } from 'astro:content';
+import ResearchNoteLayout from '../../../research/layouts/ResearchNoteLayout.astro';
+import { getNotes } from '../../../research/lib/content';
+export async function getStaticPaths() { return (await getNotes()).map((note) => ({ params: { slug: note.id }, props: { note } })); }
+const { note } = Astro.props;
+const { Content } = await render(note);
+const d = note.data;
+---
+<ResearchNoteLayout title={d.title} summary={d.summary} kind={d.kind} date={d.publishedAt} tags={d.tags} draft={d.draft}><Content /></ResearchNoteLayout>

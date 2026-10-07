@@ -1,0 +1,14 @@
+---
+import { getCollection } from 'astro:content';
+import { url } from '../../lib/urls';
+const sites = (await getCollection('brandSites')).sort((a, b) => a.data.order - b.data.order);
+---
+<div class="grid">
+  {sites.map((s) => (
+    <a class="card site-card" href={url(`sites/${s.id}`)} data-site={s.id}>
+      <h3>{s.data.name}</h3>
+      <p>{s.data.host}</p>
+      <p>{s.data.voice}</p>
+    </a>
+  ))}
+</div>

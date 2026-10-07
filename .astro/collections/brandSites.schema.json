@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "main",
+              "astro",
+              "space",
+              "portfolio",
+              "research",
+              "tutoring",
+              "booking",
+              "images",
+              "labs"
+            ]
+          },
+          "order": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "audience": {
+            "type": "string"
+          },
+          "voice": {
+            "type": "string"
+          },
+          "visual": {
+            "type": "string"
+          },
+          "actions": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedContent": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "restrictedContent": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relatedSites": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "main",
+                "astro",
+                "space",
+                "portfolio",
+                "research",
+                "tutoring",
+                "booking",
+                "images",
+                "labs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "order",
+          "name",
+          "host",
+          "purpose",
+          "audience",
+          "voice",
+          "visual",
+          "actions"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "main",
+              "astro",
+              "space",
+              "portfolio",
+              "research",
+              "tutoring",
+              "booking",
+              "images",
+              "labs"
+            ]
+          },
+          "order": {
+            "type": "number"
+          },
+          "name": {
+            "type": "string"
+          },
+          "host": {
+            "type": "string"
+          },
+          "purpose": {
+            "type": "string"
+          },
+          "audience": {
+            "type": "string"
+          },
+          "voice": {
+            "type": "string"
+          },
+          "visual": {
+            "type": "string"
+          },
+          "actions": {
+            "minItems": 1,
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "allowedContent": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "restrictedContent": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relatedSites": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "main",
+                "astro",
+                "space",
+                "portfolio",
+                "research",
+                "tutoring",
+                "booking",
+                "images",
+                "labs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "order",
+          "name",
+          "host",
+          "purpose",
+          "audience",
+          "voice",
+          "visual",
+          "actions"
+        ]
+      }
+    }
+  ]
+}

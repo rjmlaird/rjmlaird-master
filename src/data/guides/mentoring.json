@@ -1,0 +1,192 @@
+{
+  "title": "Specialist mentoring – Ryan Laird",
+  "hub": "/mentoring/specialist/",
+  "base": "/mentoring/",
+  "nav": [
+    {
+      "label": "Home",
+      "href": "/mentoring/specialist/"
+    },
+    {
+      "label": "About",
+      "children": [
+        {
+          "label": "What is specialist mentoring?",
+          "href": "/mentoring/about/what-is-mentoring/"
+        },
+        {
+          "label": "Who it's for",
+          "href": "/mentoring/about/who-its-for/"
+        },
+        {
+          "label": "Approach",
+          "href": "/mentoring/about/approach/"
+        }
+      ]
+    },
+    {
+      "label": "Support areas",
+      "children": [
+        {
+          "label": "Study skills",
+          "href": "/mentoring/support-areas/study-skills/"
+        },
+        {
+          "label": "Projects and theses",
+          "href": "/mentoring/support-areas/projects-and-theses/"
+        },
+        {
+          "label": "Productivity",
+          "href": "/mentoring/support-areas/productivity/"
+        },
+        {
+          "label": "Confidence and advocacy",
+          "href": "/mentoring/support-areas/confidence-and-advocacy/"
+        }
+      ]
+    },
+    {
+      "label": "How it works",
+      "children": [
+        {
+          "label": "Getting started",
+          "href": "/mentoring/how-it-works/getting-started/"
+        },
+        {
+          "label": "Session structure",
+          "href": "/mentoring/how-it-works/session-structure/"
+        },
+        {
+          "label": "Working with universities",
+          "href": "/mentoring/how-it-works/working-with-universities/"
+        }
+      ]
+    },
+    {
+      "label": "Pathways",
+      "children": [
+        {
+          "label": "Undergraduate",
+          "children": [
+            {
+              "label": "First-year transition",
+              "href": "/mentoring/pathways/undergraduate/first-year-transition/"
+            },
+            {
+              "label": "Managing assessments",
+              "href": "/mentoring/pathways/undergraduate/managing-assessments/"
+            },
+            {
+              "label": "Building sustainable habits",
+              "href": "/mentoring/pathways/undergraduate/building-sustainable-habits/"
+            }
+          ]
+        },
+        {
+          "label": "Postgraduate",
+          "children": [
+            {
+              "label": "Master's survival",
+              "href": "/mentoring/pathways/postgraduate/masters-survival/"
+            },
+            {
+              "label": "Thesis and wellbeing",
+              "href": "/mentoring/pathways/postgraduate/thesis-and-wellbeing/"
+            }
+          ]
+        },
+        {
+          "label": "Early career",
+          "children": [
+            {
+              "label": "First-job overwhelm",
+              "href": "/mentoring/pathways/early-career/first-job-overwhelm/"
+            },
+            {
+              "label": "From student to professional",
+              "href": "/mentoring/pathways/early-career/from-student-to-professional/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Resources",
+      "children": [
+        {
+          "label": "Student guides",
+          "children": [
+            {
+              "label": "Preparing for your first session",
+              "href": "/mentoring/resources/student-guides/preparing-for-mentoring/"
+            },
+            {
+              "label": "Making the most of sessions",
+              "href": "/mentoring/resources/student-guides/making-the-most-of-sessions/"
+            },
+            {
+              "label": "Self-advocacy scripts",
+              "href": "/mentoring/resources/student-guides/self-advocacy-scripts/"
+            }
+          ]
+        },
+        {
+          "label": "Templates",
+          "children": [
+            {
+              "label": "Weekly planner",
+              "href": "/mentoring/resources/templates/weekly-planner/"
+            },
+            {
+              "label": "Assignment breakdown",
+              "href": "/mentoring/resources/templates/assignment-breakdown/"
+            },
+            {
+              "label": "Priority matrix",
+              "href": "/mentoring/resources/templates/priority-matrix/"
+            }
+          ]
+        },
+        {
+          "label": "For referrers",
+          "children": [
+            {
+              "label": "For referrers: overview",
+              "href": "/mentoring/resources/for-referrers/overview/"
+            },
+            {
+              "label": "Referral process",
+              "href": "/mentoring/resources/for-referrers/referral-process/"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "Stories",
+      "children": [
+        {
+          "label": "Student stories",
+          "href": "/mentoring/stories/student-stories/"
+        },
+        {
+          "label": "Mentor reflections",
+          "href": "/mentoring/stories/mentor-reflections/"
+        }
+      ]
+    },
+    {
+      "label": "Contact",
+      "children": [
+        {
+          "label": "Students: enquire or self-refer",
+          "href": "/mentoring/contact/students/"
+        },
+        {
+          "label": "Institutions",
+          "href": "/mentoring/contact/institutions/"
+        }
+      ]
+    }
+  ]
+}

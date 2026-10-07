@@ -1,0 +1,446 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import ProjectCard from "../../components/dev/ProjectsCard.astro";
+
+const DEV_TOKEN = import.meta.env.DEV_TOKEN;
+const GITHUB_USERNAME = "rjmlaird";
+
+const ORGS = [
+  { login: "greenorbitspace", label: "Green Orbit Digital" },
+  { login: "greenorbitdigital", label: "Green Orbit Space" },
+  { login: "greenorbitacademy", label: "Green Orbit Academy" },
+  { login: "impactorbitco", label: "Impact Orbit Creative Group" },
+  { login: "spaceforneuro", label: "Space for Neurodiversity" },
+];
+
+type Card = {
+  id: number;
+  title?: string;
+  excerpt?: string;
+  url?: string;
+  variant?: "teal" | "violet" | "coral";
+  status?: "planned" | "in-progress" | "blocked" | "paused" | "done";
+  phase?: string;
+  outcome?: string;
+  scope?: "personal" | "org";
+  language?: string;
+  organization?: string;
+  account?: string;
+};
+
+let projectError = "";
+let cards: Card[] = [];
+
+const userGraphql = `
+  query($login: String!, $after: String) {
+    user(login: $login) {
+      projectsV2(first: 100, after: $after) {
+        nodes {
+          title
+          shortDescription
+          url
+          repositories(first: 20) {
+            nodes {
+              primaryLanguage {
+                name
+              }
+            }
+          }
+          items(first: 100) {
+            nodes {
+              fieldValueByName(name: "Status") {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                }
+              }
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
+const orgGraphql = `
+  query($orgLogin: String!, $after: String) {
+    organization(login: $orgLogin) {
+      projectsV2(first: 100, after: $after) {
+        nodes {
+          title
+          shortDescription
+          url
+          repositories(first: 20) {
+            nodes {
+              primaryLanguage {
+                name
+              }
+            }
+          }
+          items(first: 100) {
+            nodes {
+              fieldValueByName(name: "Status") {
+                ... on ProjectV2ItemFieldSingleSelectValue {
+                  name
+                }
+              }
+            }
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
+const normalizeStatus = (value?: string): Card["status"] => {
+  const v = (value || "").toLowerCase().trim();
+  if (v.includes("done") || v.includes("complete")) return "done";
+  if (v.includes("block")) return "blocked";
+  if (v.includes("pause")) return "paused";
+  if (v.includes("progress") || v.includes("active") || v.includes("wip")) return "in-progress";
+  if (v.includes("plan") || v.includes("todo") || v.includes("backlog")) return "planned";
+  return "planned";
+};
+
+const buildProjectCard = (
+  project: any,
+  id: number,
+  variant: Card["variant"],
+  phase: string,
+  scope: Card["scope"],
+  organization: string,
+  account: string
+): Card => {
+  const statusValue = (project?.items?.nodes ?? [])
+    .map((node: any) => node?.fieldValueByName?.name)
+    .find(Boolean);
+
+  const language =
+    (project?.repositories?.nodes ?? [])
+      .map((repo: any) => repo?.primaryLanguage?.name)
+      .find(Boolean) || "Project";
+
+  return {
+    id,
+    title: project?.title ?? "Untitled Project",
+    excerpt: project?.shortDescription ?? "",
+    url: project?.url ?? "",
+    outcome: statusValue ? `Status: ${statusValue}` : "No status",
+    variant,
+    status: normalizeStatus(statusValue),
+    phase,
+    scope,
+    language,
+    organization,
+    account,
+  };
+};
+
+async function fetchAllProjects(query: string, variables: Record<string, unknown>, root: "user" | "organization") {
+  const allProjects: any[] = [];
+  let after: string | null = null;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    const response: Response = await fetch("https://api.github.com/graphql", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${DEV_TOKEN}`,
+        "Content-Type": "application/json",
+        "User-Agent": "Astro Projects Page",
+      },
+      body: JSON.stringify({
+        query,
+        variables: { ...variables, after },
+      }),
+    });
+
+    const json: any = await response.json();
+
+    if (!response.ok || json?.errors?.length) {
+      throw new Error(json?.errors?.[0]?.message ?? `GitHub GraphQL request failed (${response.status}).`);
+    }
+
+    const connection: any = root === "user" ? json?.data?.user?.projectsV2 : json?.data?.organization?.projectsV2;
+    allProjects.push(...(connection?.nodes ?? []));
+    hasNextPage = Boolean(connection?.pageInfo?.hasNextPage);
+    after = connection?.pageInfo?.endCursor ?? null;
+  }
+
+  return allProjects;
+}
+
+if (DEV_TOKEN) {
+  try {
+    const personalProjects = await fetchAllProjects(userGraphql, { login: GITHUB_USERNAME }, "user");
+
+    const orgResults = await Promise.all(
+      ORGS.map(async (org, index) => {
+        const projects = await fetchAllProjects(orgGraphql, { orgLogin: org.login }, "organization");
+        return projects.map((project: any, projectIndex: number) =>
+          buildProjectCard(
+            project,
+            index * 1000 + projectIndex + 1,
+            "violet",
+            "Organisation board",
+            "org",
+            org.label,
+            org.label
+          )
+        );
+      })
+    );
+
+    cards = [
+      ...personalProjects.map((project: any, index: number) =>
+        buildProjectCard(
+          project,
+          index + 1,
+          "teal",
+          "Personal board",
+          "personal",
+          "",
+          "Personal"
+        )
+      ),
+      ...orgResults.flat(),
+    ];
+  } catch (err) {
+    projectError = err instanceof Error ? err.message : "Unable to load project data.";
+  }
+} else {
+  projectError = "Missing DEV_TOKEN.";
+}
+
+const organizationList = [...new Set(cards.map((card) => card.organization).filter(Boolean))].sort();
+const languageList = [...new Set(cards.map((card) => card.language).filter(Boolean))].sort();
+const statusList = [...new Set(cards.map((card) => card.status).filter(Boolean))].sort();
+---
+
+<Layout title="Dev projects" description="GitHub Projects boards across personal and organisation accounts, with status and language filters.">
+
+  <div class="wrap page projects-page">
+    <section class="projects-shell">
+      <header class="projects-head">
+        <p class="eyebrow">Projects</p>
+        <h1>Selected work across personal and organisation boards.</h1>
+        <p class="lede">
+          A curated set of projects, with filters for organisation, scope, language, and status.
+        </p>
+
+        {projectError && <p class="project-error">{projectError}</p>}
+
+        <div class="filters" aria-label="Project filters">
+          <label class="filter-field" for="organizationSelect">
+            <span>Organisation</span>
+            <select id="organizationSelect">
+              <option value="all">All organisations</option>
+              <option value="Personal">Personal</option>
+              {organizationList.map((organization) => (
+                <option value={organization}>{organization}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="filter-field" for="statusSelect">
+            <span>Status</span>
+            <select id="statusSelect">
+              <option value="all">All statuses</option>
+              {statusList.map((status) => (
+                <option value={status}>{status}</option>
+              ))}
+            </select>
+          </label>
+
+          <label class="filter-field" for="languageSelect">
+            <span>Language</span>
+            <select id="languageSelect">
+              <option value="all">All languages</option>
+              {languageList.map((language) => (
+                <option value={language}>{language}</option>
+              ))}
+            </select>
+          </label>
+        </div>
+      </header>
+
+      <div class="pg-grid" id="projectGrid">
+        {cards.map((project, index) => (
+          <div
+            class:list={[
+              "publication-item",
+              index % 2 === 0 ? "publication-item--space" : "publication-item--tight",
+            ]}
+            data-organization={project.organization ?? ""}
+            data-scope={project.scope ?? ""}
+            data-language={project.language ?? ""}
+            data-status={project.status ?? ""}
+          >
+            <ProjectCard project={{ ...project, id: project.id ?? index + 1 }} />
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>
+
+<script is:inline>
+  const norm = (s) => (s || "").toLowerCase().trim();
+
+  const organizationSelect = document.getElementById("organizationSelect");
+  const scopeSelect = document.getElementById("scopeSelect");
+  const statusSelect = document.getElementById("statusSelect");
+  const languageSelect = document.getElementById("languageSelect");
+  const items = document.querySelectorAll("#projectGrid .publication-item");
+
+  const applyFilters = () => {
+    const activeOrg = norm(organizationSelect?.value || "all");
+    const activeScope = norm(scopeSelect?.value || "all");
+    const activeStatus = norm(statusSelect?.value || "all");
+    const activeLanguage = norm(languageSelect?.value || "all");
+
+    items.forEach((el) => {
+      const org = norm(el.dataset.organization);
+      const scope = norm(el.dataset.scope);
+      const status = norm(el.dataset.status);
+      const language = norm(el.dataset.language);
+
+      const orgOk = activeOrg === "all" || org === activeOrg;
+      const scopeOk = activeScope === "all" || scope === activeScope;
+      const statusOk = activeStatus === "all" || status === activeStatus;
+      const languageOk = activeLanguage === "all" || language === activeLanguage;
+
+      el.hidden = !(orgOk && scopeOk && statusOk && languageOk);
+    });
+  };
+
+  organizationSelect?.addEventListener("change", applyFilters);
+  scopeSelect?.addEventListener("change", applyFilters);
+  statusSelect?.addEventListener("change", applyFilters);
+  languageSelect?.addEventListener("change", applyFilters);
+  applyFilters();
+</script>
+
+<style>
+  .projects-page {
+    padding-block: 0;
+  }
+
+  .projects-shell {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .projects-head {
+    display: grid;
+    gap: 1rem;
+    max-width: 72rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-size: 0.78rem;
+    opacity: 0.72;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(2rem, 4.8vw, 4rem);
+    line-height: 1.02;
+  }
+
+  .lede {
+    margin: 0;
+    max-width: 68ch;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    opacity: 0.92;
+  }
+
+  .project-error {
+    margin: 0;
+    padding: 0.85rem 1rem;
+    border-radius: 0.8rem;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.25);
+    color: #fca5a5;
+  }
+
+  .filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.45rem;
+  }
+
+  .filter-field span {
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+
+  .filter-field select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    border-radius: 0.9rem;
+    border: 1px solid color-mix(in srgb, currentColor 14%, transparent);
+    background: transparent;
+    color: currentColor;
+    font: inherit;
+  }
+
+  .filter-field select option {
+    color: #111;
+    background: #fff;
+  }
+
+  .pg-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+
+  .publication-item {
+    display: flex;
+    width: 100%;
+  }
+
+  .publication-item--space {
+    margin-block-start: 0.25rem;
+  }
+
+  .publication-item--tight {
+    margin-block-start: 0;
+  }
+
+  .publication-item[hidden] {
+    display: none;
+  }
+
+  :global(.pub) {
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    :global(.pub-media) {
+      aspect-ratio: 4 / 3;
+      margin-bottom: 0.85rem;
+    }
+  }
+</style>

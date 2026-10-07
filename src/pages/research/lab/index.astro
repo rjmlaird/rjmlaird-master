@@ -1,0 +1,60 @@
+---
+import BaseLayout from '../../../research/layouts/BaseLayout.astro';
+import ResearchTimeline from '../../../research/components/ResearchTimeline.astro';
+import ProjectCard from '../../../research/components/ProjectCard.astro';
+import ResearchThemeCard from '../../../research/components/ResearchThemeCard.astro';
+import NotebookCard from '../../../research/components/NotebookCard.astro';
+import ResearchNoteCard from '../../../research/components/ResearchNoteCard.astro';
+import { getProjects, getNotebooks, getNotes } from '../../../research/lib/content';
+import { themes } from '../../../research/data/themes';
+import { site } from '../../../research/data/site';
+import { external } from '../../../research/data/external-links';
+import { websiteSchema, personSchema } from '../../../research/lib/schema';
+
+const projects = await getProjects();
+const featured = projects.find((p) => p.data.featured) ?? projects[0];
+const notebook = (await getNotebooks())[0];
+const note = (await getNotes())[0];
+---
+<BaseLayout schema={[websiteSchema(), personSchema()]}>
+  <section class="hero">
+    <div class="wrap">
+      <h1>Research, data and reproducible projects</h1>
+      <p class="lede">{site.positioning}</p>
+      <ResearchTimeline />
+      <p class="muted ui small">Every project follows this chain, from question to citation.</p>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <h2>About this work</h2>
+    <p class="prose">{site.statement}</p>
+    <p class="prose muted">{site.independence}</p>
+
+    <h2>Current work</h2>
+    <div class="grid">
+      {featured && <ProjectCard project={featured} />}
+      {notebook && <NotebookCard notebook={notebook} />}
+      {note && <ResearchNoteCard note={note} />}
+    </div>
+
+    <h2>Research themes</h2>
+    <div class="grid">{themes.map((t) => <ResearchThemeCard {...t} count={projects.filter((p) => p.data.themes.includes(t.slug)).length} />)}</div>
+
+    <h2>Selected outputs</h2>
+    <p class="prose muted">No outputs have been published yet. Planned outputs are listed on each <a href="/research/projects/">project page</a>.</p>
+
+    <h2>Methods and tools</h2>
+    <p class="prose">Python, geospatial analysis, APIs, data visualisation, Astro and static publishing, and open-source workflows. See <a href="/research/methods/">methods</a>.</p>
+
+    <h2>Data and reproducibility</h2>
+    <p class="prose">Each project records its data sources, licences, limitations and how to repeat the work. Read the <a href="/research/data/">data overview</a>, <a href="/research/data-policy/">data policy</a> and <a href="/research/policy/">research policy</a>.</p>
+
+    <h2>Related public writing</h2>
+    <ul>
+      <li><a href={external.space.url}>{external.space.label}</a></li>
+      <li><a href={external.astro.url}>{external.astro.label}</a></li>
+      <li><a href={external.main.url}>{external.main.label}</a></li>
+    </ul>
+  </div>
+</BaseLayout>

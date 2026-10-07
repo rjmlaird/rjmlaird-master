@@ -1,0 +1,14 @@
+---
+import PageLayout from '../../../../research/layouts/PageLayout.astro';
+import ResearchNoteCard from '../../../../research/components/ResearchNoteCard.astro';
+import { getNotes } from '../../../../research/lib/content';
+export async function getStaticPaths() {
+  const notes = await getNotes();
+  const tags = [...new Set(notes.flatMap((n) => n.data.tags))];
+  return tags.map((tag) => ({ params: { tag }, props: { tag, notes: notes.filter((n) => n.data.tags.includes(tag)) } }));
+}
+const { tag, notes } = Astro.props;
+---
+<PageLayout title={`Notes tagged ${tag}`} crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Notes', href: '/research/notes/' }, { label: `#${tag}` }]}>
+  <div class="grid">{notes.map((n) => <ResearchNoteCard note={n} />)}</div>
+</PageLayout>

@@ -1,0 +1,65 @@
+---
+import Layout from "./Layout.astro";
+import { render, type CollectionEntry } from "astro:content";
+import { guideNavs, type GuideName, type NavItem } from "../lib/guides";
+import "../styles/guides.css";
+
+interface Props { entry: CollectionEntry<GuideName>; name: GuideName }
+const { entry, name } = Astro.props;
+const guide = guideNavs[name];
+const { Content } = await render(entry);
+const path = Astro.url.pathname;
+const draft = entry.data.draft;
+const label = name === "mentoring" ? "Mentoring" : "Coaching";
+const hubHref = name === "mentoring" ? "/mentoring/" : "/coaching/";
+const isCurrent = (item: NavItem) => item.href === path;
+const hasCurrent = (item: NavItem): boolean => isCurrent(item) || (item.children ?? []).some(hasCurrent);
+---
+
+<Layout title={`${entry.data.title} · ${label}`} description={`${guide.title}: ${entry.data.title}`} noindex={draft}>
+  <div class="wrap page guide">
+    <aside class="guide-nav" aria-label={`${label} guide`}>
+      <p class="guide-nav-title"><a href={hubHref}>{label}</a></p>
+      <ul>
+        {guide.nav.map((item) => (
+          <li>
+            {item.href ? (
+              <a href={item.href} aria-current={isCurrent(item) ? "page" : undefined}>{item.label}</a>
+            ) : (
+              <details open={hasCurrent(item)}>
+                <summary>{item.label}</summary>
+                <ul>
+                  {item.children?.map((c) => (
+                    <li>
+                      {c.href ? (
+                        <a href={c.href} aria-current={isCurrent(c) ? "page" : undefined}>{c.label}</a>
+                      ) : (
+                        <details open={hasCurrent(c)}>
+                          <summary>{c.label}</summary>
+                          <ul>
+                            {c.children?.map((g) => (
+                              <li><a href={g.href} aria-current={isCurrent(g) ? "page" : undefined}>{g.label}</a></li>
+                            ))}
+                          </ul>
+                        </details>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            )}
+          </li>
+        ))}
+      </ul>
+    </aside>
+
+    <article class="guide-body">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href={hubHref}>{label}</a> / {entry.data.title}</nav>
+      <header class="page-head"><h1>{entry.data.title}</h1></header>
+      {draft && (
+        <div class="note"><strong>Draft outline.</strong> This page is a working outline and will be replaced with final copy.</div>
+      )}
+      <div class="prose"><Content /></div>
+    </article>
+  </div>
+</Layout>

@@ -1,0 +1,25 @@
+{
+  "color": {
+    "background": {
+      "page":    { "$type": "color", "$value": "{color.neutral.50}" },
+      "surface": { "$type": "color", "$value": "{color.neutral.0}" }
+    },
+    "text": {
+      "primary": { "$type": "color", "$value": "{color.neutral.950}" },
+      "muted":   { "$type": "color", "$value": "{color.neutral.700}" },
+      "link":    { "$type": "color", "$value": "{color.blue.700}" }
+    },
+    "border": {
+      "default": { "$type": "color", "$value": "{color.neutral.200}" }
+    },
+    "accent": {
+      "default": { "$type": "color", "$value": "{color.blue.700}" },
+      "on":      { "$type": "color", "$value": "{color.neutral.0}" },
+      "site":    { "$type": "color", "$value": "{color.site.main}" }
+    },
+    "feedback": {
+      "positive": { "$type": "color", "$value": "{color.status.positive}" },
+      "negative": { "$type": "color", "$value": "{color.status.negative}" }
+    }
+  }
+}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "portrait-primary-2026",
+    "title": "Ryan Laird primary portrait",
+    "type": "portrait",
+    "creator": "Ryan Laird",
+    "copyrightOwner": "Ryan Laird",
+    "licence": "all-rights-reserved",
+    "usage": {
+      "approved": ["main-site", "portfolio", "speaking-profile", "media-kit"],
+      "prohibited": ["third-party-advertising", "unapproved-commercial-use"]
+    },
+    "altText": "Ryan Laird outdoors, facing the camera.",
+    "cdnUrl": "https://cdn.rjmlaird.co.uk/brand/portraits/ryan-laird-primary.jpg",
+    "lastReviewed": "2026-09-30",
+    "relatedSites": ["main", "portfolio"]
+  }
+]

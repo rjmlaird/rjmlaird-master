@@ -5,7 +5,9 @@
     "sync": "astro sync",
     "build": "astro sync && astro check && astro build",
     "preview": "astro preview",
-    "audit:content": "node scripts/audit-content.mjs"
+    "audit:content": "node scripts/audit-content.mjs",
+    "brand:tokens": "tsx scripts/brand/build-token-css.ts && tsx scripts/brand/build-token-json.ts",
+    "brand:validate": "tsx scripts/brand/validate-tokens.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.4",
@@ -23,7 +25,8 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.3",
-    "typescript": "^6.0.0"
+    "typescript": "^6.0.0",
+    "tsx": "^4.19.0"
   },
   "allowScripts": {
     "citation-js@0.8.1": true,

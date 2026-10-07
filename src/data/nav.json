@@ -1,14 +1,42 @@
 {
   "primary": [
-    { "label": "Home", "href": "/" },
-    { "label": "Work with me", "href": "/work-with-me/" },
-    { "label": "Research & writing", "href": "/research/" },
-    { "label": "Projects", "href": "/projects/" },
-    { "label": "About", "href": "/about/" },
-    { "label": "Contact", "href": "/contact/" }
+    {
+      "label": "Home",
+      "href": "/"
+    },
+    {
+      "label": "Work with me",
+      "href": "/work-with-me/"
+    },
+    {
+      "label": "Research & writing",
+      "href": "/research/"
+    },
+    {
+      "label": "Projects",
+      "href": "/projects/"
+    },
+    {
+      "label": "About",
+      "href": "/about/"
+    },
+    {
+      "label": "Contact",
+      "href": "/contact/"
+    }
   ],
   "utility": [
-    { "label": "CV", "href": "/cv/" },
-    { "label": "Open source", "href": "/open-source/" }
+    {
+      "label": "CV",
+      "href": "https://cv.rjmlaird.co.uk/"
+    },
+    {
+      "label": "Dev",
+      "href": "/dev/"
+    },
+    {
+      "label": "Brand",
+      "href": "/brand/"
+    }
   ]
 }

@@ -1,0 +1,11 @@
+---
+import PageLayout from './PageLayout.astro';
+import { fmt } from '../lib/content';
+interface Props { title: string; summary: string; kind: string; date: Date; tags: string[]; draft: boolean; }
+const { title, summary, kind, date, tags, draft } = Astro.props;
+---
+<PageLayout title={title} lede={summary} noindex={draft} crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Notes', href: '/research/notes/' }, { label: title }]}>
+  <p class="meta"><span>{kind}</span><span>{fmt(date)}</span>{tags.map((t) => <a href={`/research/notes/tags/${t}/`}>#{t}</a>)}</p>
+  {draft && <p class="notice"><strong>Draft.</strong> Not yet reviewed; hidden from search engines.</p>}
+  <div class="prose"><slot /></div>
+</PageLayout>

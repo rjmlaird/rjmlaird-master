@@ -1,0 +1,202 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "idea",
+        "in-progress",
+        "completed",
+        "archived"
+      ]
+    },
+    "startedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "featured": {
+      "default": false,
+      "type": "boolean"
+    },
+    "themes": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "earth-observation",
+          "astronomy",
+          "space-sustainability",
+          "climate-data",
+          "science-communication",
+          "digital-research-systems"
+        ]
+      }
+    },
+    "methods": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tools": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "researchQuestions": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "whyItMatters": {
+      "type": "string"
+    },
+    "dataSources": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "licence": {
+            "type": "string"
+          },
+          "accessedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    },
+    "outputs": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "publication",
+              "preprint",
+              "poster",
+              "presentation",
+              "report",
+              "dataset",
+              "software",
+              "visualisation",
+              "notebook"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "state": {
+            "default": "planned",
+            "type": "string",
+            "enum": [
+              "planned",
+              "available"
+            ]
+          }
+        },
+        "required": [
+          "type",
+          "title"
+        ]
+      }
+    },
+    "progress": {
+      "type": "string"
+    },
+    "limitations": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "reproducibility": {
+      "type": "string"
+    },
+    "reproducibilityUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "licence": {
+      "type": "string"
+    },
+    "relatedArticles": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          }
+        },
+        "required": [
+          "label",
+          "url"
+        ]
+      }
+    },
+    "citation": {
+      "type": "string"
+    },
+    "draft": {
+      "default": true,
+      "type": "boolean"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "status",
+    "updatedAt",
+    "themes",
+    "researchQuestions",
+    "whyItMatters",
+    "progress",
+    "limitations",
+    "reproducibility"
+  ]
+}

@@ -1,0 +1,36 @@
+---
+import BaseLayout from '@brand/layouts/BaseLayout.astro';
+import { sections } from '@brand/lib/schemas';
+import { principles, sectionMeta } from '@brand/data/navigation';
+import { url } from '@brand/lib/urls';
+---
+<BaseLayout>
+  <div class="wrap">
+    <div class="hero">
+      <p class="kicker">brand.rjmlaird.co.uk</p>
+      <h1>Ryan Laird brand system</h1>
+      <p class="lede">A practical guide to the visual identity, voice, design tokens and shared components used across the Ryan Laird digital estate. It defines how the sites look, sound and are built. It is not a portfolio or a second homepage.</p>
+      <a class="btn" href={url('foundations/brand-overview')}>Explore foundations</a>
+      <a class="btn alt" href={url('tokens/colour')}>View tokens</a>
+    </div>
+
+    <section>
+      <h2>Principles</h2>
+      <div class="grid">
+        {principles.map(([t, d]) => <div class="card"><h3>{t}</h3><p>{d}</p></div>)}
+      </div>
+    </section>
+
+    <section>
+      <h2>Explore the system</h2>
+      <div class="grid">
+        {sections.map((s) => (
+          <a class="card link-card" href={url(s)}>
+            <h3>{sectionMeta[s].title}</h3>
+            <p>{sectionMeta[s].summary}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</BaseLayout>

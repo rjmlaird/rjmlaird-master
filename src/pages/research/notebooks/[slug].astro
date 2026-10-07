@@ -1,0 +1,16 @@
+---
+import { render } from 'astro:content';
+import NotebookLayout from '../../../research/layouts/NotebookLayout.astro';
+import { getNotebooks, getProjects } from '../../../research/lib/content';
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return (await getNotebooks()).map((nb) => {
+    const p = projects.find((x) => x.id === nb.data.project);
+    return { params: { slug: nb.id }, props: { nb, project: p ? { id: p.id, title: p.data.title } : undefined } };
+  });
+}
+const { nb, project } = Astro.props;
+const { Content } = await render(nb);
+const d = nb.data;
+---
+<NotebookLayout title={d.title} summary={d.summary} state={d.state} area={d.area} tools={d.tools} repositoryUrl={d.repositoryUrl} updatedAt={d.updatedAt} project={project} draft={d.draft}><Content /></NotebookLayout>

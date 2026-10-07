@@ -1,0 +1,13 @@
+---
+import PageLayout from '../../tutoring/layouts/PageLayout.astro';
+import SafeguardingNotice from '../../tutoring/components/SafeguardingNotice.astro';
+import { bookingLinks } from '../../tutoring/data/booking-links';
+---
+<PageLayout title="Book a session" lede="Start with a free 20-minute consultation, or go straight to a session.">
+  <p class="actions">
+    <a class="btn" href={bookingLinks.consultation}>Book a free consultation</a>
+    <a class="btn secondary" href={bookingLinks.index}>See all sessions</a>
+  </p>
+  <p>Booking and payment are handled securely on booking.rjmlaird.co.uk.</p>
+  <SafeguardingNotice />
+</PageLayout>

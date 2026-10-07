@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "summary": {
+      "type": "string"
+    },
+    "area": {
+      "type": "string",
+      "enum": [
+        "earth-observation",
+        "astronomy",
+        "climate",
+        "methods"
+      ]
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "in-progress",
+        "available"
+      ]
+    },
+    "project": {
+      "type": "string"
+    },
+    "repositoryUrl": {
+      "type": "string",
+      "format": "uri"
+    },
+    "tools": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "draft": {
+      "default": true,
+      "type": "boolean"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "area",
+    "state",
+    "updatedAt"
+  ]
+}

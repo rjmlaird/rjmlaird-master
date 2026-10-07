@@ -2,6 +2,8 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { file } from "astro/loaders";
+import { assetSchema as brandAssetSchema, docSchema as brandDocSchema, siteProfileSchema as brandSiteSchema } from "./brand/lib/schemas";
 
 // Helper to safely handle empty string frontmatter fields for URLs
 const optionalUrl = z.preprocess(
@@ -284,6 +286,18 @@ const eventSchema = baseSchema.extend({
     .default({}),
 });
 
+const researchThemeEnum = z.enum(["earth-observation", "astronomy", "space-sustainability", "climate-data", "science-communication", "digital-research-systems"]);
+
+const researchNoteSchema = z.object({
+  title: z.string(),
+  summary: z.string(),
+  kind: z.enum(["literature", "methods", "research-log"]),
+  tags: z.array(z.string()).default([]),
+  publishedAt: z.coerce.date(),
+  updatedAt: z.coerce.date().optional(),
+  draft: z.boolean().default(true),
+});
+
 export const collections = {
   blog: defineCollection({
     loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
@@ -336,4 +350,88 @@ export const collections = {
     loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/events" }),
     schema: eventSchema,
   }),
+
+  // Guide sections migrated from the mentoring.* and coaching.* MkDocs sites.
+  // `draft: true` keeps a page noindex and out of the sitemap until the copy is final.
+  mentoring: defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/mentoring" }),
+    schema: z.object({ title: z.string(), draft: z.boolean().default(true) }),
+  }),
+
+  coaching: defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/coaching" }),
+    schema: z.object({ title: z.string(), draft: z.boolean().default(true) }),
+  }),
+
+  // Research lab (migrated from research.rjmlaird.co.uk). All content is draft/noindex until reviewed.
+  researchProjects: defineCollection({
+    loader: glob({ pattern: "*.md", base: "./src/content/research/projects" }),
+    schema: z.object({
+      title: z.string(),
+      summary: z.string(),
+      status: z.enum(["idea", "in-progress", "completed", "archived"]),
+      startedAt: z.coerce.date().optional(),
+      updatedAt: z.coerce.date(),
+      featured: z.boolean().default(false),
+      themes: z.array(researchThemeEnum).min(1),
+      methods: z.array(z.string()).default([]),
+      tools: z.array(z.string()).default([]),
+      researchQuestions: z.array(z.string()).min(1),
+      whyItMatters: z.string(),
+      dataSources: z
+        .array(z.object({ name: z.string(), url: z.string().url().optional(), licence: z.string().optional(), accessedAt: z.coerce.date().optional() }))
+        .default([]),
+      outputs: z
+        .array(
+          z.object({
+            type: z.enum(["publication", "preprint", "poster", "presentation", "report", "dataset", "software", "visualisation", "notebook"]),
+            title: z.string(),
+            url: z.string().url().optional(),
+            state: z.enum(["planned", "available"]).default("planned"),
+          }),
+        )
+        .default([]),
+      progress: z.string(),
+      limitations: z.array(z.string()).min(1),
+      reproducibility: z.string(),
+      reproducibilityUrl: z.string().url().optional(),
+      licence: z.string().optional(),
+      relatedArticles: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
+      citation: z.string().optional(),
+      draft: z.boolean().default(true),
+    }),
+  }),
+
+  researchMethods: defineCollection({
+    loader: glob({ pattern: "*.md", base: "./src/content/research/methods" }),
+    schema: z.object({ title: z.string(), summary: z.string(), updatedAt: z.coerce.date(), tools: z.array(z.string()).default([]), draft: z.boolean().default(true) }),
+  }),
+
+  researchNotebooks: defineCollection({
+    loader: glob({ pattern: "*.md", base: "./src/content/research/notebooks" }),
+    schema: z.object({
+      title: z.string(),
+      summary: z.string(),
+      area: z.enum(["earth-observation", "astronomy", "climate", "methods"]),
+      state: z.enum(["planned", "in-progress", "available"]),
+      project: z.string().optional(),
+      repositoryUrl: z.string().url().optional(),
+      tools: z.array(z.string()).default([]),
+      updatedAt: z.coerce.date(),
+      draft: z.boolean().default(true),
+    }),
+  }),
+
+  researchNotes: defineCollection({
+    loader: glob({ pattern: "*.md", base: "./src/content/research/notes" }),
+    schema: researchNoteSchema,
+  }),
+
+  // Brand system (migrated from brand.rjmlaird.co.uk).
+  brandDocs: defineCollection({
+    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/brand/docs" }),
+    schema: brandDocSchema,
+  }),
+  brandAssets: defineCollection({ loader: file("src/brand/data/asset-manifest.json"), schema: brandAssetSchema }),
+  brandSites: defineCollection({ loader: file("src/brand/data/site-profiles.json"), schema: brandSiteSchema }),
 };

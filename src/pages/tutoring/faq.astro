@@ -1,0 +1,18 @@
+---
+import PageLayout from '../../tutoring/layouts/PageLayout.astro';
+import FAQ from '../../tutoring/components/FAQ.astro';
+const items = [
+  { q: 'Which subjects do you teach?', a: 'Physics and astronomy or astrophysics enrichment. Other subjects will be added only when they are ready to be offered properly.' },
+  { q: 'Which levels do you support?', a: 'GCSE and A-level, plus enrichment for curious students of any age.' },
+  { q: 'Is it online or in person?', a: 'Online, over video call with a shared whiteboard.' },
+  { q: 'What happens in a session?', a: 'We work on the topics the student finds hardest, using explanations, worked examples and exam-style questions. See how tuition works.' },
+  { q: 'How much does it cost?', a: 'See the pricing page. The initial consultation is free.' },
+  { q: 'How do I book?', a: 'Use the booking page to choose a time and pay securely.' },
+  { q: 'What if I need to cancel?', a: 'See the cancellation policy for notice periods and refunds.' },
+  { q: 'How is student data handled?', a: 'I collect the minimum needed to deliver safe, useful tuition. See the privacy notice.' },
+  { q: 'What safeguarding approach do you follow?', a: 'See the safeguarding statement for how sessions are run and how to raise a concern.' },
+];
+---
+<PageLayout title="Frequently asked questions">
+  <FAQ items={items} />
+</PageLayout>

@@ -1,0 +1,9 @@
+---
+import PageLayout from './PageLayout.astro';
+interface Props { title: string; lede?: string; }
+const { title, lede } = Astro.props;
+---
+<PageLayout title={title} lede={lede} crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: title }]}>
+  <p class="notice"><strong>Draft.</strong> Review this statement, confirm it is accurate, then remove this notice.</p>
+  <div class="prose"><slot /></div>
+</PageLayout>

@@ -1,0 +1,13 @@
+---
+import type { Session } from '../data/sessions';
+import { bookingLinks } from '../data/booking-links';
+interface Props { session: Session; }
+const { session } = Astro.props;
+const price = session.free ? 'Free' : session.price ?? 'Price on request';
+---
+<article class="panel">
+  <h3>{session.name}</h3>
+  <p class="meta">{session.minutes} minutes, {price}</p>
+  <p>{session.description}</p>
+  <a href={bookingLinks.session(session.id)}>Book this session</a>
+</article>

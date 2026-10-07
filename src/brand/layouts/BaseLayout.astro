@@ -1,0 +1,59 @@
+---
+// Wraps the shared rjmlaird layout (nav, footer, SEO). Brand tokens are scoped to the .bd wrapper
+// so they cannot leak into the rest of the site.
+import Layout from '../../layouts/Layout.astro';
+import '../styles/tokens.css';
+import '../styles/brand.css';
+import { sections } from '../lib/schemas';
+import { sectionMeta } from '../data/navigation';
+import { url } from '../lib/urls';
+import { defaultDescription } from '../lib/seo';
+
+interface Props { title?: string; description?: string; site?: string; }
+const { title, description = defaultDescription, site = 'main' } = Astro.props;
+const path = Astro.url.pathname;
+---
+<Layout title={title ? `${title} · Brand system` : 'Brand system'} description={description} noindex={true}>
+  <div class="wrap page">
+    <nav class="bd-subnav" aria-label="Brand sections">
+      <a class="bd-subnav-home" href="/brand/" aria-current={path === '/brand/' ? 'page' : undefined}>Brand system</a>
+      <ul>{sections.map((s) => <li><a href={url(s)} aria-current={path.startsWith(url(s)) ? 'page' : undefined}>{sectionMeta[s].title}</a></li>)}</ul>
+      <button class="bd-theme" type="button" data-theme-toggle>Theme</button>
+    </nav>
+    <div class="bd" data-theme="dark" data-site={site} id="bd-root">
+      <slot />
+      <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  const root = document.getElementById('bd-root');
+  const toast = document.getElementById('toast');
+  const say = (msg: string) => {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('on');
+    setTimeout(() => toast.classList.remove('on'), 1400);
+  };
+  document.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const el = target.closest<HTMLElement>('[data-copy]');
+    if (el) {
+      const text = el.dataset.copy === 'next' ? el.nextElementSibling?.textContent ?? '' : el.dataset.copy ?? '';
+      try { await navigator.clipboard.writeText(text); say('Copied'); } catch { say('Copy failed'); }
+    }
+    if (target.closest('[data-theme-toggle]') && root) {
+      root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+    }
+  });
+</script>
+
+<style is:global>
+  .bd-subnav{display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;align-items:baseline;margin-bottom:1.25rem;font-size:.9rem}
+  .bd-subnav ul{display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;list-style:none}
+  .bd-subnav a{color:var(--mb);text-decoration:none}
+  .bd-subnav a:hover,.bd-subnav a[aria-current=page]{color:var(--teal)}
+  .bd-subnav-home{font-family:var(--font-display);font-weight:700;color:var(--w)!important}
+  .bd-theme{margin-left:auto;font:inherit;font-size:.8rem;padding:.25rem .7rem;border:1px solid var(--bm);border-radius:999px;background:transparent;color:var(--mb);cursor:pointer}
+</style>

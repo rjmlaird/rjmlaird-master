@@ -1,0 +1,17 @@
+/* Layout for the mentoring / coaching guide sections (uses the site tokens from global.css). */
+.guide{display:grid;grid-template-columns:16rem minmax(0,1fr);gap:3rem;align-items:start}
+.guide-nav{position:sticky;top:1.5rem;font-size:.9rem;max-height:calc(100vh - 3rem);overflow:auto}
+.guide-nav-title{font-family:var(--font-display);font-weight:700;margin-bottom:.75rem}
+.guide-nav-title a{color:var(--w);text-decoration:none}
+.guide-nav ul{list-style:none}
+.guide-nav ul ul{margin:.25rem 0 .5rem .75rem;padding-left:.75rem;border-left:1px solid var(--bd)}
+.guide-nav li{margin:.2rem 0}
+.guide-nav a{color:var(--mb);text-decoration:none}
+.guide-nav a:hover,.guide-nav a[aria-current=page]{color:var(--teal)}
+.guide-nav summary{cursor:pointer;color:var(--w);font-weight:600;padding:.15rem 0}
+.guide-body .page-head{margin-bottom:1.5rem}
+.guide-body .note{margin-bottom:1.5rem}
+.guide-body .prose{max-width:44rem;color:var(--mb);line-height:1.75}
+.guide-body .prose ul{padding-left:1.25rem}
+.guide-body .prose li{margin:.4rem 0}
+@media (max-width:900px){.guide{grid-template-columns:1fr;gap:1.5rem}.guide-nav{position:static;max-height:none}}

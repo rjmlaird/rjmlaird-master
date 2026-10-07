@@ -1,0 +1,14 @@
+---
+import PageLayout from './PageLayout.astro';
+import { policyLinks } from '../data/policy-links';
+interface Props { title: string; lede?: string; }
+const { title, lede } = Astro.props;
+---
+<PageLayout title={title} lede={lede}>
+  <p class="notice draft"><strong>Draft.</strong> This page is a working outline and has not been reviewed. Check it (and take professional advice where needed) before you accept students, then remove this notice.</p>
+  <slot />
+  <nav aria-label="Policies">
+    <h2>Related policies</h2>
+    <ul>{policyLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}</ul>
+  </nav>
+</PageLayout>

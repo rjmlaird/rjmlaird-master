@@ -1,0 +1,32 @@
+---
+title: Colour
+description: The core palette. Tap a swatch to copy its hex value.
+order: 2
+status: review
+lastReviewed: 2026-09-30
+relatedPages: [tokens/colour]
+---
+import ColourSwatch from '@brand/components/identity/ColourSwatch.astro';
+
+## Blues
+
+<div class="grid">
+  <ColourSwatch name="color.blue.900" value="#0B1B35" />
+  <ColourSwatch name="color.blue.700" value="#1D4E89" note="light link and accent" />
+  <ColourSwatch name="color.blue.500" value="#4B9CFF" note="dark link and accent" />
+</div>
+
+## Neutrals
+
+<div class="grid">
+  <ColourSwatch name="color.neutral.950" value="#0A0F1A" note="dark page" />
+  <ColourSwatch name="color.neutral.900" value="#111A2A" note="dark surface" />
+  <ColourSwatch name="color.neutral.300" value="#B4C0CF" note="dark muted text" />
+  <ColourSwatch name="color.neutral.50" value="#F7F4ED" note="light page" />
+</div>
+
+## Rules
+
+- Text and link pairs must reach 4.5:1 contrast in both themes. `npm run validate` checks this.
+- Site accents are decorative. Never use them as the only carrier of meaning or as text colour.
+- Every page works in light and dark. Follow the system setting unless the person chooses otherwise.

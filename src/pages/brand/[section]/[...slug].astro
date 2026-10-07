@@ -1,0 +1,47 @@
+---
+import { getCollection, render } from 'astro:content';
+import DocsLayout from '@brand/layouts/DocsLayout.astro';
+import AssetRecord from '@brand/components/assets/AssetRecord.astro';
+import SiteProfile from '@brand/components/assets/SiteProfile.astro';
+import type { Section } from '@brand/lib/schemas';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('brandDocs');
+  const sites = await getCollection('brandSites');
+  const assets = await getCollection('brandAssets');
+  return [
+    ...docs.map((entry) => {
+      const [section, ...rest] = entry.id.split('/');
+      return { params: { section, slug: rest.join('/') }, props: { kind: 'doc' as const, entry } };
+    }),
+    ...sites.map((entry) => ({ params: { section: 'sites', slug: entry.id }, props: { kind: 'site' as const, entry } })),
+    ...assets.map((entry) => ({ params: { section: 'assets', slug: entry.id }, props: { kind: 'asset' as const, entry } })),
+  ];
+}
+
+const section = Astro.params.section as Section;
+const props = Astro.props;
+const rendered = props.kind === 'doc' ? await render(props.entry) : null;
+---
+{props.kind === 'doc' && rendered && (
+  <DocsLayout
+    section={section}
+    title={props.entry.data.title}
+    description={props.entry.data.description}
+    status={props.entry.data.status}
+    lastReviewed={props.entry.data.lastReviewed}
+    headings={rendered.headings}
+  >
+    <rendered.Content />
+  </DocsLayout>
+)}
+{props.kind === 'site' && (
+  <DocsLayout section="sites" title={props.entry.data.name} description={props.entry.data.purpose} site={props.entry.data.id}>
+    <SiteProfile profile={props.entry.data} />
+  </DocsLayout>
+)}
+{props.kind === 'asset' && (
+  <DocsLayout section="assets" title={props.entry.data.title} description={`${props.entry.data.type} asset record`} lastReviewed={props.entry.data.lastReviewed}>
+    <AssetRecord asset={props.entry.data} />
+  </DocsLayout>
+)}

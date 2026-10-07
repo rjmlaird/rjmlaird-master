@@ -1,0 +1,63 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  title="Dev"
+  description="Web development and open-source work by Ryan Laird: Astro and TypeScript sites, structured content systems and automation, with live GitHub data."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="sl">Dev</p>
+      <h1>Building accessible, data-driven web experiences.</h1>
+      <p class="lead">
+        I design and develop Astro and React sites, shape structured content systems, and build clear digital
+        experiences that are easy to use and maintain.
+      </p>
+    </header>
+
+    <section class="block">
+      <h2>What I do</h2>
+      <div class="route-grid">
+        <article class="route">
+          <h3>Web development</h3>
+          <p>Astro, React, TypeScript, content modelling, component systems and performance-aware front-end builds.</p>
+        </article>
+        <article class="route" data-tone="violet">
+          <h3>Science communication</h3>
+          <p>Space, climate and technical topics presented with structure, clarity and accessibility in mind.</p>
+        </article>
+        <article class="route" data-tone="amber">
+          <h3>Automation</h3>
+          <p>Scripts, APIs and workflows that reduce friction across publishing, research and digital asset management.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2>Featured areas</h2>
+      <div class="route-grid">
+        <article class="route">
+          <h3>Open source, live</h3>
+          <p>Repositories, languages, organisations and recent activity, pulled from GitHub at build time.</p>
+          <a class="go" href="/dev/open-source/">See the live GitHub view</a>
+        </article>
+        <article class="route" data-tone="violet">
+          <h3>Dev projects</h3>
+          <p>GitHub Projects boards across personal and organisation accounts, filterable by status and language.</p>
+          <a class="go" href="/dev/projects/">See the boards</a>
+        </article>
+        <article class="route" data-tone="amber">
+          <h3>Curated open source and lab</h3>
+          <p>Hand-picked tools, data projects and experiments, with the maturity of each stated.</p>
+          <a class="go" href="/open-source/">Open source and lab</a>
+        </article>
+        <article class="route" data-tone="sky">
+          <h3>Selected projects</h3>
+          <p>Portfolio work and case studies across space, sustainability and digital.</p>
+          <a class="go" href="/projects/">All projects</a>
+        </article>
+      </div>
+    </section>
+  </div>
+</Layout>

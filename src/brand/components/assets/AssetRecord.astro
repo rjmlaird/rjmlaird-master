@@ -1,0 +1,34 @@
+---
+import type { Asset } from '../../lib/schemas';
+interface Props { asset: Asset }
+const { asset: a } = Astro.props;
+const date = a.lastReviewed.toISOString().slice(0, 10);
+---
+<div class="card">
+  <div class="two">
+    <div class="ph" role="img" aria-label="Preview loads from the CDN once the file is uploaded">
+      <span>Preview</span>
+      <img src={a.cdnUrl} alt={a.altText} loading="lazy" onerror="this.hidden=true" />
+    </div>
+    <dl>
+      <dt>Asset ID</dt><dd><code>{a.id}</code></dd>
+      <dt>Title</dt><dd>{a.title}</dd>
+      <dt>Type</dt><dd>{a.type}</dd>
+      <dt>Creator</dt><dd>{a.creator}</dd>
+      <dt>Copyright</dt><dd>{a.copyrightOwner}</dd>
+      <dt>Licence</dt><dd>{a.licence}</dd>
+      <dt>Last reviewed</dt><dd>{date}</dd>
+    </dl>
+  </div>
+</div>
+<div class="two" style="margin-top:0.75rem">
+  <div class="do"><b>Approved contexts</b><ul>{a.usage.approved.map((x) => <li>{x}</li>)}</ul></div>
+  <div class="dont"><b>Prohibited contexts</b><ul>{a.usage.prohibited.map((x) => <li>{x}</li>)}</ul></div>
+</div>
+<h2>Guidance</h2>
+<dl>
+  <dt>Alt text</dt><dd>{a.altText}</dd>
+  {a.captionGuidance && <><dt>Caption</dt><dd>{a.captionGuidance}</dd></>}
+  <dt>CDN URL</dt><dd><code>{a.cdnUrl}</code> <button class="btn alt small" type="button" data-copy={a.cdnUrl}>Copy</button></dd>
+  {a.masterRef && <><dt>Master (DAM)</dt><dd><code>{a.masterRef}</code></dd></>}
+</dl>

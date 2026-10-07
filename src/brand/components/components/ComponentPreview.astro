@@ -1,0 +1,8 @@
+---
+interface Props { label?: string }
+const { label = 'Preview' } = Astro.props;
+---
+<figure class="preview">
+  <div class="preview-stage"><slot /></div>
+  <figcaption>{label}</figcaption>
+</figure>

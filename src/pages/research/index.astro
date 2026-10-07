@@ -11,7 +11,8 @@ const orcid = profile.contact.find((c) => c.label === "ORCID")?.href;
 const sections = [
   { id: "publications", title: "Publications and academic work", text: "Journal articles, conference papers and reports from my astrophysics and Earth observation work.", href: "/research/publications/", cta: `Browse the bibliography (${pubCount} entries)` },
   { id: "independent", title: "Independent research and analysis", text: "Public-interest analysis and commentary written outside any institution, such as articles on space sustainability and communication practice.", href: "/writing/", cta: "Read the writing" },
-  { id: "applied", title: "Applied research and project work", text: "Research done in service of a communication, sustainability, space or digital project. Each is described on its project page with its context and my role.", href: "/projects/", cta: "See projects" },
+  { id: "applied", title: "Applied research and project work", text: "Research done in service of a communication, sustainability, space or digital project. Each is described on its project page with its context and my role.", href: "/research/projects/", cta: "See projects" },
+  { id: "lab", title: "Reproducible research projects", text: "Project pages that follow one chain: research question, method, data source, analysis, output, limitations, reproducibility and citation. Everything is draft until reviewed.", href: "/research/lab/", cta: "Open the research lab" },
   { id: "methods", title: "Methods, data and open tools", text: "Code, data pipelines and experiments, published where I can so others can inspect or reuse them. Status is stated for each, from experiment to maintained.", href: "/open-source/", cta: "Open source and lab" },
   { id: "talks", title: "Talks, media and public engagement", text: "Conference talks, panels, podcast and press appearances, and events I have organised.", href: "/press/", cta: "Press and appearances" },
 ];

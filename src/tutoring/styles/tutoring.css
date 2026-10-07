@@ -1,0 +1,62 @@
+/* Scoped from the standalone site stylesheet; renders inside the shared rjmlaird layout. */
+.tt{box-sizing:border-box}.tt *{box-sizing:inherit}
+.tt .wrap{max-width:none;padding:0;margin:0}
+.tt main{padding:0}
+.tt{--paper: #f6f7f4;
+  --grid: #dfe4e6;
+  --ink: #1b2430;
+  --ink-soft: #4a5666;
+  --pencil: #2b5ba8;
+  --marker: #f2c94c;
+  --rule: #c9d0d4;
+  --measure: 68ch;
+  --serif: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, Georgia, serif;
+  --sans: ui-sans-serif, 'Segoe UI', system-ui, -apple-system, Roboto, sans-serif;}
+.tt{margin: 0; background: var(--paper); color: var(--ink);
+  font-family: var(--serif); line-height: 1.65;}
+.tt h1,.tt h2,.tt h3{font-family: var(--sans); line-height: 1.15; letter-spacing: -0.015em; margin: 0 0 .6em;}
+.tt h1{font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 750;}
+.tt h2{font-size: 1.55rem; font-weight: 700; margin-top: 2.2em;}
+.tt h3{font-size: 1.15rem; font-weight: 700;}
+.tt p,.tt ul,.tt ol{margin: 0 0 1em;}
+.tt ul,.tt ol{padding-left: 1.2em;}
+.tt li{margin-bottom: .35em;}
+.tt a{color: var(--pencil); text-underline-offset: .18em;}
+.tt a:hover{color: var(--ink);}
+.tt :focus-visible{outline: 3px solid var(--ink); outline-offset: 3px; border-radius: 2px;}
+.tt .prose{max-width: var(--measure);}
+.tt .btn{display: inline-block; font-family: var(--sans); font-weight: 650; text-decoration: none; background: var(--ink); color: #fff; padding: .7rem 1.2rem; border-radius: 3px; border: 2px solid var(--ink);}
+.tt .btn:hover{background: #fff; color: var(--ink);}
+.tt .btn.secondary{background: transparent; color: var(--ink);}
+.tt .btn.secondary:hover{background: var(--ink); color: #fff;}
+.tt .actions{display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.4rem;}
+.tt .page-head{padding: 3rem 0 1rem;}
+.tt .page-head .lede{font-size: 1.2rem; color: var(--ink-soft); max-width: var(--measure);}
+.tt .hero{padding: 3.5rem 0 3rem; border-bottom: 1px solid var(--rule);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 24px 24px;}
+.tt .hero .wrap{display: grid; gap: 2.5rem; grid-template-columns: 1fr;}
+@media (min-width: 52rem){.tt .hero .wrap{grid-template-columns: 1.05fr 1fr; align-items: center;}}
+.tt .hero .lede{font-size: 1.2rem; max-width: 34ch;}
+.tt .worked{background: #fff; border: 1px solid var(--rule); box-shadow: 4px 4px 0 var(--ink); padding: 1.3rem 1.4rem 1.4rem; position: relative; font-size: .95rem;}
+.tt .worked h2{font-size: 1rem; margin: 0 0 .5em;}
+.tt .worked .q{font-weight: 600;}
+.tt .worked .step{font-family: var(--sans); font-variant-numeric: tabular-nums; margin: .2em 0;}
+.tt .worked .note{margin: 1rem 0 0; padding: .6rem .8rem; background: var(--marker); font-family: var(--sans); font-size: .85rem; transform: rotate(-1.2deg); max-width: 26ch;}
+.tt .grid{display: grid; gap: 1.2rem; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin: 1.2rem 0;}
+.tt .panel{border: 1px solid var(--rule); background: #fff; padding: 1.2rem;}
+.tt .panel h3{margin-top: 0;}
+.tt .panel .meta{font-family: var(--sans); font-size: .85rem; color: var(--ink-soft); margin-bottom: .6rem;}
+.tt .panel.feature{border-left: 6px solid var(--pencil);}
+.tt .notice{border-left: 6px solid var(--marker); background: #fff; padding: 1rem 1.2rem; margin: 1.5rem 0; max-width: var(--measure); font-family: var(--sans); font-size: .95rem;}
+.tt .notice.draft{border-left-color: #c0392b;}
+.tt details{border-top: 1px solid var(--rule); padding: .8rem 0; max-width: var(--measure);}
+.tt details:last-of-type{border-bottom: 1px solid var(--rule);}
+.tt summary{cursor: pointer; font-family: var(--sans); font-weight: 650;}
+.tt details[open] summary{margin-bottom: .5rem;}
+.tt table{border-collapse: collapse; width: 100%; max-width: 48rem; font-family: var(--sans); font-size: .95rem;}
+.tt th,.tt td{text-align: left; padding: .6rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top;}
+.tt .table-scroll{overflow-x: auto;}
+.tt{background:var(--paper);color:var(--ink);padding:2.5rem 1.5rem 3rem;border-radius:8px;font-family:var(--serif);line-height:1.65}

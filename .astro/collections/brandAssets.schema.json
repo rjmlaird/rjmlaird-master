@@ -1,0 +1,234 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "anyOf": [
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "photography",
+              "project-image",
+              "illustration",
+              "icon",
+              "social-card",
+              "logo"
+            ]
+          },
+          "creator": {
+            "type": "string"
+          },
+          "copyrightOwner": {
+            "type": "string"
+          },
+          "licence": {
+            "type": "string",
+            "enum": [
+              "all-rights-reserved",
+              "cc-by-4.0",
+              "cc-by-nc-4.0",
+              "cc0"
+            ]
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "approved": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prohibited": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "approved"
+            ]
+          },
+          "altText": {
+            "type": "string",
+            "minLength": 1
+          },
+          "captionGuidance": {
+            "type": "string"
+          },
+          "cdnUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "masterRef": {
+            "type": "string"
+          },
+          "lastReviewed": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "relatedSites": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "main",
+                "astro",
+                "space",
+                "portfolio",
+                "research",
+                "tutoring",
+                "booking",
+                "images",
+                "labs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "type",
+          "creator",
+          "copyrightOwner",
+          "licence",
+          "usage",
+          "altText",
+          "cdnUrl",
+          "lastReviewed"
+        ]
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "$schema": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9-]+$"
+          },
+          "title": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "photography",
+              "project-image",
+              "illustration",
+              "icon",
+              "social-card",
+              "logo"
+            ]
+          },
+          "creator": {
+            "type": "string"
+          },
+          "copyrightOwner": {
+            "type": "string"
+          },
+          "licence": {
+            "type": "string",
+            "enum": [
+              "all-rights-reserved",
+              "cc-by-4.0",
+              "cc-by-nc-4.0",
+              "cc0"
+            ]
+          },
+          "usage": {
+            "type": "object",
+            "properties": {
+              "approved": {
+                "minItems": 1,
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "prohibited": {
+                "default": [],
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "approved"
+            ]
+          },
+          "altText": {
+            "type": "string",
+            "minLength": 1
+          },
+          "captionGuidance": {
+            "type": "string"
+          },
+          "cdnUrl": {
+            "type": "string",
+            "format": "uri"
+          },
+          "masterRef": {
+            "type": "string"
+          },
+          "lastReviewed": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "relatedSites": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "main",
+                "astro",
+                "space",
+                "portfolio",
+                "research",
+                "tutoring",
+                "booking",
+                "images",
+                "labs"
+              ]
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "type",
+          "creator",
+          "copyrightOwner",
+          "licence",
+          "usage",
+          "altText",
+          "cdnUrl",
+          "lastReviewed"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+---
+title: Images and captions
+description: Alt text, captions and credit for every image.
+order: 3
+status: draft
+relatedPages: [identity/imagery, assets/portraits]
+---
+import ComponentPreview from '@brand/components/components/ComponentPreview.astro';
+
+<ComponentPreview label="Figure with caption">
+  <figure class="fig">
+    <div class="ph">Image</div>
+    <figcaption class="cap">What the image shows and why it matters. Credit: creator name.</figcaption>
+  </figure>
+</ComponentPreview>
+
+## Rules
+
+- Alt text describes the image's purpose in context. Use an empty alt only for purely decorative images.
+- Captions say what is shown, when relevant where and when, and who made it.
+- Serve images from the CDN using the URL recorded in the asset manifest.

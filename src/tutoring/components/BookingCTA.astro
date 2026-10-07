@@ -1,0 +1,6 @@
+---
+import { bookingLinks } from '../data/booking-links';
+interface Props { label?: string; href?: string; }
+const { label = 'Book a free 20-minute consultation', href = bookingLinks.consultation } = Astro.props;
+---
+<p class="actions"><a class="btn" href={href}>{label}</a></p>

@@ -1,0 +1,14 @@
+---
+import BaseLayout from './BaseLayout.astro';
+interface Props { title: string; lede?: string; description?: string; }
+const { title, lede, description } = Astro.props;
+---
+<BaseLayout title={title} description={description ?? lede}>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>{title}</h1>
+      {lede && <p class="lede">{lede}</p>}
+    </header>
+    <div class="prose"><slot /></div>
+  </div>
+</BaseLayout>

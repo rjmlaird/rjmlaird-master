@@ -1,0 +1,10 @@
+---
+import PageLayout from '../../../research/layouts/PageLayout.astro';
+import { outputTypes } from '../../../research/data/output-types';
+import { getProjects } from '../../../research/lib/content';
+const projects = await getProjects();
+const all = projects.flatMap((p) => p.data.outputs);
+---
+<PageLayout title="Outputs" lede="Publications, datasets, software and other outputs. Planned items are labelled as planned." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Outputs' }]}>
+  <ul>{outputTypes.map((o) => <li><a href={`/research/outputs/${o.slug}/`}>{o.label}</a> ({all.filter((x) => x.type === o.type).length})</li>)}</ul>
+</PageLayout>

@@ -151,11 +151,43 @@ declare module 'astro:content' {
   rendered?: RenderedContent;
   filePath?: string;
 }>;
+"brandAssets": Record<string, {
+  id: string;
+  body?: string;
+  collection: "brandAssets";
+  data: InferEntrySchema<"brandAssets">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"brandDocs": Record<string, {
+  id: string;
+  body?: string;
+  collection: "brandDocs";
+  data: InferEntrySchema<"brandDocs">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"brandSites": Record<string, {
+  id: string;
+  body?: string;
+  collection: "brandSites";
+  data: InferEntrySchema<"brandSites">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
 "caseStudies": Record<string, {
   id: string;
   body?: string;
   collection: "caseStudies";
   data: InferEntrySchema<"caseStudies">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"coaching": Record<string, {
+  id: string;
+  body?: string;
+  collection: "coaching";
+  data: InferEntrySchema<"coaching">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;
@@ -175,6 +207,14 @@ declare module 'astro:content' {
   rendered?: RenderedContent;
   filePath?: string;
 }>;
+"mentoring": Record<string, {
+  id: string;
+  body?: string;
+  collection: "mentoring";
+  data: InferEntrySchema<"mentoring">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
 "podcasts": Record<string, {
   id: string;
   body?: string;
@@ -188,6 +228,38 @@ declare module 'astro:content' {
   body?: string;
   collection: "projects";
   data: InferEntrySchema<"projects">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"researchMethods": Record<string, {
+  id: string;
+  body?: string;
+  collection: "researchMethods";
+  data: InferEntrySchema<"researchMethods">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"researchNotebooks": Record<string, {
+  id: string;
+  body?: string;
+  collection: "researchNotebooks";
+  data: InferEntrySchema<"researchNotebooks">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"researchNotes": Record<string, {
+  id: string;
+  body?: string;
+  collection: "researchNotes";
+  data: InferEntrySchema<"researchNotes">;
+  rendered?: RenderedContent;
+  filePath?: string;
+}>;
+"researchProjects": Record<string, {
+  id: string;
+  body?: string;
+  collection: "researchProjects";
+  data: InferEntrySchema<"researchProjects">;
   rendered?: RenderedContent;
   filePath?: string;
 }>;

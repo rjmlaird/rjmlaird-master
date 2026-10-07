@@ -1,0 +1,10 @@
+---
+import PageLayout from '../../../research/layouts/PageLayout.astro';
+import ProjectCard from '../../../research/components/ProjectCard.astro';
+import { getProjects } from '../../../research/lib/content';
+const projects = await getProjects();
+---
+<PageLayout title="Projects" lede="Independent research projects, labelled with their real status." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Projects' }]}>
+  <p class="ui small"><a href="/research/projects/active/">Active</a> · <a href="/research/projects/completed/">Completed</a> · <a href="/research/projects/archived/">Archived</a></p>
+  <div class="grid">{projects.map((p) => <ProjectCard project={p} />)}</div>
+</PageLayout>

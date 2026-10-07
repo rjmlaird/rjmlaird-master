@@ -1,0 +1,15 @@
+---
+import ProjectStatus from './ProjectStatus.astro';
+import { themeLabel } from '../data/themes';
+import { fmt, type Project } from '../lib/content';
+import { projectUrl } from '../lib/urls';
+interface Props { project: Project; }
+const { project } = Astro.props;
+const d = project.data;
+---
+<article class="card">
+  <p class="meta"><ProjectStatus status={d.status} /><span>Updated {fmt(d.updatedAt)}</span></p>
+  <h3><a href={projectUrl(project.id)}>{d.title}</a></h3>
+  <p>{d.summary}</p>
+  <p class="meta">{d.themes.map((t) => <span>{themeLabel(t)}</span>)}</p>
+</article>

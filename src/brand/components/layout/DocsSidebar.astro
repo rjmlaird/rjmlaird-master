@@ -1,0 +1,18 @@
+---
+import type { Entry } from '../../lib/content';
+import { sectionMeta } from '../../data/navigation';
+import type { Section } from '../../lib/schemas';
+interface Props { section: Section; entries: Entry[] }
+const { section, entries } = Astro.props;
+const path = Astro.url.pathname;
+---
+<aside class="sidebar">
+  <details open>
+    <summary>{sectionMeta[section].title} pages</summary>
+    <ul>
+      {entries.map((e) => (
+        <li><a href={e.href} aria-current={path === e.href ? 'page' : undefined}>{e.title}</a></li>
+      ))}
+    </ul>
+  </details>
+</aside>

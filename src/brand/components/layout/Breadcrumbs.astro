@@ -1,0 +1,13 @@
+---
+import { sectionMeta } from '../../data/navigation';
+import type { Section } from '../../lib/schemas';
+import { url } from '../../lib/urls';
+interface Props { section: Section; title?: string }
+const { section, title } = Astro.props;
+---
+<nav class="crumbs" aria-label="Breadcrumb">
+  <a href="/brand/">Brand</a>
+  <span aria-hidden="true">/</span>
+  {title ? <a href={url(section)}>{sectionMeta[section].title}</a> : <span aria-current="page">{sectionMeta[section].title}</span>}
+  {title && <><span aria-hidden="true">/</span><span aria-current="page">{title}</span></>}
+</nav>
