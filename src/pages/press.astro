@@ -17,14 +17,8 @@ const typeLabels: Record<string, string> = {
   quote: 'Press quote',
 };
 
-// ProfilePage + mentions as an ItemList — reflects exactly what's rendered below
+// Press mentions as an ItemList, reflecting exactly what is rendered below. The ProfilePage itself comes from Layout.
 const jsonLd = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'ProfilePage',
-    dateModified: new Date().toISOString(),
-    mainEntity: { '@id': `${siteUrl}#person` },
-  },
   {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -43,6 +37,7 @@ const jsonLd = [
   title="Press &amp; Media"
   description="Press kit and media mentions for Ryan Laird — bio, credentials, headshot, and appearances including The EcoSend Podcast."
   jsonLd={jsonLd}
+  schemaType="ProfilePage"
 >
   <section class="press">
     <header class="press-head">

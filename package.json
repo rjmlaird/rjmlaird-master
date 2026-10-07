@@ -7,7 +7,8 @@
     "preview": "astro preview",
     "audit:content": "node scripts/audit-content.mjs",
     "brand:tokens": "tsx scripts/brand/build-token-css.ts && tsx scripts/brand/build-token-json.ts",
-    "brand:validate": "tsx scripts/brand/validate-tokens.ts"
+    "brand:validate": "tsx scripts/brand/validate-tokens.ts",
+    "audit:schema": "node scripts/audit-schema.mjs"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.4",

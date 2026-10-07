@@ -1,0 +1,42 @@
+{
+  "_note": "Seed facts for the site-wide schema.org graph. Live data from api.rjmlaird.co.uk (when reachable at build time) is merged on top and wins on conflicts. Edit here to change what search engines see.",
+  "siteName": "Ryan Laird",
+  "siteAlternateName": "rjmlaird.co.uk",
+  "organisations": [
+    {
+      "key": "green-orbit",
+      "name": "Green Orbit Digital",
+      "alternateName": ["Impact Orbit Co."],
+      "url": "https://greenorbit.space",
+      "description": "Specialist communications practice for space, sustainability and mission-led organisations.",
+      "foundingDate": "2023-10",
+      "foundedBySubject": true,
+      "worksFor": true
+    },
+    { "key": "space-integrity", "name": "Space Integrity Initiative", "url": "https://spaceintegrity.org" },
+    { "key": "space-impact-forum", "name": "Space Impact Forum", "url": "https://spaceimpactforum.com" },
+    { "key": "space-for-neurodiversity", "name": "Space for Neurodiversity", "url": "https://spaceforneurodiversity.org" }
+  ],
+  "alumniOf": [
+    { "name": "University of Leicester", "url": "https://le.ac.uk", "field": "Physics with Astrophysics" },
+    { "name": "University of Kent" },
+    { "name": "International Space University" }
+  ],
+  "credentials": [
+    { "name": "Chartered Marketer (CMktr)", "category": "Professional designation", "issuer": "Chartered Institute of Marketing" },
+    { "name": "Member of the Institute of Physics (MInstP)", "category": "Professional membership", "issuer": "Institute of Physics" },
+    { "name": "Member of the Chartered Institute of Public Relations (MCIPR)", "category": "Professional membership", "issuer": "Chartered Institute of Public Relations" },
+    { "name": "Fellow of the Royal Astronomical Society (FRAS)", "category": "Fellowship", "issuer": "Royal Astronomical Society" },
+    { "name": "Associate Member of the Association for Project Management (AMAPM)", "category": "Professional membership", "issuer": "Association for Project Management" },
+    { "name": "MPhys (Hons), Physics with Astrophysics", "category": "Degree", "issuer": "University of Leicester" }
+  ],
+  "languages": ["English", "French", "Spanish", "German"],
+  "sameAs": [
+    "https://linkedin.com/in/rjmlaird87",
+    "https://github.com/rjmlaird",
+    "https://x.com/rjmlaird",
+    "https://orcid.org/0000-0002-5992-684X"
+  ],
+  "orcid": "0000-0002-5992-684X",
+  "fallbackKnowsAbout": ["Sustainable marketing", "Space sector communications", "Science communication", "Earth observation", "Astrophysics"]
+}

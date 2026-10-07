@@ -58,7 +58,6 @@ function toIsoDuration(raw?: string): string | undefined {
 }
 
 const videoObjectSchema = {
-  '@context': 'https://schema.org',
   '@type': 'VideoObject',
   name: pageTitle,
   description: pageDescription,
@@ -71,29 +70,17 @@ const videoObjectSchema = {
   publisher: organisation || client ? { '@type': 'Organization', name: organisation || client } : undefined,
 };
 
-const breadcrumbSchema = {
-  '@context': 'https://schema.org',
-  '@type': 'BreadcrumbList',
-  itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Home', item: Astro.site ? new URL('/', Astro.site).href : '/' },
-    { '@type': 'ListItem', position: 2, name: 'Videos', item: Astro.site ? new URL('/videos/', Astro.site).href : '/videos/' },
-    { '@type': 'ListItem', position: 3, name: pageTitle },
-  ],
-};
 ---
 
 <Layout
+  mainEntity={videoObjectSchema}
+  datePublished={parsedPublishedDate}
   title={pageTitle}
   description={pageDescription}
   image={resolvedHeroImage || undefined}
   canonical={canonical}
   noindex={noindex}
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(videoObjectSchema)} is:inline />
-    <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} is:inline />
-  </Fragment>
-
   <article class="video-page">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>

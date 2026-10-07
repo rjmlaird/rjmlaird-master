@@ -129,33 +129,29 @@ const basePath =
 
 const pageUrl = baseUrl ? new URL(`/${basePath}/${slug}/`, baseUrl).href : undefined;
 
-const jsonLd = {
-  '@context': 'https://schema.org',
+const PERSON_ID = `${(baseUrl ?? 'https://rjmlaird.co.uk/').replace(/\/$/, '')}/#person`;
+const mainEntity = {
   '@type': kind === 'event' ? 'Event' : 'CreativeWork',
+  name: pageTitle,
   headline: pageTitle,
   description: pageDescription,
   image: resolvedHeroSrc ? [resolvedHeroSrc] : undefined,
+  author: kind === 'event' ? undefined : { '@id': PERSON_ID },
+  organizer: kind === 'event' ? { '@id': PERSON_ID } : undefined,
   dateCreated: startDate?.toISOString?.(),
   dateModified: (updatedDate ?? startDate)?.toISOString?.(),
-  mainEntityOfPage: {
-    '@type': 'WebPage',
-    '@id': pageUrl,
-  },
   keywords: safeTags.length > 0 ? safeTags.join(', ') : undefined,
 };
 ---
 
 <Layout
+  mainEntity={mainEntity}
   title={pageTitle}
   description={pageDescription}
   image={resolvedHeroSrc || undefined}
   canonical={canonical}
   noindex={noindex || isStub}
 >
-  <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} is:inline />
-  </Fragment>
-
   <article class="project">
     <nav class="breadcrumb" aria-label="Breadcrumb">
       <ol>

@@ -3,26 +3,13 @@ import Layout from "../layouts/Layout.astro";
 import cv from "../data/cv.json";
 import profile from "../data/profile.json";
 
-const siteUrl = "https://rjmlaird.co.uk";
-const jsonLd = [
-  {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    mainEntity: {
-      "@id": `${siteUrl}/#person`,
-      "@type": "Person",
-      name: profile.name,
-      hasCredential: cv.credentials.map((c) => ({ "@type": "EducationalOccupationalCredential", name: c })),
-    },
-  },
-];
 ---
 
 <Layout
   title="CV"
   description="Curriculum vitae of Ryan Laird: experience, education, credentials, memberships and skills across space, science communication and digital strategy."
   noindex={!cv.complete}
-  jsonLd={jsonLd}
+  schemaType="ProfilePage"
 >
   <div class="wrap page">
     <header class="page-head">

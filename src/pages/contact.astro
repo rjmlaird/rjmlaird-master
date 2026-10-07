@@ -6,7 +6,7 @@ const mailto = (t: (typeof enquiries.types)[number]) =>
   `mailto:${enquiries.email}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(t.body)}`;
 ---
 
-<Layout title="Contact" description="Contact Ryan Laird about communications projects, mentoring, teaching and speaking, or research and editorial collaboration.">
+<Layout schemaType="ContactPage" title="Contact" description="Contact Ryan Laird about communications projects, mentoring, teaching and speaking, or research and editorial collaboration.">
   <div class="wrap page">
     <header class="page-head">
       <h1>Contact</h1>

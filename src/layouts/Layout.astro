@@ -6,8 +6,9 @@ import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 import JsonLd from "../components/JsonLd.astro";
 import type { CollectionEntry } from 'astro:content';
-import profile from "../data/profile.json";
-import socials from "../data/socials.json";
+import nav from "../data/nav.json";
+import { loadSchemaSource } from "../lib/schema-org/source";
+import { buildPageGraph, type Crumb, type PageType } from "../lib/schema-org/graph";
 
 interface Props {
   title?: string;
@@ -21,6 +22,16 @@ interface Props {
   /** Page-specific structured data (Article, PodcastEpisode, CreativeWork, BreadcrumbList...)
    *  merged alongside the site-wide WebSite + Person schema below. */
   jsonLd?: Record<string, any> | Record<string, any>[];
+  /** schema.org page type (default WebPage). ProfilePage/AboutPage make the page "about" the Person. */
+  schemaType?: PageType;
+  /** Force the full Person profile into the graph (it is automatic on home, about, cv, contact, work-with-me, press). */
+  schemaFull?: boolean;
+  /** Explicit breadcrumb trail; omit to derive it from the URL. */
+  breadcrumbs?: Crumb[];
+  /** The page's primary entity (BlogPosting, PodcastEpisode, VideoObject ...), linked to the WebPage by @id. */
+  mainEntity?: Record<string, any>;
+  datePublished?: string | Date;
+  dateModified?: string | Date;
 }
 
 const {
@@ -31,6 +42,12 @@ const {
   canonical,
   post,
   jsonLd,
+  schemaType,
+  schemaFull,
+  breadcrumbs,
+  mainEntity,
+  datePublished,
+  dateModified,
 } = Astro.props as Props;
 
 const postData = post?.data as Record<string, any> | undefined;
@@ -49,47 +66,43 @@ const canonicalUrl =
 
 const ogImage = baseUrl ? new URL(resolvedImage, baseUrl).href : resolvedImage;
 
-// Real, non-placeholder profile links only — several entries in socials.json are
-// unfilled template placeholders (fake IDs/usernames) and must never be emitted
-// as structured data.
-const PLACEHOLDER_MARKERS = ["your-user-id", "441234567890", "0000-0000-0000-0000", "XXXXXXXXXXX", "YourName"];
-const isRealSocial = (s: { url: string }) => !PLACEHOLDER_MARKERS.some((m) => s.url.includes(m));
-const sameAs = (socials as { url: string }[]).filter(isRealSocial).map((s) => s.url);
+const siteUrl = (baseUrl ?? "https://rjmlaird.co.uk").replace(/\/$/, "");
 
-const siteUrl = baseUrl ?? "https://rjmlaird.co.uk";
-const personId = `${siteUrl}#person`;
+// Pages that are about Ryan carry the full Person profile; everything else gets the light Person node.
+const FULL_PROFILE_PATHS = new Set(["/", "/about/", "/cv/", "/contact/", "/work-with-me/", "/press/"]);
+const path = Astro.url.pathname;
+const knownSections = [...(nav.primary ?? []), ...(nav.utility ?? [])]
+  .map((n: { href: string }) => n.href)
+  .filter((h: string) => h.startsWith("/"))
+  .map((h: string) => h.split("/").filter(Boolean)[0])
+  .filter(Boolean)
+  .concat(["blog", "podcasts", "videos", "projects", "case-studies", "research", "dev", "mentoring", "coaching", "initiatives", "events", "awards", "press", "teaching"]);
 
-const personSchema = {
-  "@type": "Person",
-  "@id": personId,
-  name: profile.name,
-  alternateName: profile.preferredName,
-  jobTitle: profile.role,
-  description: profile.biography?.[0],
-  url: siteUrl,
-  image: baseUrl ? new URL(profile.avatar, baseUrl).href : profile.avatar,
-  email: `mailto:${profile.email}`,
-  address: { "@type": "PostalAddress", addressLocality: "Leicester", addressCountry: "GB" },
-  sameAs,
+const schemaSource = await loadSchemaSource();
+const stripContext = (n: Record<string, any>) => {
+  const { ["@context"]: _ctx, ...rest } = n;
+  return rest;
 };
-
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": "WebSite",
-      "@id": `${siteUrl}#website`,
-      url: siteUrl,
-      name: siteTitle,
-      description,
-      publisher: { "@id": personId },
-      inLanguage: "en-GB",
-    },
-    personSchema,
-  ],
-};
-
-const pageJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
+const extraNodes = (jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []).flatMap((n) =>
+  n["@graph"] ? (n["@graph"] as Record<string, any>[]) : [stripContext(n)],
+);
+const pageGraph = buildPageGraph(schemaSource, {
+  siteUrl,
+  path,
+  // The graph describes this site's own URL even when <link rel=canonical> points elsewhere (e.g. syndicated podcasts).
+  canonicalUrl: new URL(path, `${siteUrl}/`).href,
+  title: resolvedTitle,
+  description: resolvedDescription,
+  imageUrl: ogImage,
+  type: schemaType,
+  full: schemaFull ?? FULL_PROFILE_PATHS.has(path),
+  breadcrumbs,
+  datePublished,
+  dateModified,
+  mainEntity,
+  extras: extraNodes,
+  knownSections: Array.from(new Set(knownSections)),
+});
 ---
 
 <!doctype html>
@@ -121,8 +134,7 @@ const pageJsonLd = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
       rel="stylesheet"
     />
 
-    <JsonLd id="jsonld-site" json={websiteSchema} />
-    {pageJsonLd.length > 0 && <JsonLd id="jsonld-page" json={pageJsonLd} />}
+    <JsonLd id="jsonld" json={pageGraph} />
 
     <slot name="head" />
   </head>
