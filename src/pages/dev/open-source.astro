@@ -31,6 +31,23 @@ const repos = allRepos
 
 const repoLanguages = [...new Set(repos.map((r: any) => r.language).filter(Boolean))] as string[];
 
+// Map organization logins to friendly display names if available
+const orgDisplayNames: Record<string, string> = {
+  impactorbitco: "Impact Orbit",
+  spaceforneuro: "Space for Neurodiversity",
+};
+
+const getOrgLabel = (login: string) => orgDisplayNames[login] || login;
+
+const repoOwners = [
+  ...new Set(
+    repos.map((r: any) => {
+      const [owner] = (r.full_name ?? `${GITHUB_USERNAME}/${r.name}`).split("/");
+      return owner;
+    })
+  ),
+].sort();
+
 function timeAgo(dateStr: string): string {
   const diffMs = Date.now() - new Date(dateStr).getTime();
   const days = Math.floor(diffMs / 86400000);
@@ -145,17 +162,36 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
     <section class="block">
       <p class="tlbl">Repositories, by last commit</p>
 
-      {repoLanguages.length > 0 && (
-        <div class="filters" id="filters">
-          <button class="filter-btn active" data-filter="all">All</button>
-          {repoLanguages.map((lang) => (
-            <button class="filter-btn" data-filter={lang}>
-              <span class="filter-dot" style={`background:${getLanguageColor(lang)}`}></span>
-              {lang}
-            </button>
-          ))}
+      {/* Filter Controls */}
+      <div class="filters-container">
+        <div class="filter-group">
+          <span class="filter-label">Organisation / Owner</span>
+          <div class="filters" id="org-filters">
+            <button class="filter-btn active" data-filter-org="all">All</button>
+            <button class="filter-btn" data-filter-org={GITHUB_USERNAME}>Personal</button>
+            {repoOwners.filter(owner => owner !== GITHUB_USERNAME).map((owner) => (
+              <button class="filter-btn" data-filter-org={owner}>
+                {getOrgLabel(owner)}
+              </button>
+            ))}
+          </div>
         </div>
-      )}
+
+        {repoLanguages.length > 0 && (
+          <div class="filter-group">
+            <span class="filter-label">Language</span>
+            <div class="filters" id="lang-filters">
+              <button class="filter-btn active" data-filter-lang="all">All</button>
+              {repoLanguages.map((lang) => (
+                <button class="filter-btn" data-filter-lang={lang}>
+                  <span class="lang-dot" style={`background:${getLanguageColor(lang)}`}></span>
+                  {lang}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
 
       {repos.length ? (
         <div class="repo-grid" id="repo-grid">
@@ -163,8 +199,12 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
             const [owner, name] = (repo.full_name ?? `${GITHUB_USERNAME}/${repo.name}`).split("/");
             const isOrg = owner !== GITHUB_USERNAME;
             return (
-              <article class="repo-card" data-language={repo.language ?? ""}>
-                {isOrg && <p class="repo-org">{owner}</p>}
+              <article 
+                class="repo-card" 
+                data-owner={owner.toLowerCase()}
+                data-language={repo.language ? repo.language.toLowerCase() : ""}
+              >
+                {isOrg && <p class="repo-org">{getOrgLabel(owner)}</p>}
                 <a href={repo.html_url} class="repo-name" target="_blank" rel="noopener noreferrer">
                   {repo.name} <span>↗</span>
                 </a>
@@ -229,3 +269,67 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
     </section>
   </div>
 </Layout>
+
+<script>
+  const orgButtons = document.querySelectorAll('#org-filters .filter-btn');
+  const langButtons = document.querySelectorAll('#lang-filters .filter-btn');
+  const repoCards = document.querySelectorAll<HTMLElement>('#repo-grid .repo-card');
+
+  let activeOrg = 'all';
+  let activeLang = 'all';
+
+  function filterRepos() {
+    repoCards.forEach((card) => {
+      const cardOwner = card.dataset.owner || '';
+      const cardLang = card.dataset.language || '';
+
+      const matchesOrg = activeOrg === 'all' || cardOwner === activeOrg.toLowerCase();
+      const matchesLang = activeLang === 'all' || cardLang === activeLang.toLowerCase();
+
+      if (matchesOrg && matchesLang) {
+        card.style.display = '';
+      } else {
+        card.style.display = 'none';
+      }
+    });
+  }
+
+  orgButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      orgButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeOrg = btn.getAttribute('data-filter-org') || 'all';
+      filterRepos();
+    });
+  });
+
+  langButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      langButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeLang = btn.getAttribute('data-filter-lang') || 'all';
+      filterRepos();
+    });
+  });
+</script>
+
+<style>
+  .filters-container {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .filter-label {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    opacity: 0.7;
+  }
+</style>
