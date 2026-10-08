@@ -37,6 +37,8 @@ jobs:
         run: npm ci
 
       - name: Build or copy files
+        env:
+          DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
         run: |
           rm -rf dist
 
