@@ -1,0 +1,397 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+interface LabItem {
+  name: string;
+  slug: string;
+  status: "in orbit" | "pre-launch";
+  description: string;
+  tech: string[];
+  demoUrl?: string;
+  sourceUrl?: string;
+  updated: string;
+}
+
+const labs: LabItem[] = [
+  {
+    name: "N-Body Orbital Sandbox",
+    slug: "n-body-orbital-sandbox",
+    status: "in orbit",
+    description: "A minimal browser-based gravity simulator for exploring orbital motion and prototyping new interactive experiments.",
+    tech: ["React", "Vite", "Canvas API"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Carbon Reduction Plan",
+    slug: "carbon-reduction-plan",
+    status: "in orbit",
+    description: "A focused web project for presenting carbon reduction information in a simple, maintainable interface.",
+    tech: ["React", "Vite", "Canvas API"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Wildfire Story Lab",
+    slug: "wildfire-story-lab",
+    status: "pre-launch",
+    description: "An experimental storytelling tool for exploring how climate and wildfire narratives can be communicated interactively.",
+    tech: ["React", "Vite", "Canvas API"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Contrast Lab",
+    slug: "contrast-lab",
+    status: "in orbit",
+    description: "A WCAG 2.x colour contrast checker for testing foreground and background pairs against AA and AAA accessibility thresholds.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Component Sandbox",
+    slug: "component-sandbox",
+    status: "in orbit",
+    description: "A live gallery of the Astro UI blocks used across rjmlaird.co.uk, each rendered with its source snippet underneath.",
+    tech: ["Astro"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Climate Visualiser",
+    slug: "climate-visualiser",
+    status: "pre-launch",
+    description: "A science-communication project that turns temperature anomaly data into a readable chart with plain-English annotations.",
+    tech: ["React", "Vite", "Recharts"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-11"
+  },
+  {
+    name: "Mechanics",
+    slug: "mechanics",
+    status: "pre-launch",
+    description: "An interactive classical mechanics lab featuring four real-time simulations built on a shared physics engine: ramp forces and friction, Newton's cradle momentum transfers, projectile motion with independent SUVAT equations, and vehicle stopping distances.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-12"
+  },
+  {
+    name: "Graphs",
+    slug: "graphs",
+    status: "pre-launch",
+    description: "A modular pre-launch template designed for data visualization, custom charting, and analytical metric rendering.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-12"
+  },
+  {
+    name: "Satellites",
+    slug: "satellites",
+    status: "in orbit",
+    description: "A live orbital tracker utilizing SGP4 propagation of Celestrak's GP catalog, cross-referenced with SATCAT and rendered interactively via Leaflet maps.",
+    tech: ["Astro", "Vite", "Leaflet"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-21"
+  },
+  {
+    name: "Drought",
+    slug: "drought",
+    status: "pre-launch",
+    description: "A comprehensive UK drought risk monitor combining live Copernicus European Drought Observatory (EDO/GDO) indicators with real-time Environment Agency and SEPA hydrology data.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-26"
+  },
+  {
+    name: "Tintwistle",
+    slug: "tintwistle",
+    status: "pre-launch",
+    description: "A pre-launch environmental or geographical monitoring experiment focused on the Tintwistle area, currently in development.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-26"
+  },
+  {
+    name: "Biodiversity",
+    slug: "biodiversity",
+    status: "pre-launch",
+    description: "A habitat health monitor combining satellite-derived vegetation greenness (NDVI), live designated nature reserve boundaries (NNR, LNR, SSSI), and river water quality archives.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-26"
+  },
+  {
+    name: "Sewage",
+    slug: "sewage",
+    status: "pre-launch",
+    description: "A real-time monitoring tool tracking raw-sewage storm overflow activations (EDMs) across Severn Trent Water and Anglian Water, contextualised with Copernicus soil moisture and rainfall anomalies.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-26"
+  },
+  {
+    name: "Astro",
+    slug: "astro-lab",
+    status: "pre-launch",
+    description: "A pre-launch exploratory tool dedicated to astronomical data processing, space missions, or celestial mechanics.",
+    tech: ["Streamlit", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-26"
+  },
+  {
+    name: "Atmosphere",
+    slug: "atmosphere",
+    status: "pre-launch",
+    description: "A multi-tiered vertical air quality profile tracking nitrogen dioxide, ozone, and particulates over Leicestershire by blending Copernicus CAMS regional models with real-world AURN ground stations.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-07-27"
+  },
+  {
+    name: "Flow around objects",
+    slug: "flow-around-objects",
+    status: "in orbit",
+    description: "A 2D fluid solver running in the browser. It uses the lattice Boltzmann method to compute flow around an aerofoil, square or cylinder in air or water, with live drag and lift coefficients, vortex shedding and pressure and vorticity fields. An educational model, not experimentally validated.",
+    tech: ["JavaScript", "Canvas 2D", "Lattice Boltzmann (D2Q9)", "Cloudflare Workers"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-10-05"
+  },
+  {
+    name: "Electricity",
+    slug: "electricity",
+    status: "in orbit",
+    description: "An interactive exploration of electricity: how voltage, current and resistance relate, and how simple circuits behave as you change the components.",
+    tech: ["React", "Vite", "TypeScript"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-10-05"
+  },
+  {
+    name: "Elements",
+    slug: "elements",
+    status: "in orbit",
+    description: "An interactive periodic table for exploring the chemical elements, their properties and how they group and trend across the table.",
+    tech: ["React", "Vite", "TypeScript"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-10-05"
+  },
+  {
+    name: "leicester-floods",
+    slug: "leicester-floods",
+    status: "pre-launch",
+    description: "Spatial risk analysis and GIS layer modeling for regional watercourses and flood zones across Leicestershire.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-10-06"
+  },
+  {
+    name: "rubiks",
+    slug: "rubiks",
+    status: "pre-launch",
+    description: "An interactive 3D state manipulator and solving algorithm sandbox rendered in the browser.",
+    tech: ["React", "Vite"],
+    demoUrl: "#",
+    sourceUrl: "#",
+    updated: "2026-10-06"
+  }
+];
+
+function formatDate(dateStr: string): string {
+  const [year, month, day] = dateStr.split("-");
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  return date.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+}
+---
+
+<Layout 
+  title="Labs — Ryan Laird" 
+  description="Working experiments, orbital mechanics sandboxes, data pipelines, and interface prototypes."
+>
+  <div class="wrap page labs-page">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="https://rjmlaird.co.uk">rjmlaird.co.uk</a> / Labs
+    </nav>
+
+    <header class="page-head">
+      <p class="sl">Experimental Sandbox</p>
+      <h1>Labs</h1>
+      <p class="lede">
+        Working experiments, not finished products. A sandbox for orbital mechanics tools, data pipelines, and interface prototypes. Some of these will graduate to the main site. Most won't, and that's the point.
+      </p>
+
+      {/* Filter controls */}
+      <div class="filters" id="status-filters">
+        <button class="filter-btn active" data-filter="all">All ({labs.length})</button>
+        <button class="filter-btn" data-filter="in orbit">In orbit ({labs.filter(i => i.status === 'in orbit').length})</button>
+        <button class="filter-btn" data-filter="pre-launch">Pre-launch ({labs.filter(i => i.status === 'pre-launch').length})</button>
+      </div>
+    </header>
+
+    <section class="block">
+      <div class="repo-grid" id="labs-grid">
+        {labs.map((item) => (
+          <article class="repo-card lab-card" data-status={item.status}>
+            <div class="lab-card-header">
+              <span class={`status-badge ${item.status === 'in orbit' ? 'status-orbit' : 'status-pre'}`}>
+                {item.status}
+              </span>
+              <span class="repo-updated">Updated {formatDate(item.updated)}</span>
+            </div>
+
+            <h3 class="repo-name">{item.name}</h3>
+            <p class="repo-desc">{item.description}</p>
+
+            <div class="repo-topics">
+              {item.tech.map((t) => (
+                <span class="tag">{t}</span>
+              ))}
+            </div>
+
+            <div class="repo-links">
+              {item.demoUrl && (
+                <a href={item.demoUrl} target="_blank" rel="noopener noreferrer">
+                  Open demo ↗
+                </a>
+              )}
+              {item.sourceUrl && (
+                <a href={item.sourceUrl} target="_blank" rel="noopener noreferrer" class="source-link">
+                  Source
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <footer class="labs-footer">
+      <a href="https://rjmlaird.co.uk" class="back-link">← Back to rjmlaird.co.uk</a>
+    </footer>
+  </div>
+</Layout>
+
+<script>
+  const filterButtons = document.querySelectorAll('#status-filters .filter-btn');
+  const labCards = document.querySelectorAll<HTMLElement>('#labs-grid .lab-card');
+
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const filterValue = btn.getAttribute('data-filter');
+
+      labCards.forEach((card) => {
+        const cardStatus = card.getAttribute('data-status');
+        if (filterValue === 'all' || cardStatus === filterValue) {
+          card.style.display = '';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  .labs-page {
+    max-width: 1040px;
+    margin: 0 auto;
+  }
+
+  .labs-footer {
+    margin: 4rem 0 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color, rgba(255, 255, 255, 0.1));
+  }
+
+  .back-link {
+    font-size: 0.92rem;
+    text-decoration: none;
+    opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+
+  .back-link:hover {
+    opacity: 1;
+  }
+
+  .lab-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .status-badge {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }
+
+  .status-orbit {
+    background: rgba(0, 194, 168, 0.15);
+    color: #00C2A8;
+  }
+
+  .status-pre {
+    background: rgba(245, 166, 35, 0.15);
+    color: #F5A623;
+  }
+
+  .filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    background: transparent;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.2));
+    padding: 0.35rem 0.9rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: inherit;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: #00C2A8;
+  }
+
+  .filter-btn.active {
+    background: #00C2A8;
+    border-color: #00C2A8;
+    color: #141B29;
+    font-weight: 500;
+  }
+
+  .source-link {
+    opacity: 0.7;
+    margin-left: 1rem;
+  }
+</style>
