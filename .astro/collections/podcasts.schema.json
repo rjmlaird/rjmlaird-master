@@ -30,13 +30,9 @@
       "type": "boolean"
     },
     "id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "number"
-        }
+      "type": [
+        "string",
+        "number"
       ]
     },
     "slug": {
@@ -474,23 +470,15 @@
       "type": "string"
     },
     "season": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "number"
-        }
+      "type": [
+        "string",
+        "number"
       ]
     },
     "episodeNumber": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "number"
-        }
+      "type": [
+        "string",
+        "number"
       ]
     },
     "publishedDate": {
@@ -524,13 +512,9 @@
         "type": "object",
         "properties": {
           "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
+            "type": [
+              "string",
+              "number"
             ]
           },
           "title": {
@@ -546,23 +530,15 @@
             "type": "string"
           },
           "season": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
+            "type": [
+              "string",
+              "number"
             ]
           },
           "episodeNumber": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
+            "type": [
+              "string",
+              "number"
             ]
           },
           "publishedDate": {
@@ -599,13 +575,9 @@
         "type": "object",
         "properties": {
           "id": {
-            "anyOf": [
-              {
-                "type": "string"
-              },
-              {
-                "type": "number"
-              }
+            "type": [
+              "string",
+              "number"
             ]
           },
           "title": {

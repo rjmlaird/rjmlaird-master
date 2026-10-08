@@ -20,7 +20,7 @@ export function getLanguageColor(name: string | null | undefined): string {
 
 const GITHUB_API = "https://api.github.com";
 export const GITHUB_USERNAME = "rjmlaird";
-export const GITHUB_ORGS = ["greenorbitdigital", "greenorbitspace", "spaceforneuro"];
+export const GITHUB_ORGS = ["impactorbitco", "leicesterspaceweek", "spaceforneuro"];
 
 function githubHeaders(): Record<string, string> {
   const headers: Record<string, string> = {
