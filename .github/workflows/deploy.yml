@@ -41,7 +41,7 @@ jobs:
         run: pnpm config set minimum-release-age 0
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --no-frozen-lockfile --unsafe-perm=true
 
       - name: Build or copy files
         env:
