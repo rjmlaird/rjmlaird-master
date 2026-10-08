@@ -38,7 +38,9 @@ jobs:
           cache: 'pnpm'
 
       - name: Disable minimum release age check for CI
-        run: pnpm config set minimum-release-age 0
+        run: |
+          pnpm config set minimum-release-age 0 --global
+          pnpm config delete minimum-release-age || true
 
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile --unsafe-perm=true
