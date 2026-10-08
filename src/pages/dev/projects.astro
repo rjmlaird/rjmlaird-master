@@ -6,9 +6,6 @@ const DEV_TOKEN = import.meta.env.DEV_TOKEN;
 const GITHUB_USERNAME = "rjmlaird";
 
 const ORGS = [
-  { login: "greenorbitspace", label: "Green Orbit Digital" },
-  { login: "greenorbitdigital", label: "Green Orbit Space" },
-  { login: "greenorbitacademy", label: "Green Orbit Academy" },
   { login: "impactorbitco", label: "Impact Orbit Creative Group" },
   { login: "spaceforneuro", label: "Space for Neurodiversity" },
 ];
@@ -225,14 +222,13 @@ const statusList = [...new Set(cards.map((card) => card.status).filter(Boolean))
 ---
 
 <Layout title="Dev projects" description="GitHub Projects boards across personal and organisation accounts, with status and language filters.">
-
   <div class="wrap page projects-page">
     <section class="projects-shell">
       <header class="projects-head">
         <p class="eyebrow">Projects</p>
         <h1>Selected work across personal and organisation boards.</h1>
         <p class="lede">
-          A curated set of projects, with filters for organisation, scope, language, and status.
+          A curated set of projects, with filters for organisation, language, and status.
         </p>
 
         {projectError && <p class="project-error">{projectError}</p>}
@@ -295,34 +291,29 @@ const statusList = [...new Set(cards.map((card) => card.status).filter(Boolean))
   const norm = (s) => (s || "").toLowerCase().trim();
 
   const organizationSelect = document.getElementById("organizationSelect");
-  const scopeSelect = document.getElementById("scopeSelect");
   const statusSelect = document.getElementById("statusSelect");
   const languageSelect = document.getElementById("languageSelect");
   const items = document.querySelectorAll("#projectGrid .publication-item");
 
   const applyFilters = () => {
     const activeOrg = norm(organizationSelect?.value || "all");
-    const activeScope = norm(scopeSelect?.value || "all");
     const activeStatus = norm(statusSelect?.value || "all");
     const activeLanguage = norm(languageSelect?.value || "all");
 
     items.forEach((el) => {
       const org = norm(el.dataset.organization);
-      const scope = norm(el.dataset.scope);
       const status = norm(el.dataset.status);
       const language = norm(el.dataset.language);
 
       const orgOk = activeOrg === "all" || org === activeOrg;
-      const scopeOk = activeScope === "all" || scope === activeScope;
       const statusOk = activeStatus === "all" || status === activeStatus;
       const languageOk = activeLanguage === "all" || language === activeLanguage;
 
-      el.hidden = !(orgOk && scopeOk && statusOk && languageOk);
+      el.hidden = !(orgOk && statusOk && languageOk);
     });
   };
 
   organizationSelect?.addEventListener("change", applyFilters);
-  scopeSelect?.addEventListener("change", applyFilters);
   statusSelect?.addEventListener("change", applyFilters);
   languageSelect?.addEventListener("change", applyFilters);
   applyFilters();
