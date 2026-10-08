@@ -29,16 +29,17 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
-          version: latest
+          version: 12.7.0
+          run_install: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: pnpm
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile --unsafe-perm=true
+        run: pnpm install --frozen-lockfile
 
       - name: Build or copy files
         env:
@@ -52,7 +53,8 @@ jobs:
             pnpm run build
           else
             echo "Static site detected → Copying files"
-            mkdir dist
+            mkdir -p dist
+
             find . -maxdepth 1 \
               ! -name "dist" \
               ! -name ".git" \

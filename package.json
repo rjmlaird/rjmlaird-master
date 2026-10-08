@@ -28,13 +28,5 @@
     "@astrojs/sitemap": "^3.7.4",
     "tsx": "^4.19.0",
     "typescript": "^6.0.0"
-  },
-  "allowScripts": {
-    "citation-js@0.8.1": true,
-    "esbuild@0.28.1": true,
-    "fsevents@2.3.3": true,
-    "workerd@1.20260714.1": true,
-    "sharp@0.34.5": true,
-    "sharp@0.35.3": true
   }
 }

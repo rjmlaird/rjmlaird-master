@@ -1,4 +1,12 @@
+minimumReleaseAge: 1440
+
+minimumReleaseAgeExclude:
+  - astro@7.3.7
+  - rolldown@1.2.13
+  - '@rolldown/binding-*@1.2.13'
+
 allowBuilds:
   citation-js: false
-  esbuild: false
-  workerd: false
+  esbuild: true
+  workerd: true
+  sharp: true
