@@ -37,12 +37,10 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
-      - name: Disable minimum release age policy for CI
-        run: |
-          echo "minimum-release-age=0" >> .npmrc
-
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile --unsafe-perm=true
+        env:
+          PNPM_CONFIG_MINIMUM_RELEASE_AGE: "0"
 
       - name: Build or copy files
         env:
