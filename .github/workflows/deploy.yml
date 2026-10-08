@@ -37,6 +37,9 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
+      - name: Disable minimum release age check for CI
+        run: pnpm config set minimum-release-age 0
+
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
 
