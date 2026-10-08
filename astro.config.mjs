@@ -27,9 +27,17 @@ const unindexed = /^https:\/\/rjmlaird\.co\.uk\/(mentoring\/.+|coaching\/.*|tuto
 const cv = JSON.parse(fs.readFileSync(path.resolve("src/data/cv.json"), "utf8"));
 if (!cv.complete) stubUrls.add("https://rjmlaird.co.uk/cv/");
 
+// Check if local icons directory exists; if not, point icon integration elsewhere or omit local dir
+const localIconsDir = path.resolve("src/icons");
+const iconConfig = fs.existsSync(localIconsDir) ? {} : { include: {} };
+
 export default defineConfig({
   vite: { resolve: { alias: { "@brand": path.resolve("./src/brand") } } },
   site: "https://rjmlaird.co.uk",
   scopedStyleStrategy: "class",
-  integrations: [icon(), sitemap({ filter: (page) => !stubUrls.has(page) && !unindexed.test(page) }), mdx()],
+  integrations: [
+    icon(iconConfig), 
+    sitemap({ filter: (page) => !stubUrls.has(page) && !unindexed.test(page) }), 
+    mdx()
+  ],
 });
