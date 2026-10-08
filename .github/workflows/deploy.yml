@@ -37,6 +37,9 @@ jobs:
           node-version: 22
           cache: 'pnpm'
 
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile --unsafe-perm=true
+
       - name: Build or copy files
         env:
           DEV_TOKEN: ${{ secrets.DEV_TOKEN }}
