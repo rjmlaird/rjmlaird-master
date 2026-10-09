@@ -1,23 +1,29 @@
 ---
 // src/layouts/ProjectLayout.astro
-import Layout from './Layout.astro';
-import { getExperience, getEducation, getVolunteering } from '@/lib/api';
-import type { CollectionEntry } from 'astro:content';
-import ProjectMeta from '../components/ProjectMeta.astro';
-import Figure from '../components/Figure.astro';
-import RelatedProjects from '../components/RelatedPosts.astro';
-import { getReadingTime } from '../utils/readingTime';
-import videosData from '../data/videos.json';
-import { isEvidenceReady, cleanText } from '../lib/content-quality.mjs';
+import type { CollectionEntry } from "astro:content";
+import Layout from "./Layout.astro";
+import ProjectMeta from "../components/ProjectMeta.astro";
+import Figure from "../components/Figure.astro";
+import RelatedProjects from "../components/RelatedPosts.astro";
+import { getReadingTime } from "../utils/readingTime";
+import { cleanText, isEvidenceReady } from "../lib/content-quality.mjs";
+
+type WorkEntry =
+  | CollectionEntry<"projects">
+  | CollectionEntry<"initiatives">
+  | CollectionEntry<"caseStudies">
+  | CollectionEntry<"events">;
+
+type WorkKind = "project" | "initiative" | "caseStudy" | "event";
 
 interface Props {
-  project?: CollectionEntry<'projects'>;
-  initiative?: CollectionEntry<'initiatives'>;
-  caseStudy?: CollectionEntry<'caseStudies'>;
-  event?: CollectionEntry<'events'>;
+  project?: CollectionEntry<"projects">;
+  initiative?: CollectionEntry<"initiatives">;
+  caseStudy?: CollectionEntry<"caseStudies">;
+  event?: CollectionEntry<"events">;
   title?: string;
   description?: string;
-  relatedProjects?: CollectionEntry<'projects'>[];
+  relatedProjects?: CollectionEntry<"projects">[];
 }
 
 const {
@@ -25,122 +31,125 @@ const {
   initiative,
   caseStudy,
   event,
-  relatedProjects = [],
   title: propTitle,
   description: propDescription,
+  relatedProjects = [],
 } = Astro.props;
 
-const source = project ?? initiative ?? caseStudy ?? event;
-const kind = project
-  ? 'project'
+const source: WorkEntry | undefined =
+  project ?? initiative ?? caseStudy ?? event;
+
+const kind: WorkKind = project
+  ? "project"
   : initiative
-    ? 'initiative'
+    ? "initiative"
     : caseStudy
-      ? 'caseStudy'
-      : 'event';
+      ? "caseStudy"
+      : "event";
 
-const data = source ? source.data : {};
-
-const {
-  title: sourceTitle = '',
-  description: sourceDescription = '',
-  excerpt,
-  startDate = new Date(),
-  endDate,
-  updatedDate,
-  category = [],
-  tags = [],
-  heroImage,
-  heroAlt,
-  imageCredit,
-  canonical,
-  noindex = false,
-  type,
-  status,
-  client,
-  organisation,
-  institution,
-} = data as Record<string, any>;
-
-const title = propTitle || sourceTitle;
-// Template text is never shown, and stub entries stay out of search until they carry real evidence.
-const description = cleanText(propDescription) || cleanText(sourceDescription) || cleanText(excerpt);
-const isStub = kind !== 'event' && !isEvidenceReady(data, (source as { body?: string } | undefined)?.body ?? '');
-
-function processVideos(data: unknown[]) {
-  return data.map((item) => {
-    const video = item as Record<string, unknown>;
-    const rawId = typeof video.youtubeId === "string" ? video.youtubeId : "";
-    const cleanId = rawId.replace(/^v=/, "").split("&")[0].split("?")[0];
-    const itemTitle = typeof video.title === "string" ? video.title : "";
-    
-    const slug = itemTitle.trim()
-      ? itemTitle.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")
-      : cleanId || "video";
-
-    return {
-      ...video,
-      youtubeId: cleanId,
-      slug,
-    };
-  });
+if (!source) {
+  throw new Error(
+    "ProjectLayout requires a project, initiative, caseStudy, or event entry."
+  );
 }
 
-await Promise.all([
-  getExperience(),
-  getEducation(),
-  getVolunteering(),
-]);
+const data = source.data;
 
-processVideos(videosData);
+const title = propTitle ?? data.title ?? "";
+const summary =
+  "summary" in data && typeof data.summary === "string" ? data.summary : "";
 
-const body = source?.body ?? '';
+const description =
+  cleanText(propDescription) ||
+  cleanText(data.description) ||
+  cleanText(data.excerpt) ||
+  cleanText(summary);
+
+const body = source.body ?? "";
+const isStub = kind !== "event" && !isEvidenceReady(data, body);
 const readingTime = getReadingTime(body);
-const safeRelatedProjects = Array.isArray(relatedProjects) ? relatedProjects : [];
-const safeTags = Array.isArray(tags) ? tags : [];
-const safeCategory = Array.isArray(category) ? category : [];
 
-const resolvedHeroSrc = typeof heroImage === 'string' ? heroImage : '';
-const resolvedHeroAlt = heroAlt || title || 'Hero image';
-const resolvedHeroCredit = imageCredit;
+const safeRelatedProjects = Array.isArray(relatedProjects)
+  ? relatedProjects
+  : [];
 
-const slug = Astro.params.slug;
+const safeTags = Array.isArray(data.tags) ? data.tags : [];
+const safeCategory = Array.isArray(data.category) ? data.category : [];
+
+const heroImage =
+  typeof data.heroImage === "string" ? data.heroImage : undefined;
+
+const heroAlt =
+  typeof data.heroAlt === "string" && data.heroAlt.trim()
+    ? data.heroAlt
+    : title || "Project hero image";
+
+const imageCredit =
+  typeof data.imageCredit === "string" && data.imageCredit.trim()
+    ? data.imageCredit
+    : undefined;
+
+const canonical =
+  typeof data.canonical === "string" && data.canonical.trim()
+    ? data.canonical
+    : undefined;
+
+const noindex = data.noindex ?? false;
+
+const startDate =
+  data.startDate instanceof Date ? data.startDate : undefined;
+const endDate = data.endDate instanceof Date ? data.endDate : undefined;
+const updatedDate =
+  data.updatedDate instanceof Date ? data.updatedDate : undefined;
+
+const type = typeof data.type === "string" ? data.type : undefined;
+const status = typeof data.status === "string" ? data.status : undefined;
+const client = typeof data.client === "string" ? data.client : undefined;
+const organisation =
+  typeof data.organisation === "string" ? data.organisation : undefined;
+const institution =
+  typeof data.institution === "string" ? data.institution : undefined;
+
+const slug = Astro.params.slug ?? source.id;
+
 const defaultLabel =
-  kind === 'initiative'
-    ? 'Initiative'
-    : kind === 'caseStudy'
-      ? 'Case Study'
-      : kind === 'event'
-        ? 'Event'
-        : 'Project';
+  kind === "initiative"
+    ? "Initiative"
+    : kind === "caseStudy"
+      ? "Case study"
+      : kind === "event"
+        ? "Event"
+        : "Project";
 
 const pageTitle = title || slug || defaultLabel;
-const pageDescription = description || `Details for ${pageTitle}.`;
+const pageDescription = description || `Details and documentation for ${pageTitle}.`;
 
-const baseUrl = Astro.site?.href;
 const basePath =
-  kind === 'initiative'
-    ? 'initiatives'
-    : kind === 'caseStudy'
-      ? 'case-studies'
-      : kind === 'event'
-        ? 'events'
-        : 'projects';
+  kind === "initiative"
+    ? "work/initiatives"
+    : kind === "caseStudy"
+      ? "work/case-studies"
+      : kind === "event"
+        ? "events"
+        : "work/projects";
 
-const pageUrl = baseUrl ? new URL(`/${basePath}/${slug}/`, baseUrl).href : undefined;
+const personBaseUrl = (Astro.site?.href ?? "https://rjmlaird.co.uk/").replace(
+  /\/$/,
+  ""
+);
+const personId = `${personBaseUrl}/#person`;
 
-const PERSON_ID = `${(baseUrl ?? 'https://rjmlaird.co.uk/').replace(/\/$/, '')}/#person`;
 const mainEntity = {
-  '@type': kind === 'event' ? 'Event' : 'CreativeWork',
+  "@type": kind === "event" ? "Event" : "CreativeWork",
   name: pageTitle,
   headline: pageTitle,
   description: pageDescription,
-  image: resolvedHeroSrc ? [resolvedHeroSrc] : undefined,
-  author: kind === 'event' ? undefined : { '@id': PERSON_ID },
-  organizer: kind === 'event' ? { '@id': PERSON_ID } : undefined,
-  dateCreated: startDate?.toISOString?.(),
-  dateModified: (updatedDate ?? startDate)?.toISOString?.(),
-  keywords: safeTags.length > 0 ? safeTags.join(', ') : undefined,
+  image: heroImage ? [new URL(heroImage, personBaseUrl).href] : undefined,
+  author: kind === "event" ? undefined : { "@id": personId },
+  organizer: kind === "event" ? { "@id": personId } : undefined,
+  dateCreated: startDate?.toISOString(),
+  dateModified: (updatedDate ?? startDate)?.toISOString(),
+  keywords: safeTags.length > 0 ? safeTags.join(", ") : undefined,
 };
 ---
 
@@ -148,44 +157,52 @@ const mainEntity = {
   mainEntity={mainEntity}
   title={pageTitle}
   description={pageDescription}
-  image={resolvedHeroSrc || undefined}
+  image={heroImage}
   canonical={canonical}
   noindex={noindex || isStub}
 >
-  <article class="project">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <ol>
+  <article class="project-detail-view fade in">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <ol class="breadcrumb-list">
         <li><a href="/">Home</a></li>
+        <li aria-hidden="true">/</li>
         <li>
           <a href={`/${basePath}/`}>
-            {kind === 'initiative'
-              ? 'Initiatives'
-              : kind === 'caseStudy'
-                ? 'Case Studies'
-                : kind === 'event'
-                  ? 'Events'
-                  : 'Projects'}
+            {
+              kind === "initiative"
+                ? "Initiatives"
+                : kind === "caseStudy"
+                  ? "Case studies"
+                  : kind === "event"
+                    ? "Events"
+                    : "Projects"
+            }
           </a>
         </li>
+        <li aria-hidden="true">/</li>
         <li aria-current="page">{pageTitle}</li>
       </ol>
     </nav>
 
-    <header class="project-header">
+    <header class="project-header page-head">
       <div class="title-wrap">
         <h1>{pageTitle}</h1>
       </div>
     </header>
 
-    {resolvedHeroSrc && (
-      <Figure
-        src={resolvedHeroSrc}
-        alt={resolvedHeroAlt}
-        credit={resolvedHeroCredit ? `${resolvedHeroCredit}` : undefined}
-        wide
-        loading="eager"
-      />
-    )}
+    {
+      heroImage && (
+        <div class="project-hero-media">
+          <Figure
+            src={heroImage}
+            alt={heroAlt}
+            credit={imageCredit}
+            wide
+            loading="eager"
+          />
+        </div>
+      )
+    }
 
     <ProjectMeta
       type={type}
@@ -201,10 +218,76 @@ const mainEntity = {
       tags={safeTags}
     />
 
-    <slot />
+    <div class="project-content prose">
+      <slot />
+    </div>
 
-    <footer class="project-footer">
-      <RelatedProjects posts={safeRelatedProjects} />
-    </footer>
+    {
+      safeRelatedProjects.length > 0 && (
+        <footer class="project-footer">
+          <div class="related-section-divider" />
+          <RelatedProjects posts={safeRelatedProjects} />
+        </footer>
+      )
+    }
   </article>
 </Layout>
+
+<style>
+  .project-detail-view {
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-bottom: 4rem;
+  }
+
+  .breadcrumb-nav {
+    margin-bottom: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    color: var(--mb);
+  }
+
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    flex-wrap: wrap;
+  }
+
+  .breadcrumb-list a {
+    color: var(--mb);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .breadcrumb-list a:hover {
+    color: var(--teal);
+  }
+
+  .breadcrumb-list [aria-current="page"] {
+    color: var(--w);
+    font-weight: 500;
+  }
+
+  .project-hero-media {
+    margin-bottom: 2rem;
+    border-radius: var(--radius);
+    overflow: hidden;
+    border: 1px solid var(--bd);
+  }
+
+  .project-content {
+    margin-top: 2.5rem;
+  }
+
+  .project-footer {
+    margin-top: 4rem;
+  }
+
+  .related-section-divider {
+    height: 1px;
+    background: var(--bd);
+    margin-bottom: 2.5rem;
+  }
+</style>

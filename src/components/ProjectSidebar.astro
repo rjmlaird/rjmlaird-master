@@ -372,7 +372,7 @@ const allRelatedVideos = [...relatedVideos, ...relatedVideosRich];
         {relatedCaseStudies.map((item: any) => {
           const label = item.data?.title ?? item.title ?? item.name ?? "Case Study";
           const href = item.slug
-            ? `/case-studies/${item.slug}`
+            ? `/work/case-studies/${item.slug}`
             : item.data?.slug
             ? `/case-studies/${item.data.slug}`
             : item.url ?? item.href ?? "#";
@@ -394,7 +394,7 @@ const allRelatedVideos = [...relatedVideos, ...relatedVideosRich];
         {relatedProjects.map((item: any) => {
           const label = item.data?.title ?? item.title ?? item.name ?? "Project";
           const href = item.slug
-            ? `/projects/${item.slug}`
+            ? `/work/projects/${item.slug}`
             : item.data?.slug
             ? `/projects/${item.data.slug}`
             : item.url ?? item.href ?? "#";
@@ -416,7 +416,7 @@ const allRelatedVideos = [...relatedVideos, ...relatedVideosRich];
         {relatedInitiatives.map((item: any) => {
           const label = item.data?.title ?? item.title ?? item.name ?? "Initiative";
           const href = item.slug
-            ? `/initiatives/${item.slug}`
+            ? `/work/initiatives/${item.slug}`
             : item.data?.slug
             ? `/initiatives/${item.data.slug}`
             : item.url ?? item.href ?? "#";
@@ -440,7 +440,7 @@ const allRelatedVideos = [...relatedVideos, ...relatedVideosRich];
           const href = item.slug
             ? `/events/${item.slug}`
             : item.data?.slug
-            ? `/events/${item.data.slug}`
+            ? `/work/events/${item.data.slug}`
             : item.url ?? item.href ?? "#";
 
           return (

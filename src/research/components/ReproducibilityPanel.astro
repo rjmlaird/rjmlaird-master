@@ -1,9 +1,0 @@
----
-interface Props { text: string; url?: string; }
-const { text, url } = Astro.props;
----
-<div class="panel repro">
-  <h3>How to reproduce this work</h3>
-  <p>{text}</p>
-  <p>{url ? <a href={url}>Open the reproducibility materials</a> : <span class="muted">Reproducibility materials are not yet available.</span>}</p>
-</div>

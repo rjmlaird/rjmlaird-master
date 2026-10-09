@@ -1,9 +1,0 @@
----
-// The eight-stage chain. With `linked`, each stage links to its section on a project page.
-interface Props { linked?: boolean; }
-const { linked = false } = Astro.props;
-const stages = [['question', 'Research question'], ['methods', 'Method'], ['data', 'Data source'], ['analysis', 'Analysis'], ['outputs', 'Output'], ['limitations', 'Limitations'], ['reproducibility', 'Reproducibility'], ['citation', 'Citation']];
----
-<ol class="chain" aria-label="Research chain">
-  {stages.map(([id, label]) => <li>{linked ? <a href={`#${id}`}>{label}</a> : label}</li>)}
-</ol>

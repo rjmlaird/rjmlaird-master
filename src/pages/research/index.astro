@@ -1,73 +1,233 @@
 ---
 import Layout from "../../layouts/Layout.astro";
+import { Icon } from "astro-icon/components";
+import { getEntry } from "astro:content";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import profile from "../../data/profile.json";
+import socials from "../../data/socials.json";
+import featured from "../../data/featured-research.json";
+import { resolveIcon, HIDDEN_SOCIALS } from "../../lib/icons";
 
 const bib = await readFile(path.join(process.cwd(), "src/data/publications.bib"), "utf8");
 const pubCount = (bib.match(/^@\w+\s*\{/gm) ?? []).length;
-const orcid = profile.contact.find((c) => c.label === "ORCID")?.href;
 
-const sections = [
-  { id: "publications", title: "Publications and academic work", text: "Journal articles, conference papers and reports from my astrophysics and Earth observation work.", href: "/research/publications/", cta: `Browse the bibliography (${pubCount} entries)` },
-  { id: "independent", title: "Independent research and analysis", text: "Public-interest analysis and commentary written outside any institution, such as articles on space sustainability and communication practice.", href: "/writing/", cta: "Read the writing" },
-  { id: "applied", title: "Applied research and project work", text: "Research done in service of a communication, sustainability, space or digital project. Each is described on its project page with its context and my role.", href: "/research/projects/", cta: "See projects" },
-  { id: "lab", title: "Reproducible research projects", text: "Project pages that follow one chain: research question, method, data source, analysis, output, limitations, reproducibility and citation. Everything is draft until reviewed.", href: "/research/lab/", cta: "Open the research lab" },
-  { id: "methods", title: "Methods, data and open tools", text: "Code, data pipelines and experiments, published where I can so others can inspect or reuse them. Status is stated for each, from experiment to maintained.", href: "/open-source/", cta: "Open source and lab" },
-  { id: "talks", title: "Talks, media and public engagement", text: "Conference talks, panels, podcast and press appearances, and events I have organised.", href: "/press/", cta: "Press and appearances" },
+const academicProfiles = socials.filter(
+  (item) => item.type === "academic" && !HIDDEN_SOCIALS.has(item.key),
+);
+
+/* ---- Featured research projects, resolved from the content collection ---- */
+
+type FeaturedItem = {
+  collection: string;
+  slug: string;
+  sector?: string;
+  year?: string;
+  role?: string;
+  outcome?: string;
+  href?: string;
+};
+
+const TONES = ["teal", "violet", "sky", "amber"] as const;
+
+const text = (value: unknown): string =>
+  typeof value === "string" ? value.trim() : "";
+
+const featuredProjects = (
+  await Promise.all(
+    (featured.items as FeaturedItem[]).map(async (item, index) => {
+      const entry = await getEntry(item.collection as "projects", item.slug);
+
+      if (!entry) {
+        console.warn(
+          `[research] Featured project not found: ${item.collection}/${item.slug}`,
+        );
+        return null;
+      }
+
+      const data = entry.data as Record<string, unknown>;
+
+      return {
+        slug: item.slug,
+        title: text(data.title) || text(data.name) || item.slug,
+        summary:
+          text(data.summary) || text(data.description) || text(data.excerpt),
+        sector: text(item.sector),
+        year: text(item.year),
+        role: text(item.role),
+        outcome: text(item.outcome),
+        href: item.href ?? `/work/projects/${item.slug}/`,
+        tone: TONES[index % TONES.length],
+      };
+    }),
+  )
+).filter((project): project is NonNullable<typeof project> => project !== null);
+
+const themes = [
+  {
+    title: "Space sustainability",
+    text: "How space organisations talk about and act on environmental impact.",
+  },
+  {
+    title: "Climate and Earth observation",
+    text: "Making satellite-derived evidence usable by non-specialists.",
+  },
+  {
+    title: "Science communication and misinformation",
+    text: "How accuracy and trust are maintained in public explanation.",
+  },
+  {
+    title: "Digital systems, accessibility and public knowledge",
+    text: "How websites and data make or hide information.",
+  },
+  {
+    title: "Astronomy and public understanding",
+    text: "Comets, missions and the stories around them.",
+  },
 ];
 ---
 
 <Layout
   title="Research"
-  description="Research by Ryan Laird: publications, independent analysis, applied research, open methods and tools, and talks and media."
+  description="Research by Ryan Laird: publications in astrophysics and Earth observation, featured research projects, current research themes, and academic profiles."
 >
   <div class="wrap page">
     <header class="page-head">
-      <h1>Research and writing</h1>
-      <p class="lead">
+      <p class="sl">Research</p>
+      <h1>Research</h1>
+
+      <p class="lede">
         My research starts in astrophysics and now sits alongside work on space sustainability, climate and Earth
-        observation, and how science is communicated. This page separates formal academic work from public writing,
-        professional research and technical experiments.
+        observation, and how science is communicated.
       </p>
     </header>
 
-    <div class="note">
+    <div class="note" role="note">
       <strong>A note on status.</strong> I work as an independent practitioner. The academic work below comes from my
       physics training and collaborations, and does not imply a current university appointment.
     </div>
 
-    <div class="block">
-      <h2>What’s here</h2>
+    <section class="block" aria-labelledby="publications-heading">
+      <h2 id="publications-heading">Publications</h2>
+
       <div class="route-grid">
-        {sections.map((s, i) => (
-          <article class="route" id={s.id} data-tone={["sky", "teal", "amber", "violet", "teal"][i]}>
-            <h3>{s.title}</h3>
-            <p>{s.text}</p>
-            <a class="go" href={s.href}>{s.cta}</a>
-          </article>
-        ))}
+        <article class="route" id="publications" data-tone="sky">
+          <h3>Publications and academic work</h3>
+          <p>Journal articles, conference papers and reports from my astrophysics and Earth observation work.</p>
+          <a class="go" href="/research/publications/">Browse the bibliography ({pubCount} entries)</a>
+        </article>
       </div>
-    </div>
+    </section>
 
-    <section class="block" aria-labelledby="themes">
-      <h2 id="themes">Current themes</h2>
+    {featuredProjects.length > 0 && (
+      <section class="block" aria-labelledby="featured-heading">
+        <h2 id="featured-heading">Featured research projects</h2>
+
+        <div class="route-grid">
+          {featuredProjects.map((project) => (
+            <article class="route" id={project.slug} data-tone={project.tone}>
+              {(project.sector || project.year) && (
+                <p class="for">
+                  {[project.sector, project.year].filter(Boolean).join(" · ")}
+                </p>
+              )}
+
+              <h3>{project.title}</h3>
+
+              {project.summary && <p>{project.summary}</p>}
+
+              {project.role && (
+                <p class="for"><strong>Role:</strong> {project.role}</p>
+              )}
+
+              {project.outcome && (
+                <p class="for"><strong>Outcome:</strong> {project.outcome}</p>
+              )}
+
+              <a class="go" href={project.href}>
+                View project<span class="sr-only">: {project.title}</span>
+              </a>
+            </article>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section class="block" aria-labelledby="themes-heading">
+      <h2 id="themes-heading">Research interests and themes</h2>
+
       <ul class="plain-list">
-        <li><strong>Space sustainability:</strong> how space organisations talk about and act on environmental impact.</li>
-        <li><strong>Climate and Earth observation:</strong> making satellite-derived evidence usable by non-specialists.</li>
-        <li><strong>Science communication and misinformation:</strong> how accuracy and trust are maintained in public explanation.</li>
-        <li><strong>Digital systems, accessibility and public knowledge:</strong> how websites and data make or hide information.</li>
-        <li><strong>Astronomy and public understanding:</strong> comets, missions and the stories around them.</li>
+        {themes.map((theme) => (
+          <li><strong>{theme.title}:</strong> {theme.text}</li>
+        ))}
       </ul>
     </section>
 
-    <section class="block" aria-labelledby="profiles">
-      <h2 id="profiles">External profiles</h2>
-      <ul class="plain-list">
-        {orcid && <li><a class="link" href={orcid} rel="me noopener">ORCID</a></li>}
-        <li><a class="link" href="https://github.com/rjmlaird" rel="me noopener">GitHub</a></li>
-        <li><a class="link" href="/press/">Press and media profile</a></li>
-      </ul>
-    </section>
+    {academicProfiles.length > 0 && (
+      <section class="block" aria-labelledby="profiles-heading">
+        <h2 id="profiles-heading">Academic profiles</h2>
+
+        <ul class="profile-list" role="list">
+          {academicProfiles.map((item) => {
+            const icon = resolveIcon(item.icon, item.key);
+
+            return (
+              <li>
+                <a
+                  class="profile-link"
+                  href={item.url}
+                  target="_blank"
+                  rel="me noopener noreferrer"
+                >
+                  {icon && <Icon name={icon} class="profile-icon" aria-hidden="true" />}
+                  <span>{item.name}</span>
+                  <span class="sr-only"> (opens in a new tab)</span>
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    )}
   </div>
 </Layout>
+
+<style>
+  .profile-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .profile-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    min-height: 44px;
+    padding: 0.5rem 0.95rem;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--mb);
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+
+  .profile-link:hover,
+  .profile-link:focus-visible {
+    border-color: var(--bm);
+    background: var(--lift);
+    color: var(--w);
+  }
+
+  .profile-icon {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: currentColor;
+  }
+</style>

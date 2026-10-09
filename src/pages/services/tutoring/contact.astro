@@ -1,0 +1,8 @@
+---
+import PageLayout from '../../../tutoring/layouts/PageLayout.astro';
+import { site } from '../../../tutoring/data/site';
+---
+<PageLayout title="Contact" lede="Questions before booking? Get in touch.">
+  <p>Email <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+  <p>Please don't send sensitive information about a student by email. Share it in the consultation instead, and only if it helps make sessions safe and accessible.</p>
+</PageLayout>

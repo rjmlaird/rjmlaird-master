@@ -7,8 +7,9 @@ interface Props {
 
 const { item = {}, index, bibText = "" } = Astro.props;
 
-const number = index ? String(index).padStart(2, "0") : "";
-
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
 const clean = (value: unknown) => (value == null ? "" : String(value).trim());
 
 const normalizeAuthors = (authors: unknown) => {
@@ -34,26 +35,15 @@ const normalizeTitle = (entry: Record<string, unknown>) =>
 const normalizeContainer = (entry: Record<string, unknown>) =>
   clean(entry["container-title"]) || clean(entry.journal) || clean(entry.booktitle) || clean(entry.publisher);
 
-const normalizeType = (entry: Record<string, unknown>) => {
-  switch (entry.type) {
-    case "article-journal":
-      return "Journal article";
-    case "paper-conference":
-      return "Conference paper";
-    case "report":
-      return "Report";
-    case "webpage":
-      return "Web page";
-    case "thesis":
-      return "Thesis";
-    default:
-      return clean(entry.type) || "Publication";
-  }
+const TYPE_LABELS: Record<string, string> = {
+  "article-journal": "Journal article",
+  "paper-conference": "Conference paper",
+  report: "Report",
+  webpage: "Web page",
+  thesis: "Thesis",
 };
-
-const normalizeUrl = (entry: Record<string, unknown>) => clean(entry.URL) || clean(entry.url);
-const normalizeDoi = (entry: Record<string, unknown>) => clean(entry.DOI) || clean(entry.doi);
-const normalizeAbstract = (entry: Record<string, unknown>) => clean(entry.abstract);
+const normalizeType = (entry: Record<string, unknown>) =>
+  TYPE_LABELS[clean(entry.type)] || clean(entry.type) || "Publication";
 
 const normalizeKeywords = (entry: Record<string, unknown>) => {
   const raw = entry.keyword ?? entry.keywords ?? "";
@@ -65,7 +55,7 @@ const normalizeKeywords = (entry: Record<string, unknown>) => {
 const excerptWords = (text: string, count = 40) => {
   const words = text.trim().split(/\s+/).filter(Boolean);
   if (words.length <= count) return { text, more: false };
-  return { text: `${words.slice(0, count).join(" ")}...`, more: true };
+  return { text: `${words.slice(0, count).join(" ")}…`, more: true };
 };
 
 const pdfUrlFromItem = (entry: Record<string, unknown>) => {
@@ -76,74 +66,191 @@ const pdfUrlFromItem = (entry: Record<string, unknown>) => {
   return match ? `/${match[1]}` : "";
 };
 
+// Pull a single entry out of the full .bib by its citation key (brace-balanced).
+// Falls back to the whole file if the key can't be found.
+const bibEntryFor = (key: string, text: string) => {
+  if (!key || !text) return text;
+  const escaped = key.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const start = new RegExp(`@\\w+\\s*\\{\\s*${escaped}\\s*,`, "i").exec(text);
+  if (!start) return text;
+  let depth = 0;
+  for (let i = start.index; i < text.length; i++) {
+    if (text[i] === "{") depth++;
+    else if (text[i] === "}" && --depth === 0) return `${text.slice(start.index, i + 1)}\n`;
+  }
+  return text.slice(start.index);
+};
+
+// ---------------------------------------------------------------------------
+// Derived values
+// ---------------------------------------------------------------------------
+const number = index ? String(index).padStart(2, "0") : "";
 const title = normalizeTitle(item);
 const authors = normalizeAuthors(item.author);
 const year = normalizeYear(item);
 const publication = normalizeContainer(item);
 const type = normalizeType(item);
-const abstract = normalizeAbstract(item);
+const abstract = clean(item.abstract);
 const preview = excerptWords(abstract, 40);
-const url = normalizeUrl(item);
-const doi = normalizeDoi(item);
-const recordUrl = url || (doi ? `https://doi.org/${doi}` : "");
+const url = clean(item.URL) || clean(item.url);
+const doi = clean(item.DOI) || clean(item.doi);
+const doiUrl = doi ? `https://doi.org/${doi}` : "";
+const titleUrl = doiUrl || url;
 const pdf = pdfUrlFromItem(item);
 const keywords = normalizeKeywords(item);
-const titleUrl = doi ? `https://doi.org/${doi}` : url;
-const bibtexHref = `data:text/x-bibtex;charset=utf-8,${encodeURIComponent(bibText)}`;
+
+const citeKey = clean(item.id) || clean(item["citation-key"]);
+const bibtexHref = `data:text/x-bibtex;charset=utf-8,${encodeURIComponent(bibEntryFor(citeKey, bibText))}`;
+const bibtexName = `${citeKey || "publications"}.bib`;
 ---
 
-<article class="pr pub">
-  <p class="pn">{number}</p>
+<article class="pub pub-card">
+  {number && <p class="pub-num" aria-hidden="true">{number}</p>}
 
-  <div class="pm">
-    <div class="pub-top">
-      <h3>
+  <div class="pub-main">
+    <header class="pub-head">
+      <h2 class="pub-title">
         {titleUrl ? (
-          <a href={titleUrl} target="_blank" rel="noopener noreferrer">{title}</a>
+          <a href={titleUrl} target="_blank" rel="noopener noreferrer">
+            {title}<span class="sr-only"> (opens in a new tab)</span>
+          </a>
         ) : (
           title
         )}
-      </h3>
-      {year && <span class="date">{year}</span>}
+      </h2>
+      {year && <p class="pub-year">{year}</p>}
+    </header>
+
+    <div class="meta-row">
+      {publication && <span class="client-badge">{publication}</span>}
+      <span class="meta-pill">{type}</span>
     </div>
 
-    {publication && <div class="client-badge">{publication}</div>}
+    {authors && <p class="pub-authors">{authors}</p>}
 
-    {authors && <p class="authors">{authors}</p>}
-
-    {preview.text && <p class="abstract">{preview.text}</p>}
+    {preview.text && (
+      preview.more ? (
+        <details class="pub-abstract">
+          <summary>
+            <span class="pub-abstract-preview">{preview.text}</span>
+            <span class="pub-abstract-toggle">Read full abstract</span>
+          </summary>
+          <p>{abstract}</p>
+        </details>
+      ) : (
+        <p class="pub-abstract-text">{preview.text}</p>
+      )
+    )}
 
     {keywords.length > 0 && (
-      <div class="pt">
-        {keywords.map((keyword) => <span class="tag">{keyword}</span>)}
-      </div>
+      <ul class="pt pub-keywords" aria-label="Keywords">
+        {keywords.map((keyword) => <li class="tag">{keyword}</li>)}
+      </ul>
     )}
 
-    {type && (
-      <div class="detail-line">
-        <span class="type-pill">{type}</span>
-      </div>
-    )}
-
-    <div class="action-row">
-      <a class="pa" href={bibtexHref} download="publications.bib" target="_blank" rel="noopener noreferrer">
-        <span>BibTeX</span>
-      </a>
-      {doi && (
-        <a class="pa" href={`https://doi.org/${doi}`} target="_blank" rel="noopener noreferrer">
-          <span>DOI</span>
+    <div class="pub-actions">
+      <a href={bibtexHref} download={bibtexName}>BibTeX</a>
+      {doiUrl && (
+        <a href={doiUrl} target="_blank" rel="noopener noreferrer">
+          DOI<span class="sr-only"> (opens in a new tab)</span>
         </a>
       )}
       {pdf && (
-        <a class="pa" href={pdf} target="_blank" rel="noopener noreferrer">
-          <span>Download</span>
+        <a href={pdf} target="_blank" rel="noopener noreferrer">
+          Download PDF<span class="sr-only"> (opens in a new tab)</span>
         </a>
       )}
-      {recordUrl && (
-        <a class="pa pa-primary" href={recordUrl} target="_blank" rel="noopener noreferrer">
-          <span>View</span>
+      {url && (
+        <a class="is-primary" href={url} target="_blank" rel="noopener noreferrer">
+          View<span class="sr-only"> (opens in a new tab)</span>
         </a>
       )}
     </div>
   </div>
 </article>
+
+<style>
+  .pub-card {
+    display: grid;
+    grid-template-columns: 3rem 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem;
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+  }
+
+  .pub-num {
+    padding-top: 0.3rem;
+    font-family: var(--font-display);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--teal);
+  }
+
+  .pub-main { display: grid; gap: 0.85rem; min-width: 0; }
+
+  .pub-head { display: grid; gap: 0.3rem; }
+  .pub-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    overflow-wrap: anywhere;
+  }
+  .pub-title a { color: var(--w); text-decoration: none; }
+  .pub-title a:hover,
+  .pub-title a:focus-visible { color: var(--teal); text-decoration: underline; text-underline-offset: 3px; }
+  .pub-year { font-family: var(--font-display); font-size: 0.8125rem; color: var(--mb); }
+
+  .pub-card .meta-row { margin-bottom: 0; }
+  .pub-authors { font-size: 0.875rem; line-height: 1.6; color: var(--mb); }
+
+  .pub-abstract-text,
+  .pub-abstract { max-width: 70ch; font-size: 0.9rem; line-height: 1.7; color: var(--mb); }
+  .pub-abstract summary { cursor: pointer; list-style: none; }
+  .pub-abstract summary::-webkit-details-marker { display: none; }
+  .pub-abstract-toggle {
+    display: inline-block;
+    margin-left: 0.4rem;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .pub-abstract[open] .pub-abstract-preview { display: none; }
+  .pub-abstract[open] .pub-abstract-toggle { display: none; }
+  .pub-abstract[open] p { margin: 0; }
+
+  .pub-keywords { margin-top: 0; list-style: none; }
+
+  .pub-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; padding-top: 0.25rem; }
+  .pub-actions a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.5rem;
+    padding: 0.4rem 1rem;
+    border: 1px solid var(--bm);
+    border-radius: 3px;
+    font-family: var(--font-display);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    color: var(--w);
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+  }
+  .pub-actions a:hover,
+  .pub-actions a:focus-visible { border-color: var(--teal); color: var(--teal); }
+  .pub-actions a.is-primary { background: var(--teal); border-color: var(--teal); color: var(--ink); }
+  .pub-actions a.is-primary:hover,
+  .pub-actions a.is-primary:focus-visible { opacity: 0.88; color: var(--ink); }
+
+  @media (max-width: 600px) {
+    .pub-card { grid-template-columns: 1fr; gap: 0.5rem; padding: 1.25rem; }
+    .pub-num { padding-top: 0; }
+  }
+</style>

@@ -1,15 +1,19 @@
 // src/content/config.ts
 import { defineCollection } from "astro:content";
-import { glob } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
-import { file } from "astro/loaders";
-import { assetSchema as brandAssetSchema, docSchema as brandDocSchema, siteProfileSchema as brandSiteSchema } from "./brand/lib/schemas";
+import {
+  assetSchema as brandAssetSchema,
+  docSchema as brandDocSchema,
+  siteProfileSchema as brandSiteSchema,
+} from "./brand/lib/schemas";
 
-// Helper to safely handle empty string frontmatter fields for URLs
 const optionalUrl = z.preprocess(
-  (val) => (val === "" || val == null ? undefined : val),
-  z.url().optional()
+  (value) => (value === "" || value == null ? undefined : value),
+  z.url().optional(),
 );
+
+const stringArray = z.array(z.string()).default([]);
 
 const seoSchema = z.object({
   title: z.string().optional(),
@@ -39,7 +43,6 @@ const relatedItemSchema = z.object({
   summary: z.string().optional(),
 });
 
-// Rich related video (aligned with the updated object structure using publishedDate)
 const relatedVideoSchema = z.object({
   slug: z.string(),
   youtubeId: z.string().optional(),
@@ -54,107 +57,158 @@ const relatedVideoSchema = z.object({
   heroImage: z.string().optional(),
   heroAlt: z.string().optional(),
   imageCredit: z.string().optional(),
-  relatedPodcasts: z.array(z.string()).default([]),
-  relatedExperience: z.array(z.string()).default([]),
-  relatedInitiatives: z.array(z.string()).default([]),
-  relatedEvents: z.array(z.string()).default([]),
-  video_type: z.string().optional(),
-  tags: z.array(z.string()).default([]),
+  relatedPodcasts: stringArray,
+  relatedExperience: stringArray,
+  relatedInitiatives: stringArray,
+  relatedEvents: stringArray,
+  videoType: z.string().optional(),
+  tags: stringArray,
 });
 
-// Rich related article / news item (like your ESA example)
 const relatedArticleSchema = z.object({
   title: z.string().optional(),
   url: optionalUrl,
   image: z.string().optional(),
   imageCredit: z.string().optional(),
-  topics: z.array(z.string()).default([]),
+  topics: stringArray,
   excerpt: z.string().optional(),
   date: z.coerce.date().optional(),
   publication: z.string().optional(),
 });
 
+const testimonialSchema = z.object({
+  quote: z.string(),
+  name: z.string(),
+  role: z.string().optional(),
+  organisation: z.string().optional(),
+  permission: z.boolean().default(false),
+});
+
+const externalLinkSchema = z.object({
+  label: z.string(),
+  url: optionalUrl,
+});
+
+const linksSchema = z.object({
+  github: optionalUrl,
+  web: optionalUrl,
+  demo: optionalUrl,
+  docs: optionalUrl,
+  youtube: optionalUrl,
+  store: optionalUrl,
+  api: optionalUrl,
+});
+
 const baseSchema = seoSchema.extend({
   id: z.union([z.string(), z.number()]).optional(),
   slug: z.string().optional(),
+
+  draft: z.boolean().default(false),
+  featured: z.boolean().default(false),
+  publishedDate: z.coerce.date().optional(),
   updatedDate: z.coerce.date().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
-  draft: z.boolean().default(false),
-  featured: z.boolean().default(false),
+
   author: z.string().optional(),
-  tags: z.array(z.string()).default([]),
-  sectors: z.array(z.string()).default([]),
-  youtubeId: z.string().optional(),
+  tags: stringArray,
+  sectors: stringArray,
+
   category: z
     .preprocess(
-      (val) => {
-        if (val == null) return [];
-        if (Array.isArray(val)) return val;
-        return [val];
+      (value) => {
+        if (value == null) return [];
+        return Array.isArray(value) ? value : [value];
       },
-      z.array(z.string())
+      z.array(z.string()),
     )
     .default([]),
-  links: z
-    .object({
-      github: optionalUrl,
-      web: optionalUrl,
-      demo: optionalUrl,
-      docs: optionalUrl,
-      youtube: optionalUrl,
-      store: optionalUrl,
-      api: optionalUrl,
-    })
-    .optional()
-    .default({}),
+
+  links: linksSchema.optional().default({}),
+
   heroImage: z.string().optional(),
   heroAlt: z.string().optional(),
-  relatedOrg: z.array(z.string()).default([]),
-  relatedExperience: z.array(z.string()).default([]),
-  relatedEducation: z.array(z.string()).default([]),
-  relatedVolunteering: z.array(z.string()).default([]),
-  relatedAwards: z.array(z.string()).default([]),
-  relatedTools: z.array(z.string()).default([]),
-  relatedSkills: z.array(z.string()).default([]),
-
-  // Keep existing string-ID based relatedVideos for backwards compatibility
-  relatedVideos: z.array(z.string()).default([]),
-
-  relatedCaseStudies: z.array(z.string()).default([]),
-  relatedInitiatives: z.array(z.string()).default([]),
-  relatedProjects: z.array(z.string()).default([]),
-
-  // New: rich related videos and articles
-  relatedVideosRich: z.array(relatedVideoSchema).default([]),
-  relatedArticles: z.array(relatedArticleSchema).default([]),
-
-  // New: related events (IDs)
-  relatedEvents: z.array(z.string()).default([]),
+  youtubeId: z.string().optional(),
 
   client: z.string().optional(),
   organisation: z.string().optional(),
   institution: z.string().optional(),
-  tools_tech: z.array(z.string()).optional(),
-  features: z.array(z.string()).optional(),
+  collaborators: stringArray,
+
+  relatedOrg: stringArray,
+  relatedExperience: stringArray,
+  relatedEducation: stringArray,
+  relatedVolunteering: stringArray,
+  relatedAwards: stringArray,
+  relatedTools: stringArray,
+  relatedSkills: stringArray,
+
+  relatedVideos: stringArray,
+  relatedVideosRich: z.array(relatedVideoSchema).default([]),
+  relatedArticles: z.array(relatedArticleSchema).default([]),
+
+  relatedCaseStudies: stringArray,
+  relatedInitiatives: stringArray,
+  relatedProjects: stringArray,
+  relatedEvents: stringArray,
+
+  toolsTech: stringArray,
+  features: stringArray,
   impact: z.record(z.string(), z.unknown()).optional(),
 
-  // Case-study model (all optional so existing entries still validate).
-  // Set evidenceReady: true only once the entry has real context, role and outcomes.
-  evidenceReady: z.boolean().optional(),
+  evidenceReady: z.boolean().default(false),
   role: z.string().optional(),
-  collaborators: z.array(z.string()).default([]),
   challenge: z.string().optional(),
-  objectives: z.array(z.string()).default([]),
+  objectives: stringArray,
   approach: z.string().optional(),
-  outputs: z.array(z.string()).default([]),
+  outputs: stringArray,
   outcomes: z.string().optional(),
-  testimonial: z
-    .object({ quote: z.string(), name: z.string(), role: z.string().optional(), permission: z.boolean().default(false) })
-    .optional(),
+  testimonial: testimonialSchema.optional(),
+});
+
+const workSchema = baseSchema.extend({
+  title: z.string(),
+  summary: z.string().optional(),
+  type: z.string().optional(),
+  status: z.enum(["active", "completed", "archived"]).optional(),
+  year: z.union([z.string(), z.number()]).optional(),
+});
+
+const serviceSchema = seoSchema.extend({
+  title: z.string(),
+  summary: z.string().optional(),
+  description: z.string().optional(),
+
+  draft: z.boolean().default(false),
+  featured: z.boolean().default(false),
+
+  heroImage: z.string().optional(),
+  heroAlt: z.string().optional(),
+
+  audience: stringArray,
+  outcomes: stringArray,
+  formats: stringArray,
+  topics: stringArray,
+
+  relatedWork: stringArray,
+  relatedInsights: stringArray,
+  relatedServices: stringArray,
+
+  contactCtaLabel: z.string().optional(),
+  contactCtaHref: z.string().optional().default("/contact/"),
+});
+
+const insightSchema = baseSchema.extend({
+  title: z.string(),
+  summary: z.string().optional(),
+  pubDate: z.coerce.date(),
+  updatedDate: z.coerce.date().optional(),
+  readingTime: z.number().optional(),
+  series: z.string().optional(),
 });
 
 const podcastSchema = baseSchema.extend({
+  title: z.string(),
   podcastTitle: z.string().optional(),
   podcastDescription: z.string().optional(),
   podcastWebsite: optionalUrl,
@@ -162,7 +216,7 @@ const podcastSchema = baseSchema.extend({
   podcastPublisher: z.string().optional(),
   podcastLanguage: z.string().optional(),
   podcastCoverImage: z.string().optional(),
-  podcastCategories: z.array(z.string()).default([]),
+  podcastCategories: stringArray,
   podcastApplePodcasts: optionalUrl,
   podcastSpotify: optionalUrl,
   podcastYouTube: optionalUrl,
@@ -193,14 +247,15 @@ const podcastSchema = baseSchema.extend({
         podcastPublisher: z.string().optional(),
         podcastLanguage: z.string().optional(),
         podcastCoverImage: z.string().optional(),
-        podcastCategories: z.array(z.string()).default([]),
+        podcastCategories: stringArray,
         podcastApplePodcasts: optionalUrl,
         podcastSpotify: optionalUrl,
         podcastYouTube: optionalUrl,
-      })
+      }),
     )
     .default([]),
 });
+
 
 const eventLocationSchema = z.object({
   name: z.string().optional(),
@@ -223,6 +278,7 @@ const eventOrganiserSchema = z.object({
 
 const eventSchema = baseSchema.extend({
   title: z.string(),
+
   type: z
     .enum([
       "networking",
@@ -251,11 +307,11 @@ const eventSchema = baseSchema.extend({
 
   organiser: z.union([z.string(), z.array(eventOrganiserSchema)]).optional(),
   coOrganisers: z.array(eventOrganiserSchema).default([]),
-  speakers: z.array(z.string()).default([]),
-  hosts: z.array(z.string()).default([]),
+  speakers: stringArray,
+  hosts: stringArray,
 
   description: z.string().optional(),
-  agenda: z.array(z.string()).default([]),
+  agenda: stringArray,
   capacity: z.number().int().positive().optional(),
   attendees: z.number().int().nonnegative().optional(),
 
@@ -269,15 +325,8 @@ const eventSchema = baseSchema.extend({
   slidesUrl: optionalUrl,
   photosUrl: optionalUrl,
 
-  links: z
-    .object({
-      github: optionalUrl,
-      web: optionalUrl,
-      demo: optionalUrl,
-      docs: optionalUrl,
-      youtube: optionalUrl,
-      store: optionalUrl,
-      api: optionalUrl,
+  links: linksSchema
+    .extend({
       eventPage: optionalUrl,
       meetup: optionalUrl,
       luMa: optionalUrl,
@@ -286,152 +335,138 @@ const eventSchema = baseSchema.extend({
     .default({}),
 });
 
-const researchThemeEnum = z.enum(["earth-observation", "astronomy", "space-sustainability", "climate-data", "science-communication", "digital-research-systems"]);
-
-const researchNoteSchema = z.object({
-  title: z.string(),
-  summary: z.string(),
-  kind: z.enum(["literature", "methods", "research-log"]),
-  tags: z.array(z.string()).default([]),
-  publishedAt: z.coerce.date(),
-  updatedAt: z.coerce.date().optional(),
-  draft: z.boolean().default(true),
-});
+const researchThemeEnum = z.enum([
+  "earth-observation",
+  "astronomy",
+  "space-sustainability",
+  "climate-data",
+  "science-communication",
+  "digital-research-systems",
+]);
 
 export const collections = {
-  blog: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
-    schema: baseSchema.extend({
-      pubDate: z.coerce.date(),
+  /**
+   * WORK
+   * Public routes:
+   * - /work/case-studies/
+   * - /work/projects/
+   * - /work/initiatives/
+   */
+  caseStudies: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/work/case-studies",
     }),
+    schema: workSchema,
   }),
 
   projects: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/projects" }),
-    schema: baseSchema.extend({
-      type: z.string().optional(),
-      status: z.string().optional(),
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/work/projects",
     }),
+    schema: workSchema,
   }),
 
   initiatives: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/initiatives" }),
-    schema: baseSchema.extend({
-      type: z.string().optional(),
-      status: z.string().optional(),
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/work/initiatives",
     }),
+    schema: workSchema,
   }),
 
-  caseStudies: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/case-studies" }),
-    schema: baseSchema.extend({
-      type: z.string().optional(),
-      status: z.string().optional(),
+  /**
+   * SERVICES
+   * Content directories:
+   * - src/content/services/strategy/
+   * - src/content/services/communications/
+   * - src/content/services/sustainability/
+   * - src/content/services/digital-systems/
+   * - src/content/services/speaking-workshops/
+   * - src/content/services/mentoring/
+   * - src/content/services/tutoring/
+   *
+   * Tutoring is a service area, but its public pages can remain under
+   * /tutoring/ if that is the appropriate audience-facing URL.
+   */
+  services: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/services",
     }),
+    schema: serviceSchema,
   }),
 
+  /**
+   * INSIGHTS
+   * Public routes:
+   * - /insights/blog/
+   * - /insights/research/
+   * - /insights/podcasts/
+   */
+  blog: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/insights/blog",
+    }),
+    schema: insightSchema,
+  }),
+
+  podcasts: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/insights/podcasts",
+    }),
+    schema: podcastSchema,
+  }),
+
+  events: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/work/events",
+    }),
+    schema: eventSchema,
+  }),
+
+  /**
+   * ABOUT
+   * Keep author profiles only if multiple contributors are genuinely used.
+   */
   authors: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/authors" }),
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/about/authors",
+    }),
     schema: z.object({
       name: z.string(),
       bio: z.string().optional(),
       avatar: z.string().optional(),
       role: z.string().optional(),
       website: optionalUrl,
+      links: z.array(externalLinkSchema).default([]),
     }),
   }),
 
-  podcasts: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/podcasts" }),
-    schema: podcastSchema,
-  }),
-
-  events: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/events" }),
-    schema: eventSchema,
-  }),
-
-  // Guide sections migrated from the mentoring.* and coaching.* MkDocs sites.
-  // `draft: true` keeps a page noindex and out of the sitemap until the copy is final.
-  mentoring: defineCollection({
-    loader: glob({ pattern: "**/*.md", base: "./src/content/mentoring" }),
-    schema: z.object({ title: z.string(), draft: z.boolean().default(true) }),
-  }),
-
-  coaching: defineCollection({
-    loader: glob({ pattern: "**/*.md", base: "./src/content/coaching" }),
-    schema: z.object({ title: z.string(), draft: z.boolean().default(true) }),
-  }),
-
-  // Research lab (migrated from research.rjmlaird.co.uk). All content is draft/noindex until reviewed.
-  researchProjects: defineCollection({
-    loader: glob({ pattern: "*.md", base: "./src/content/research/projects" }),
-    schema: z.object({
-      title: z.string(),
-      summary: z.string(),
-      status: z.enum(["idea", "in-progress", "completed", "archived"]),
-      startedAt: z.coerce.date().optional(),
-      updatedAt: z.coerce.date(),
-      featured: z.boolean().default(false),
-      themes: z.array(researchThemeEnum).min(1),
-      methods: z.array(z.string()).default([]),
-      tools: z.array(z.string()).default([]),
-      researchQuestions: z.array(z.string()).min(1),
-      whyItMatters: z.string(),
-      dataSources: z
-        .array(z.object({ name: z.string(), url: z.string().url().optional(), licence: z.string().optional(), accessedAt: z.coerce.date().optional() }))
-        .default([]),
-      outputs: z
-        .array(
-          z.object({
-            type: z.enum(["publication", "preprint", "poster", "presentation", "report", "dataset", "software", "visualisation", "notebook"]),
-            title: z.string(),
-            url: z.string().url().optional(),
-            state: z.enum(["planned", "available"]).default("planned"),
-          }),
-        )
-        .default([]),
-      progress: z.string(),
-      limitations: z.array(z.string()).min(1),
-      reproducibility: z.string(),
-      reproducibilityUrl: z.string().url().optional(),
-      licence: z.string().optional(),
-      relatedArticles: z.array(z.object({ label: z.string(), url: z.string().url() })).default([]),
-      citation: z.string().optional(),
-      draft: z.boolean().default(true),
-    }),
-  }),
-
-  researchMethods: defineCollection({
-    loader: glob({ pattern: "*.md", base: "./src/content/research/methods" }),
-    schema: z.object({ title: z.string(), summary: z.string(), updatedAt: z.coerce.date(), tools: z.array(z.string()).default([]), draft: z.boolean().default(true) }),
-  }),
-
-  researchNotebooks: defineCollection({
-    loader: glob({ pattern: "*.md", base: "./src/content/research/notebooks" }),
-    schema: z.object({
-      title: z.string(),
-      summary: z.string(),
-      area: z.enum(["earth-observation", "astronomy", "climate", "methods"]),
-      state: z.enum(["planned", "in-progress", "available"]),
-      project: z.string().optional(),
-      repositoryUrl: z.string().url().optional(),
-      tools: z.array(z.string()).default([]),
-      updatedAt: z.coerce.date(),
-      draft: z.boolean().default(true),
-    }),
-  }),
-
-  researchNotes: defineCollection({
-    loader: glob({ pattern: "*.md", base: "./src/content/research/notes" }),
-    schema: researchNoteSchema,
-  }),
-
-  // Brand system (migrated from brand.rjmlaird.co.uk).
+  /**
+   * BRAND SYSTEM
+   * Retained as an internal/specialist documentation area.
+   */
   brandDocs: defineCollection({
-    loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/brand/docs" }),
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/brand/docs",
+    }),
     schema: brandDocSchema,
   }),
-  brandAssets: defineCollection({ loader: file("src/brand/data/asset-manifest.json"), schema: brandAssetSchema }),
-  brandSites: defineCollection({ loader: file("src/brand/data/site-profiles.json"), schema: brandSiteSchema }),
+
+  brandAssets: defineCollection({
+    loader: file("src/brand/data/asset-manifest.json"),
+    schema: brandAssetSchema,
+  }),
+
+  brandSites: defineCollection({
+    loader: file("src/brand/data/site-profiles.json"),
+    schema: brandSiteSchema,
+  }),
 };

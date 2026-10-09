@@ -142,24 +142,6 @@ function badgeUrl(item: { name: string; color: string; logo?: string; logoColor?
     )}
 
     <section class="block">
-      <p class="tlbl">Tech stack</p>
-      <div class="stack-groups">
-        {techStack.categories.map((cat) => (
-          <div>
-            <p class="stack-cat">{cat.name}</p>
-            <div class="stack-badges">
-              {cat.items.map((item) => (
-                <a href={item.url} target="_blank" rel="noopener noreferrer">
-                  <img src={badgeUrl(item)} alt={item.name} loading="lazy" />
-                </a>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
-    </section>
-
-    <section class="block">
       <p class="tlbl">Repositories, by last commit</p>
 
       {/* Filter Controls */}

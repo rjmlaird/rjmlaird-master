@@ -38,6 +38,18 @@
     "slug": {
       "type": "string"
     },
+    "draft": {
+      "default": false,
+      "type": "boolean"
+    },
+    "featured": {
+      "default": false,
+      "type": "boolean"
+    },
+    "publishedDate": {
+      "type": "string",
+      "format": "date-time"
+    },
     "updatedDate": {
       "type": "string",
       "format": "date-time"
@@ -49,14 +61,6 @@
     "endDate": {
       "type": "string",
       "format": "date-time"
-    },
-    "draft": {
-      "default": false,
-      "type": "boolean"
-    },
-    "featured": {
-      "default": false,
-      "type": "boolean"
     },
     "author": {
       "type": "string"
@@ -74,9 +78,6 @@
       "items": {
         "type": "string"
       }
-    },
-    "youtubeId": {
-      "type": "string"
     },
     "category": {
       "type": "array",
@@ -122,6 +123,25 @@
     },
     "heroAlt": {
       "type": "string"
+    },
+    "youtubeId": {
+      "type": "string"
+    },
+    "client": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "string"
+    },
+    "institution": {
+      "type": "string"
+    },
+    "collaborators": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
     },
     "relatedOrg": {
       "default": [],
@@ -173,27 +193,6 @@
       }
     },
     "relatedVideos": {
-      "default": [],
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "relatedCaseStudies": {
-      "default": [],
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "relatedInitiatives": {
-      "default": [],
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
-    },
-    "relatedProjects": {
       "default": [],
       "type": "array",
       "items": {
@@ -274,7 +273,7 @@
               "type": "string"
             }
           },
-          "video_type": {
+          "videoType": {
             "type": "string"
           },
           "tags": {
@@ -328,6 +327,27 @@
         }
       }
     },
+    "relatedCaseStudies": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedInitiatives": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedProjects": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
     "relatedEvents": {
       "default": [],
       "type": "array",
@@ -335,22 +355,15 @@
         "type": "string"
       }
     },
-    "client": {
-      "type": "string"
-    },
-    "organisation": {
-      "type": "string"
-    },
-    "institution": {
-      "type": "string"
-    },
-    "tools_tech": {
+    "toolsTech": {
+      "default": [],
       "type": "array",
       "items": {
         "type": "string"
       }
     },
     "features": {
+      "default": [],
       "type": "array",
       "items": {
         "type": "string"
@@ -364,17 +377,11 @@
       "additionalProperties": {}
     },
     "evidenceReady": {
+      "default": false,
       "type": "boolean"
     },
     "role": {
       "type": "string"
-    },
-    "collaborators": {
-      "default": [],
-      "type": "array",
-      "items": {
-        "type": "string"
-      }
     },
     "challenge": {
       "type": "string"
@@ -411,6 +418,9 @@
         "role": {
           "type": "string"
         },
+        "organisation": {
+          "type": "string"
+        },
         "permission": {
           "default": false,
           "type": "boolean"
@@ -421,14 +431,31 @@
         "name"
       ]
     },
+    "summary": {
+      "type": "string"
+    },
     "type": {
       "type": "string"
     },
     "status": {
-      "type": "string"
+      "type": "string",
+      "enum": [
+        "active",
+        "completed",
+        "archived"
+      ]
+    },
+    "year": {
+      "type": [
+        "string",
+        "number"
+      ]
     },
     "$schema": {
       "type": "string"
     }
-  }
+  },
+  "required": [
+    "title"
+  ]
 }

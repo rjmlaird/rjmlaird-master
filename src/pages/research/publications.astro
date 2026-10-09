@@ -57,48 +57,50 @@ const publishers = [...new Set(publications.map((p) => p.publisher).filter(Boole
   title="Publications"
   description="Selected bibliography of journal articles, conference papers, reports and outreach publications by Ryan Laird."
 >
-  <div class="wrap" style="padding-top:1.5rem"><nav class="crumbs" aria-label="Breadcrumb"><a href="/research/">Research</a> / Publications</nav></div>
   <section class="section research-page">
     <div class="container rp-shell">
-      <header class="rp-head">
-        <p class="eyebrow">Research</p>
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/research/">Research</a> / Publications</nav>
+
+      <header class="page-head">
+        <p class="sl">Research</p>
+
         <h1>Publications</h1>
 
-        <div class="rp-intro">
-          <p class="rp-lead">
-            A selected bibliography of journal articles, conference papers, reports, and outreach publications.
-          </p>
-          <p class="rp-note">
-            Browse by publication type, publisher, or year.
-          </p>
-        </div>
-
-        <div class="rp-filters" aria-label="Research filters">
-          <label class="filter-field" for="typeSelect">
-            <span>Type</span>
-            <select id="typeSelect">
-              <option value="all">All types</option>
-              {types.map((type) => <option value={type}>{type}</option>)}
-            </select>
-          </label>
-
-          <label class="filter-field" for="publisherSelect">
-            <span>Publisher</span>
-            <select id="publisherSelect">
-              <option value="all">All publishers</option>
-              {publishers.map((publisher) => <option value={publisher}>{publisher}</option>)}
-            </select>
-          </label>
-
-          <label class="filter-field" for="yearSelect">
-            <span>Year</span>
-            <select id="yearSelect">
-              <option value="all">All years</option>
-              {years.map((year) => <option value={String(year)}>{year}</option>)}
-            </select>
-          </label>
+        <div class="lede">
+          <p>A selected bibliography of journal articles, conference papers, reports, and outreach publications.</p>
+          <p>Browse by publication type, publisher, or year.</p>
         </div>
       </header>
+
+      <div class="rp-filters" role="group" aria-label="Filter publications">
+        <label class="filter-field" for="typeSelect">
+          <span>Type</span>
+          <select id="typeSelect">
+            <option value="all">All types</option>
+            {types.map((type) => <option value={type}>{type}</option>)}
+          </select>
+        </label>
+
+        <label class="filter-field" for="publisherSelect">
+          <span>Publisher</span>
+          <select id="publisherSelect">
+            <option value="all">All publishers</option>
+            {publishers.map((publisher) => <option value={publisher}>{publisher}</option>)}
+          </select>
+        </label>
+
+        <label class="filter-field" for="yearSelect">
+          <span>Year</span>
+          <select id="yearSelect">
+            <option value="all">All years</option>
+            {years.map((year) => <option value={String(year)}>{year}</option>)}
+          </select>
+        </label>
+      </div>
+
+      <p class="rp-note" id="resultCount" role="status" aria-live="polite">
+        Showing {publications.length} of {publications.length} publications
+      </p>
 
       <div class="rp-grid" id="researchGrid">
         {publications.map((pub, index) => (
@@ -116,42 +118,37 @@ const publishers = [...new Set(publications.map((p) => p.publisher).filter(Boole
   </section>
 
   <script is:inline>
-    /** @type {(s: string | null | undefined) => string} */
-    const norm = (s) => (s ?? "").toLowerCase().trim();
+    (function () {
+      var norm = function (s) { return (s == null ? "" : String(s)).toLowerCase().trim(); };
 
-    /** @type {HTMLSelectElement | null} */
-    const typeSelect = document.getElementById("typeSelect");
+      var typeSelect = document.getElementById("typeSelect");
+      var yearSelect = document.getElementById("yearSelect");
+      var publisherSelect = document.getElementById("publisherSelect");
+      var count = document.getElementById("resultCount");
+      var items = document.querySelectorAll("#researchGrid .research-item");
 
-    /** @type {HTMLSelectElement | null} */
-    const yearSelect = document.getElementById("yearSelect");
+      function applyFilters() {
+        var activeType = norm(typeSelect && typeSelect.value || "all");
+        var activeYear = norm(yearSelect && yearSelect.value || "all");
+        var activePublisher = norm(publisherSelect && publisherSelect.value || "all");
+        var shown = 0;
 
-    /** @type {HTMLSelectElement | null} */
-    const publisherSelect = document.getElementById("publisherSelect");
+        items.forEach(function (el) {
+          var typeOk = activeType === "all" || norm(el.dataset.type) === activeType;
+          var yearOk = activeYear === "all" || norm(el.dataset.year) === activeYear;
+          var publisherOk = activePublisher === "all" || norm(el.dataset.publisher) === activePublisher;
+          var show = typeOk && yearOk && publisherOk;
+          el.hidden = !show;
+          if (show) shown++;
+        });
 
-    /** @type {NodeListOf<HTMLElement>} */
-    const items = document.querySelectorAll("#researchGrid .research-item");
+        if (count) count.textContent = "Showing " + shown + " of " + items.length + " publications";
+      }
 
-    const applyFilters = () => {
-      const activeType = norm(typeSelect?.value || "all");
-      const activeYear = norm(yearSelect?.value || "all");
-      const activePublisher = norm(publisherSelect?.value || "all");
-
-      items.forEach((el) => {
-        const type = norm(el.dataset.type);
-        const year = norm(el.dataset.year);
-        const publisher = norm(el.dataset.publisher);
-
-        const typeOk = activeType === "all" || type === activeType;
-        const yearOk = activeYear === "all" || year === activeYear;
-        const publisherOk = activePublisher === "all" || publisher === activePublisher;
-
-        el.hidden = !(typeOk && yearOk && publisherOk);
+      [typeSelect, yearSelect, publisherSelect].forEach(function (s) {
+        if (s) s.addEventListener("change", applyFilters);
       });
-    };
-
-    typeSelect?.addEventListener("change", applyFilters);
-    yearSelect?.addEventListener("change", applyFilters);
-    publisherSelect?.addEventListener("change", applyFilters);
-    applyFilters();
+      applyFilters();
+    })();
   </script>
 </Layout>

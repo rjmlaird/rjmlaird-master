@@ -1,0 +1,26 @@
+---
+import PageLayout from '../../../../tutoring/layouts/PageLayout.astro';
+import BookingCTA from '../../../../tutoring/components/BookingCTA.astro';
+import { liveSubjects } from '../../../../tutoring/data/subjects';
+import { levels } from '../../../../tutoring/data/levels';
+import { examBoards } from '../../../../tutoring/data/exam-boards';
+
+export function getStaticPaths() {
+  return liveSubjects.map((subject) => ({ params: { slug: subject.slug }, props: { subject } }));
+}
+const { subject } = Astro.props;
+const subjectLevels = levels.filter((l) => subject.levels.includes(l.slug));
+---
+<PageLayout title={`${subject.name} tuition`} lede={subject.summary}>
+  <h2>What we can cover</h2>
+  <ul>{subject.covers.map((c) => <li>{c}</li>)}</ul>
+  <h2>Levels</h2>
+  <ul>{subjectLevels.map((l) => <li><a href={`/tutoring/levels/${l.slug}/`}>{l.name}</a></li>)}</ul>
+  {subject.slug === 'physics' && (
+    <>
+      <h2>Exam boards</h2>
+      <p>Specifications supported: {examBoards.join(', ')}.</p>
+    </>
+  )}
+  <BookingCTA />
+</PageLayout>

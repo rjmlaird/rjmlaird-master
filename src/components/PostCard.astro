@@ -45,7 +45,7 @@ const authorAvatar =
 
 <article class:list={['post-card', { featured }]}>
   {imageSrc && (
-    <a href={`/blog/${post.id}`} class="post-card-image-link" tabindex="-1" aria-hidden="true">
+    <a href={`/insights/blog/${post.id}`} class="post-card-image-link" tabindex="-1" aria-hidden="true">
       <img
         src={imageSrc}
         alt=""
@@ -60,7 +60,7 @@ const authorAvatar =
     {safeCategory && <CategoryBadge category={safeCategory} as="span" />}
 
     <h2>
-      <a href={`/blog/${post.id}`} class="title-link">{title}</a>
+      <a href={`/insights/blog/${post.id}`} class="title-link">{title}</a>
     </h2>
 
     {description && <p class="description">{description}</p>}

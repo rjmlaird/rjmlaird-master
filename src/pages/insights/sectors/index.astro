@@ -1,0 +1,64 @@
+---
+// src/pages/sectors/index.astro
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import { slugify } from "../../../utils/slugify";
+
+// Only collections that have `sectors` and `draft`
+const [posts, projects, caseStudies, initiatives] = await Promise.all([
+  getCollection("blog", ({ data }) => !data.draft),
+  getCollection("projects", ({ data }) => data.draft !== true),
+  getCollection("caseStudies", ({ data }) => data.draft !== true),
+  getCollection("initiatives", ({ data }) => data.draft !== true),
+]);
+
+const allEntries = [...posts, ...projects, ...caseStudies, ...initiatives];
+
+const sectorMap = new Map<string, { label: string; count: number }>();
+
+for (const entry of allEntries) {
+  // Narrow type manually
+  const data = entry.data as { sectors?: unknown };
+  if (!Array.isArray(data.sectors)) continue;
+
+  for (const sector of data.sectors) {
+    if (typeof sector !== "string") continue;
+    const slug = slugify(sector);
+    const existing = sectorMap.get(slug);
+    if (existing) {
+      existing.count += 1;
+    } else {
+      sectorMap.set(slug, { label: sector, count: 1 });
+    }
+  }
+}
+
+const allSectors = Array.from(sectorMap.entries())
+  .map(([slug, { label, count }]) => ({ slug, label, count }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+---
+
+<Layout
+  title="Sectors"
+  description="Browse every sector across blog posts, projects, initiatives and case studies."
+>
+  <section class="taxonomy-index">
+    <p class="eyebrow">Browse by sector</p>
+    <h1>Sectors</h1>
+    <p class="intro">
+      All {allSectors.length} sectors used across blog posts, projects, initiatives and case studies.
+    </p>
+
+    <ul class="pill-list" aria-label="All sectors">
+      {allSectors.map(({ slug, label, count }) => (
+        <li>
+          <a href={`/sectors/${slug}/`}>
+            <span class="sector-label">{label}</span>
+            <span class="pill-count">{count}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </section>
+</Layout>
+

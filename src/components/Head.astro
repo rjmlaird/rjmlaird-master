@@ -1,0 +1,214 @@
+---
+// src/components/Head.astro
+// Everything that lives inside <head>: title, meta, canonical, Open Graph,
+// Twitter, icons, fonts and the JSON-LD graph. Layout.astro just forwards props.
+import type { CollectionEntry } from "astro:content";
+import JsonLd from "./JsonLd.astro";
+import nav from "../data/nav.json";
+import { loadSchemaSource } from "../lib/schema-org/source";
+import { buildPageGraph, type Crumb, type PageType } from "../lib/schema-org/graph";
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  /** Alt text for the social image. Falls back to the post's heroImage.alt, then the page title. */
+  imageAlt?: string;
+  noindex?: boolean;
+  canonical?: string;
+  /** Open Graph type. Defaults to "article" when a post is passed, otherwise "website". */
+  ogType?: "website" | "article" | "profile";
+  post?: CollectionEntry<"blog"> | CollectionEntry<"projects"> | CollectionEntry<"caseStudies">;
+  /** Page-specific structured data (Article, PodcastEpisode, CreativeWork, BreadcrumbList...)
+   *  merged alongside the site-wide WebSite + Person schema. */
+  jsonLd?: Record<string, any> | Record<string, any>[];
+  /** schema.org page type (default WebPage). ProfilePage/AboutPage make the page "about" the Person. */
+  schemaType?: PageType;
+  /** Force the full Person profile into the graph (automatic on home, about, cv, contact, work-with-me, press). */
+  schemaFull?: boolean;
+  /** Explicit breadcrumb trail; omit to derive it from the URL. */
+  breadcrumbs?: Crumb[];
+  /** The page's primary entity (BlogPosting, PodcastEpisode, VideoObject ...), linked to the WebPage by @id. */
+  mainEntity?: Record<string, any>;
+  datePublished?: string | Date;
+  dateModified?: string | Date;
+}
+
+// ---------------------------------------------------------------------------
+// Site constants
+// ---------------------------------------------------------------------------
+const DEFAULT_TITLE = "Ryan J.M. Laird — MPhys (Hons) FRAS MInstP CMktr MCIPR";
+const SITE_TITLE = "Ryan Laird — CMktr MInstP";
+const SITE_NAME = "Ryan Laird";
+const DEFAULT_DESCRIPTION =
+  "Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology.";
+const DEFAULT_IMAGE = "/images/og-default.jpg";
+const THEME_COLOR = "#0B0F1A"; // keep in sync with --ink in global.css
+
+const FONTS_HREF =
+  "https://fonts.googleapis.com/css2" +
+  "?family=Space+Grotesk:wght@300;400;500;600;700" +
+  "&family=Inter:wght@400;500" +
+  "&family=JetBrains+Mono:wght@600" +
+  "&display=swap";
+
+// Pages about Ryan carry the full Person profile; everything else gets the light Person node.
+const FULL_PROFILE_PATHS = new Set(["/", "/about/", "/cv/", "/contact/", "/work-with-me/", "/press/"]);
+
+// ---------------------------------------------------------------------------
+// Resolve props
+// ---------------------------------------------------------------------------
+const {
+  title = DEFAULT_TITLE,
+  description = DEFAULT_DESCRIPTION,
+  image = DEFAULT_IMAGE,
+  imageAlt,
+  noindex = false,
+  canonical,
+  ogType,
+  post,
+  jsonLd,
+  schemaType,
+  schemaFull,
+  breadcrumbs,
+  mainEntity,
+  datePublished,
+  dateModified,
+} = Astro.props as Props;
+
+const postData = post?.data as Record<string, any> | undefined;
+
+const resolvedTitle: string = postData?.title ?? title;
+const resolvedDescription: string = postData?.description ?? description;
+const resolvedImage: string = postData?.heroImage?.src ?? postData?.image ?? image;
+const resolvedImageAlt: string = imageAlt ?? postData?.heroImage?.alt ?? resolvedTitle;
+const resolvedNoindex: boolean = postData?.noindex ?? noindex;
+const resolvedOgType = ogType ?? (post ? "article" : "website");
+
+// Don't append the site title to the home/default title (avoids "Ryan… · Ryan…").
+const fullTitle =
+  resolvedTitle === DEFAULT_TITLE || resolvedTitle === SITE_TITLE
+    ? resolvedTitle
+    : `${resolvedTitle} · ${SITE_TITLE}`;
+
+// ---------------------------------------------------------------------------
+// URLs
+// ---------------------------------------------------------------------------
+const baseUrl = Astro.site?.href;
+const siteUrl = (baseUrl ?? "https://rjmlaird.co.uk").replace(/\/$/, "");
+const path = Astro.url.pathname;
+
+// Query strings are dropped so tracking params never become canonical.
+const canonicalUrl = canonical ?? postData?.canonical ?? new URL(path, `${siteUrl}/`).href;
+const ogImage = new URL(resolvedImage, `${siteUrl}/`).href;
+
+// ---------------------------------------------------------------------------
+// Dates for article meta (graph handles its own)
+// ---------------------------------------------------------------------------
+const toIso = (d?: string | Date): string | undefined => {
+  if (!d) return undefined;
+  const date = new Date(d);
+  return Number.isNaN(date.getTime()) ? undefined : date.toISOString();
+};
+const publishedIso = toIso(datePublished ?? postData?.pubDate ?? postData?.date);
+const modifiedIso = toIso(dateModified ?? postData?.updatedDate ?? postData?.updated);
+
+// ---------------------------------------------------------------------------
+// JSON-LD graph
+// ---------------------------------------------------------------------------
+const knownSections = [...(nav.primary ?? []), ...(nav.utility ?? [])]
+  .map((n: { href: string }) => n.href)
+  .filter((h: string) => h.startsWith("/"))
+  .map((h: string) => h.split("/").filter(Boolean)[0])
+  .filter(Boolean)
+  .concat([
+    "blog", "podcasts", "videos", "projects", "case-studies", "research", "dev",
+    "mentoring", "coaching", "initiatives", "events", "awards", "press", "teaching",
+  ]);
+
+const stripContext = (n: Record<string, any>) => {
+  const { ["@context"]: _ctx, ...rest } = n;
+  return rest;
+};
+const extraNodes = (jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []).flatMap((n) =>
+  n["@graph"] ? (n["@graph"] as Record<string, any>[]) : [stripContext(n)],
+);
+
+const schemaSource = await loadSchemaSource();
+const pageGraph = buildPageGraph(schemaSource, {
+  siteUrl,
+  path,
+  // The graph describes this site's own URL even when <link rel=canonical> points elsewhere
+  // (e.g. syndicated podcasts).
+  canonicalUrl: new URL(path, `${siteUrl}/`).href,
+  title: resolvedTitle,
+  description: resolvedDescription,
+  imageUrl: ogImage,
+  type: schemaType,
+  full: schemaFull ?? FULL_PROFILE_PATHS.has(path),
+  breadcrumbs,
+  datePublished,
+  dateModified,
+  mainEntity,
+  extras: extraNodes,
+  knownSections: Array.from(new Set(knownSections)),
+});
+---
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="generator" content={Astro.generator} />
+
+<title>{fullTitle}</title>
+<meta name="description" content={resolvedDescription} />
+<meta
+  name="robots"
+  content={resolvedNoindex ? "noindex, follow" : "index, follow, max-image-preview:large"}
+/>
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Theme: dark-only site, so browser UI and form controls match -->
+<meta name="color-scheme" content="dark" />
+<meta name="theme-color" content={THEME_COLOR} />
+
+<!-- Open Graph -->
+<meta property="og:type" content={resolvedOgType} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:locale" content="en_GB" />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={resolvedDescription} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={resolvedImageAlt} />
+{resolvedOgType === "article" && publishedIso && (
+  <meta property="article:published_time" content={publishedIso} />
+)}
+{resolvedOgType === "article" && modifiedIso && (
+  <meta property="article:modified_time" content={modifiedIso} />
+)}
+
+<!-- Twitter / X (uncomment twitter:site only if you actively use the account) -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={resolvedDescription} />
+<meta name="twitter:image" content={ogImage} />
+<meta name="twitter:image:alt" content={resolvedImageAlt} />
+<!-- <meta name="twitter:site" content="@yourhandle" /> -->
+
+<!-- Icons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="alternate icon" href="/favicon.ico" sizes="any" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+<!-- Fonts: non-blocking (preload + swap on load), with a no-JS fallback -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preload" as="style" href={FONTS_HREF} />
+<link rel="stylesheet" href={FONTS_HREF} media="print" onload="this.media='all'" />
+<noscript><link rel="stylesheet" href={FONTS_HREF} /></noscript>
+
+<!-- Structured data -->
+<JsonLd id="jsonld" json={pageGraph} />
+
+<!-- Optional page-specific head content (<Fragment slot="head">…) -->
+<slot />

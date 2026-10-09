@@ -1,9 +1,0 @@
----
-import PageLayout from '../../../research/layouts/PageLayout.astro';
-import MethodCard from '../../../research/components/MethodCard.astro';
-import { getMethods } from '../../../research/lib/content';
-const methods = await getMethods();
----
-<PageLayout title="Methods" lede="The techniques used across projects and how they are documented." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Methods' }]}>
-  <div class="grid">{methods.map((m) => <MethodCard id={m.id} title={m.data.title} summary={m.data.summary} />)}</div>
-</PageLayout>

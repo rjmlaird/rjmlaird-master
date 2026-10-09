@@ -1,4 +1,0 @@
----
-interface Props { links: { label: string; url: string }[]; }
----
-{Astro.props.links.length > 0 && <ul>{Astro.props.links.map((l) => <li><a href={l.url}>{l.label}</a></li>)}</ul>}

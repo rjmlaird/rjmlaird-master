@@ -8,29 +8,57 @@ interface SocialItem {
   label?: string;
   name?: string;
   icon?: string;
+  color?: string;
 }
 
-const safeSocials: SocialItem[] = Array.isArray(socials) ? socials : [];
+interface Props {
+  types?: string[]; // optional: ["writing", "academic"]
+}
+
+const { types } = Astro.props;
+
+// Keys that need a different icon from the one in the JSON.
+// Web of Science has no icon in any Iconify set; Clarivate is its parent brand.
+const ICON_OVERRIDES: Record<string, string> = {
+  webofscience: "simple-icons:clarivate",
+};
+
+// Hidden for now: duplicate of X, and a Discord entry with a placeholder ID
+const HIDDEN = new Set(["twitter", "discord"]);
+
+const iconName = (item: SocialItem) =>
+  (item.key && ICON_OVERRIDES[item.key]) ??
+  (item.icon ? `simple-icons:${item.icon}` : undefined);
+
+const safeSocials = (Array.isArray(socials) ? (socials as (SocialItem & { type?: string })[]) : [])
+  .filter((item) => !item.key || !HIDDEN.has(item.key))
+  .filter((item) => !types || (item.type && types.includes(item.type)));
 ---
 
 <section class="socials">
   <ul class="socials__list" role="list">
-    {safeSocials.map((item) => (
-      <li class="socials__item">
-        <a
-          class={`socials__link ${item.key ? `socials__link--${item.key}` : ''}`}
-          href={item.url}
-          aria-label={item.label || item.name || "Social link"}
-          target="_blank"
-          rel="noreferrer noopener"
-          title={item.name || ""}
-        >
-          <span class="socials__icon" aria-hidden="true">
-            {item.icon && <Icon name={item.icon} class="socials__svg" />}
-          </span>
-        </a>
-      </li>
-    ))}
+    {safeSocials.map((item) => {
+      const name = iconName(item);
+      const label = item.label || item.name || "Social link";
+
+      return (
+        <li class="socials__item">
+          <a
+            class={`socials__link ${item.key ? `socials__link--${item.key}` : ""}`}
+            href={item.url}
+            aria-label={`${label} (opens in a new tab)`}
+            target="_blank"
+            rel="me noreferrer noopener"
+            title={item.name || ""}
+            style={item.color ? `--brand: ${item.color}` : undefined}
+          >
+            <span class="socials__icon" aria-hidden="true">
+              {name && <Icon name={name} class="socials__svg" />}
+            </span>
+          </a>
+        </li>
+      );
+    })}
   </ul>
 </section>
 
@@ -50,9 +78,17 @@ const safeSocials: SocialItem[] = Array.isArray(socials) ? socials : [];
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: inherit;
+    min-width: 44px;
+    min-height: 44px;
+    color: var(--mb);
     text-decoration: none;
     line-height: 0;
+    transition: color 0.2s;
+  }
+
+  .socials__link:hover,
+  .socials__link:focus-visible {
+    color: var(--w);
   }
 
   .socials__icon {

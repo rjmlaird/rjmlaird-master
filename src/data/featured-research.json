@@ -1,0 +1,9 @@
+{
+  "_note": "Curated research selection. Only fields Ryan has confirmed are shown; empty fields are hidden. Optionally add `href` to override the project URL.",
+  "items": [
+    { "collection": "projects", "slug": "gerb", "sector": "Earth observation research", "year": "2008", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "fuse", "sector": "", "year": "", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "seppcon", "sector": "", "year": "", "role": "", "outcome": "" },
+    { "collection": "projects", "slug": "galaxy-facebook", "sector": "", "year": "", "role": "", "outcome": "" }
+  ]
+}

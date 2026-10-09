@@ -1,6 +1,0 @@
----
-import { statusLabel, type Project } from '../lib/content';
-interface Props { status: Project['data']['status']; }
-const { status } = Astro.props;
----
-<span class={`badge ${status}`}>{statusLabel[status]}</span>

@@ -189,15 +189,6 @@ declare module 'astro:content' {
   filePath?: string;
   digest?: string | number;
 }>;
-"coaching": Record<string, {
-  id: string;
-  body?: string;
-  collection: "coaching";
-  data: InferEntrySchema<"coaching">;
-  rendered?: RenderedContent;
-  filePath?: string;
-  digest?: string | number;
-}>;
 "events": Record<string, {
   id: string;
   body?: string;
@@ -212,15 +203,6 @@ declare module 'astro:content' {
   body?: string;
   collection: "initiatives";
   data: InferEntrySchema<"initiatives">;
-  rendered?: RenderedContent;
-  filePath?: string;
-  digest?: string | number;
-}>;
-"mentoring": Record<string, {
-  id: string;
-  body?: string;
-  collection: "mentoring";
-  data: InferEntrySchema<"mentoring">;
   rendered?: RenderedContent;
   filePath?: string;
   digest?: string | number;
@@ -243,38 +225,11 @@ declare module 'astro:content' {
   filePath?: string;
   digest?: string | number;
 }>;
-"researchMethods": Record<string, {
+"services": Record<string, {
   id: string;
   body?: string;
-  collection: "researchMethods";
-  data: InferEntrySchema<"researchMethods">;
-  rendered?: RenderedContent;
-  filePath?: string;
-  digest?: string | number;
-}>;
-"researchNotebooks": Record<string, {
-  id: string;
-  body?: string;
-  collection: "researchNotebooks";
-  data: InferEntrySchema<"researchNotebooks">;
-  rendered?: RenderedContent;
-  filePath?: string;
-  digest?: string | number;
-}>;
-"researchNotes": Record<string, {
-  id: string;
-  body?: string;
-  collection: "researchNotes";
-  data: InferEntrySchema<"researchNotes">;
-  rendered?: RenderedContent;
-  filePath?: string;
-  digest?: string | number;
-}>;
-"researchProjects": Record<string, {
-  id: string;
-  body?: string;
-  collection: "researchProjects";
-  data: InferEntrySchema<"researchProjects">;
+  collection: "services";
+  data: InferEntrySchema<"services">;
   rendered?: RenderedContent;
   filePath?: string;
   digest?: string | number;

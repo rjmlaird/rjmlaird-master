@@ -1,0 +1,38 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import ProjectCard from "../../../components/Projects/ProjectCard.astro";
+import Filters from "../../../components/Projects/Filters.astro";
+
+const events = (await getCollection("events", ({ data }) => data.draft !== true))
+  .sort((a, b) => {
+    const aDate = a.data.startDate ? new Date(a.data.startDate).getTime() : 0;
+    const bDate = b.data.startDate ? new Date(b.data.startDate).getTime() : 0;
+    return bDate - aDate;
+  });
+---
+
+<Layout
+  title="Events"
+  description="Space, sustainability and science-communication events — filter by date, client, tags, type and status."
+>
+  <section class="project-index">
+    <div class="container pg-shell">
+      <header class="pg-head">
+        <p class="eyebrow">Events</p>
+
+        <h1 class="ch fade">
+          Events across <em>space, sustainability &amp; science policy</em>
+        </h1>
+      </header>
+
+      <Filters items={events} />
+
+      <div class="grid" id="projectGrid">
+        {events.map((event) => (
+          <ProjectCard event={event} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

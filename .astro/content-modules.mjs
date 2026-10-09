@@ -1,6 +1,5 @@
 
 export default new Map([
-["src/content/blog/seo-for-space-orgs-2026.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fblog%2Fseo-for-space-orgs-2026.mdx&astroContentModuleFlag=true")],
 ["src/content/brand/docs/assets/portraits.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fassets%2Fportraits.mdx&astroContentModuleFlag=true")],
 ["src/content/brand/docs/assets/social-cards.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fassets%2Fsocial-cards.mdx&astroContentModuleFlag=true")],
 ["src/content/brand/docs/components/buttons-and-links.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fcomponents%2Fbuttons-and-links.mdx&astroContentModuleFlag=true")],
@@ -20,5 +19,6 @@ export default new Map([
 ["src/content/brand/docs/tokens/spacing.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Ftokens%2Fspacing.mdx&astroContentModuleFlag=true")],
 ["src/content/brand/docs/tokens/typography.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Ftokens%2Ftypography.mdx&astroContentModuleFlag=true")],
 ["src/content/brand/docs/voice/science-communication.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fvoice%2Fscience-communication.mdx&astroContentModuleFlag=true")],
-["src/content/brand/docs/voice/voice-and-tone.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fvoice%2Fvoice-and-tone.mdx&astroContentModuleFlag=true")]]);
+["src/content/brand/docs/voice/voice-and-tone.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Fbrand%2Fdocs%2Fvoice%2Fvoice-and-tone.mdx&astroContentModuleFlag=true")],
+["src/content/insights/blog/seo-for-space-orgs-2026.mdx", () => import("astro:content-layer-deferred-module?astro%3Acontent-layer-deferred-module=&fileName=src%2Fcontent%2Finsights%2Fblog%2Fseo-for-space-orgs-2026.mdx&astroContentModuleFlag=true")]]);
 		

@@ -1,0 +1,319 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const SUBSTACK = "https://rjmlaird.substack.com";
+
+type Post = {
+  title: string;
+  url: string;
+  date: Date | null;
+  summary: string;
+};
+
+const sections = [
+  {
+    name: "Ground Truth",
+    href: `${SUBSTACK}/s/ground-truth`,
+    mark: "🌍",
+    scope: "Sustainability & Earth observation",
+    accent: "var(--green)",
+    blurb:
+      "Sustainability and Earth observation, from inside the work, not just commentary on it.",
+  },
+  {
+    name: "Clear Skies",
+    href: `${SUBSTACK}/s/clear-skies`,
+    mark: "🔭",
+    scope: "Science & astronomy",
+    accent: "var(--sky)",
+    blurb:
+      "Science and astronomy, explained the way I wish more of it was explained to me.",
+  },
+  {
+    name: "Market Signal",
+    href: `${SUBSTACK}/s/market-signal`,
+    mark: "📈",
+    scope: "Commercial space",
+    accent: "var(--amber)",
+    blurb:
+      "What's actually happening in the commercial space sector, versus what's just hype.",
+  },
+  {
+    name: "Static",
+    href: `${SUBSTACK}/s/static`,
+    mark: "📡",
+    scope: "Inclusion, media & fact-checks",
+    accent: "var(--violet)",
+    blurb:
+      "Where I get more personal: inclusion in STEM, media criticism, and full fact-checks when a documentary, headline or claim gets the evidence wrong.",
+  },
+];
+
+/* ---- Latest posts, fetched from the Substack RSS feed at build time ---- */
+
+const decode = (value: string) =>
+  value
+    .replace(/<!\[CDATA\[([\s\S]*?)\]\]>/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&quot;/g, '"')
+    .replace(/&#0?39;|&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const tag = (xml: string, name: string) =>
+  xml.match(new RegExp(`<${name}[^>]*>([\\s\\S]*?)</${name}>`))?.[1] ?? "";
+
+async function getLatestPosts(limit = 5): Promise<Post[]> {
+  try {
+    const res = await fetch(`${SUBSTACK}/feed`, {
+      signal: AbortSignal.timeout(5000),
+    });
+
+    if (!res.ok) {
+      throw new Error(`Feed responded with ${res.status}`);
+    }
+
+    const xml = await res.text();
+
+    return xml
+      .split("<item>")
+      .slice(1, limit + 1)
+      .map((item): Post => {
+        const parsed = new Date(decode(tag(item, "pubDate")));
+        const summary = decode(tag(item, "description"));
+
+        return {
+          title: decode(tag(item, "title")),
+          url: decode(tag(item, "link")),
+          date: Number.isNaN(parsed.getTime()) ? null : parsed,
+          summary: summary.length > 180 ? `${summary.slice(0, 177)}…` : summary,
+        };
+      })
+      .filter((post) => post.title && post.url);
+  } catch (error) {
+    console.warn("[substack] Could not load the feed:", error);
+    return [];
+  }
+}
+
+const posts = await getLatestPosts();
+
+const fmt = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+---
+
+<Layout
+  title="Signal & Noise"
+  description="Signal & Noise is Ryan Laird's newsletter on the space sector, science communication and fact-checks for when evidence loses to noise."
+>
+  <header class="page-head">
+    <p class="sl">Newsletter</p>
+    <h1>Signal &amp; Noise</h1>
+
+    <div class="lede">
+      <p>
+        Space strategy, science communication, and fact-checks when evidence loses to noise.
+        New posts every week or two, with shorter Notes in between.
+      </p>
+    </div>
+
+    <div class="hb">
+      <a class="bp" href={SUBSTACK} target="_blank" rel="noopener noreferrer">
+        Subscribe on Substack
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+      <a class="bo" href={`${SUBSTACK}/notes`} target="_blank" rel="noopener noreferrer">
+        Read the Notes
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </div>
+
+    <p class="stack-summary">
+      <span><strong>4</strong> sections</span>
+      <span><strong>1–2</strong> weeks between posts</span>
+    </p>
+  </header>
+
+  <section id="story" aria-labelledby="why-label">
+    <h2 class="sl" id="why-label">Why it exists</h2>
+
+    <div class="story-grid">
+      <p class="story-lede">
+        I check the claim <em>before I share the take.</em>
+      </p>
+
+      <div class="story-body">
+        <p>
+          I've spent my career moving between physics, the space industry, and writing about
+          both, and somewhere along the way I got tired of watching good evidence lose to
+          confident-sounding noise.
+        </p>
+        <p>
+          This newsletter is me trying to be the person who <strong>reads the study, checks the
+          source,</strong> and tells you what's actually there before adding my own opinion on top.
+        </p>
+        <p>
+          Some weeks that's a short, sharp take. Other times it's a proper deep dive, sourced
+          properly, because the subject deserves it.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="sections-label">
+    <h2 class="sl" id="sections-label">Four sections</h2>
+
+    <p class="lede">
+      I've kept the writing loosely sectioned so you can find your way around.
+    </p>
+
+    <div class="init-grid">
+      {sections.map((section, index) => (
+        <article class="ic" style={`--ic-accent: ${section.accent}`}>
+          <div class="ic-h">
+            <p class="ic-mk" aria-hidden="true">{section.mark}</p>
+            <p class="ic-sec">{section.scope}</p>
+            <h3>{section.name}</h3>
+            <p>{section.blurb}</p>
+          </div>
+
+          <div class="ic-ft">
+            <span class="ic-st">Section {String(index + 1).padStart(2, "0")}</span>
+            <a class="ic-lk" href={section.href} target="_blank" rel="noopener noreferrer">
+              Read {section.name} ↗
+              <span class="sr-only"> (opens in a new tab)</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section id="work" aria-labelledby="latest-label">
+      <h2 class="sl" id="latest-label">Latest posts</h2>
+
+      <div>
+        {posts.map((post) => (
+          <a class="pub-row" href={post.url} target="_blank" rel="noopener noreferrer">
+            <div class="pub-meta">
+              <span class="pub-outlet">Signal &amp; Noise</span>
+              {post.date && (
+                <time class="pub-date" datetime={post.date.toISOString()}>
+                  {fmt(post.date)}
+                </time>
+              )}
+            </div>
+
+            <div class="pub-body">
+              <h3>
+                {post.title}
+                <span class="sr-only"> (opens in a new tab)</span>
+              </h3>
+              {post.summary && <p>{post.summary}</p>}
+            </div>
+
+            <span class="pp p-pr" aria-hidden="true">Read</span>
+          </a>
+        ))}
+      </div>
+
+      <a class="pub-more" href={SUBSTACK} target="_blank" rel="noopener noreferrer">
+        All posts on Substack ↗
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </section>
+  )}
+
+  <section aria-labelledby="about-label">
+    <h2 class="sl" id="about-label">About the author</h2>
+
+    <div class="about-grid">
+      <div>
+        <p class="ah">
+          A physicist by training, <em>explaining complicated things clearly.</em>
+        </p>
+
+        <div class="ab">
+          <p>
+            I'm Ryan, a physicist who ended up in space sector marketing almost by accident, and
+            stayed because I like the problem of explaining complicated, important things clearly.
+            I run <a href="https://impactorbit.co">Impact Orbit Co.</a>, a small consultancy in the
+            space and sustainability world, and I've spent years on the communications side of
+            genuinely ambitious science.
+          </p>
+          <p>
+            Outside client work I put a lot of energy into <strong>neurodiversity and inclusion in
+            STEM</strong>, and integrity in how the space sector talks about itself. This newsletter
+            is where the space career, the physics background and the journalism instinct meet,
+            along with a fairly stubborn refusal to let a bad claim go unchecked just because it was
+            said with confidence.
+          </p>
+        </div>
+
+        <div class="cred-row">
+          <span class="cred-badge cb-teal">Chartered Marketer</span>
+          <span class="cred-badge cb-v">MPhys Astrophysics</span>
+          <span class="cred-badge cb-m">MInstP · MCIPR</span>
+        </div>
+      </div>
+
+      <aside class="sp" aria-label="Find Signal and Noise">
+        <p class="sp-h">Find Signal &amp; Noise</p>
+
+        <a class="si" href={SUBSTACK} target="_blank" rel="noopener noreferrer">
+          <span class="sl2">
+            <span class="su"><span class="t">Substack</span> · Home</span>
+            <span class="sd2">Latest posts and sections</span>
+          </span>
+          <span class="sa" aria-hidden="true">→</span>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+
+        <a class="si" href={`${SUBSTACK}/notes`} target="_blank" rel="noopener noreferrer">
+          <span class="sl2">
+            <span class="su"><span class="t">Notes</span></span>
+            <span class="sd2">Shorter thoughts between posts</span>
+          </span>
+          <span class="sa" aria-hidden="true">→</span>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+
+        <a class="si" href={`${SUBSTACK}/about`} target="_blank" rel="noopener noreferrer">
+          <span class="sl2">
+            <span class="su"><span class="t">About</span> · Signal &amp; Noise</span>
+            <span class="sd2">What to expect and why</span>
+          </span>
+          <span class="sa" aria-hidden="true">→</span>
+          <span class="sr-only">(opens in a new tab)</span>
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <section id="contact" aria-labelledby="cta-heading">
+    <p class="cp">Subscribe</p>
+    <h2 class="ch" id="cta-heading">
+      Because you want the <em>sourcing,</em> not just the take
+    </h2>
+    <p class="cs">
+      New posts every week or two, shorter Notes in between, and the occasional piece I clearly
+      couldn't stop myself writing.
+    </p>
+
+    <div class="socs">
+      <a class="bp" href={SUBSTACK} target="_blank" rel="noopener noreferrer">
+        Subscribe to Signal &amp; Noise
+        <span class="sr-only"> (opens in a new tab)</span>
+      </a>
+    </div>
+  </section>
+</Layout>

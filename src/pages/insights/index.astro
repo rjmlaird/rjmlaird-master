@@ -1,0 +1,73 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout
+  title="Insights"
+  description="Ryan Laird's insights: essays on this site, research and writing, sector perspectives on space, Earth observation and sustainability, and the Signal & Noise newsletter."
+>
+  <div class="wrap page">
+    <header class="page-head">
+      <p class="sl">Insights</p>
+
+      <h1>Four places to read, one for how you like to read</h1>
+
+      <p class="lede">
+        I publish in different places because the work is different. Essays and notes live on this
+        site, research and articles for other publications sit under research, sector pages gather
+        what I know about each field, and the newsletter is where I check claims and add opinion.
+        Pick the route that fits and you'll land on the right page.
+      </p>
+    </header>
+
+    <div class="route-grid">
+      <article class="route" id="blog" data-tone="teal">
+        <h2>Blog</h2>
+        <p>Essays and commentary published on this site: space strategy, science communication, sustainability and digital practice.</p>
+        <p class="for"><strong>For:</strong> readers who want the considered, longer view and a piece they can link to and come back to.</p>
+        <a class="go" href="/insights/blog/">Read the blog</a>
+      </article>
+
+      <article class="route" id="research" data-tone="violet">
+        <h2>Research and writing</h2>
+        <p>Research outputs and articles written for other publications, filterable by topic and by publication.</p>
+        <p class="for"><strong>For:</strong> researchers, editors, students and anyone checking what I've published elsewhere.</p>
+        <a class="go" href="/research/">Research and writing</a>
+      </article>
+
+      <article class="route" id="sectors" data-tone="sky">
+        <h2>Sectors</h2>
+        <p>Perspectives organised by field, so you can start from your own area rather than from a format.</p>
+        <p class="for"><strong>For:</strong> people in space, Earth observation, climate and sustainability, and deep tech who want the material that applies to them.</p>
+        <a class="go" href="/work/sectors/">Browse the sectors</a>
+      </article>
+
+      <article class="route" id="newsletter" data-tone="amber">
+        <h2>Signal &amp; Noise newsletter</h2>
+        <p>Space strategy, science communication and fact-checks when evidence loses to noise. New posts every week or two, with shorter Notes in between.</p>
+        <p class="for"><strong>For:</strong> readers who want the sourcing, not just the take.</p>
+        <a class="go" href="/insights/substack/">About the newsletter</a>
+        <a
+          class="go"
+          href="https://rjmlaird.substack.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Subscribe on Substack
+          <span class="sr-only"> (opens in a new tab)</span>
+        </a>
+      </article>
+    </div>
+
+    <div class="block">
+      <h2>Not sure where to start?</h2>
+      <p class="prose">
+        For a first read, the <a href="/insights/blog/">blog</a> is the best place. If you'd rather
+        have things delivered, <a href="https://rjmlaird.substack.com/">subscribe to Signal &amp; Noise</a>.
+        Looking for something specific, such as a topic, a publication or a sector? Try the
+        filters on <a href="/research/">research and writing</a>, or
+        <a href="/contact/">get in touch</a> and I'll point you to it.
+      </p>
+    </div>
+  </div>
+</Layout>

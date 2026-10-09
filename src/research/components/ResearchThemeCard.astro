@@ -1,9 +1,0 @@
----
-interface Props { slug: string; label: string; blurb: string; count?: number; }
-const { slug, label, blurb, count } = Astro.props;
----
-<article class="card">
-  <h3><a href={`/research/themes/${slug}/`}>{label}</a></h3>
-  <p>{blurb}</p>
-  {count !== undefined && <p class="meta">{count} project{count === 1 ? '' : 's'}</p>}
-</article>

@@ -69,7 +69,6 @@
       "type": "string"
     },
     "dataSources": {
-      "default": [],
       "type": "array",
       "items": {
         "type": "object",
@@ -95,7 +94,6 @@
       }
     },
     "outputs": {
-      "default": [],
       "type": "array",
       "items": {
         "type": "object",
@@ -157,7 +155,6 @@
       "type": "string"
     },
     "relatedArticles": {
-      "default": [],
       "type": "array",
       "items": {
         "type": "object",
@@ -171,8 +168,7 @@
           }
         },
         "required": [
-          "label",
-          "url"
+          "label"
         ]
       }
     },

@@ -1,0 +1,39 @@
+---
+// src/pages/case-studies/index.astro
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import ProjectCard from "../../../components/Projects/ProjectCard.astro";
+import Filters from "../../../components/Projects/Filters.astro";
+
+const caseStudies = await getCollection("caseStudies", ({ data }) => data.draft !== true);
+
+const sortedCaseStudies = caseStudies.sort((a, b) =>
+  (a.data.title ?? "").localeCompare(b.data.title ?? "")
+);
+---
+
+<Layout
+  title="Case Studies"
+  description="Space, sustainability and science-communication case studies — filter by date, client, tags, type and status."
+>
+  <section class="project-index">
+    <div class="container pg-shell">
+      <header class="pg-head">
+        <p class="eyebrow">Case Studies</p>
+
+        <h1 class="ch fade">
+          Case Studies across <em>space, sustainability &amp; science policy</em>
+        </h1>
+      </header>
+
+      <Filters items={caseStudies} />
+
+      <div class="grid" id="projectGrid">
+        {sortedCaseStudies.map((caseStudy) => (
+          <ProjectCard caseStudy={caseStudy} />
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>
+

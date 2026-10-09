@@ -1,0 +1,34 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Story from "../../sections/story.section.astro";
+import About from "../../sections/about.section.astro";
+---
+
+<Layout schemaType="ProfilePage" title="About" description="About Ryan Laird: from astrophysics to science communication, sustainability and digital strategy, and founder of Green Orbit Digital.">
+  <div class="wrap page">
+    <header class="page-head">
+      <h1>About</h1>
+      <p class="lead">
+        I trained as an astrophysicist and now work where science, communication and digital systems meet. The common
+        thread is making complex material clear without losing accuracy.
+      </p>
+    </header>
+  </div>
+  <Story />
+  <About />
+  <div class="wrap page">
+    <section class="block" style="margin-top:0">
+      <h2>Ryan Laird and Green Orbit Digital</h2>
+      <p class="prose">
+        This site is my personal one: my research, writing, teaching and mentoring. Green Orbit Digital is the separate
+        practice I founded and direct for organisation-level communications and strategy. If you need a team to deliver
+        a project, start at <a href="https://greenorbit.space">greenorbit.space</a>. If you want my own voice, expertise
+        or time, start at <a href="/work-with-me/">Work with me</a>.
+      </p>
+      <div class="cta-row no-print">
+        <a class="bp" href="/cv/">View my CV</a>
+        <a class="bo" href="/contact/">Get in touch</a>
+      </div>
+    </section>
+  </div>
+</Layout>

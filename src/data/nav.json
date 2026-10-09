@@ -1,42 +1,115 @@
 {
   "primary": [
     {
-      "label": "Home",
-      "href": "/"
+      "label": "Work",
+      "href": "/work/",
+      "children": [
+        {
+          "label": "Case studies",
+          "href": "/work/case-studies/"
+        },
+        {
+          "label": "Projects",
+          "href": "/work/projects/"
+        },
+        {
+          "label": "Initiatives",
+          "href": "/work/initiatives/"
+        },
+        {
+          "label": "Videos",
+          "href": "/work/videos/"
+        }
+      ]
     },
     {
-      "label": "Work with me",
-      "href": "/work-with-me/"
+      "label": "Services",
+      "href": "/services/",
+      "children": [
+        {
+          "label": "Strategy & advisory",
+          "href": "/services/strategy/"
+        },
+        {
+          "label": "Science & space communications",
+          "href": "/services/communications/"
+        },
+        {
+          "label": "Sustainability communications",
+          "href": "/services/sustainability/"
+        },
+        {
+          "label": "Digital systems",
+          "href": "/services/digital-systems/"
+        },
+        {
+          "label": "Speaking & workshops",
+          "href": "/services/speaking-workshops/"
+        },
+        {
+          "label": "Mentoring",
+          "href": "/services/mentoring/"
+        }
+      ]
     },
     {
-      "label": "Research & writing",
-      "href": "/research/"
-    },
-    {
-      "label": "Projects",
-      "href": "/projects/"
+      "label": "Insights",
+      "href": "/insights/",
+      "children": [
+        {
+          "label": "Blog",
+          "href": "/insights/blog/"
+        },
+        {
+          "label": "Research",
+          "href": "/insights/research/"
+        },
+        {
+          "label": "Podcasts",
+          "href": "/insights/podcasts/"
+        },
+        {
+          "label": "Topics",
+          "href": "/insights/topics/"
+        }
+      ]
     },
     {
       "label": "About",
-      "href": "/about/"
-    },
-    {
-      "label": "Contact",
-      "href": "/contact/"
+      "href": "/about/",
+      "children": [
+        {
+          "label": "Biography",
+          "href": "/about/bio/"
+        },
+        {
+          "label": "Organisations & initiatives",
+          "href": "/about/organisations/"
+        },
+        {
+          "label": "Press & media",
+          "href": "/about/press/"
+        }
+      ]
     }
   ],
   "utility": [
     {
       "label": "CV",
-      "href": "https://cv.rjmlaird.co.uk/"
+      "href": "https://cv.rjmlaird.co.uk"
     },
     {
-      "label": "Dev",
+      "label": "Developer work",
       "href": "/dev/"
     },
     {
-      "label": "Brand",
-      "href": "/brand/"
+      "label": "Impact Orbit Co.",
+      "href": "https://impactorbit.co",
+      "external": true
     }
-  ]
+  ],
+  "cta": {
+    "label": "Start a conversation",
+    "href": "/contact/"
+  }
 }

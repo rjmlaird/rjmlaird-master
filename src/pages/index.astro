@@ -4,7 +4,6 @@ import { getCollection } from "astro:content";
 import { isEvidenceReady, cleanText } from "../lib/content-quality.mjs";
 import selected from "../data/selected-work.json";
 import enquiries from "../data/enquiries.json";
-import { TOPICS } from "../lib/topics";
 
 const resolved = (
   await Promise.all(
@@ -120,7 +119,7 @@ const pathways = [
           const short = summary.length > 170 ? summary.slice(0, summary.lastIndexOf(" ", 167)) + "…" : summary;
           const ready = isEvidenceReady(entry.data, entry.body ?? "");
           return (
-            <a class="work-card" href={`/${collection}/${entry.data.slug ?? entry.id}/`}>
+            <a class="work-card" href={`/work/${collection}/${entry.data.slug ?? entry.id}/`}>
               <h3>{entry.data.title}</h3>
               <p class="meta">{[sector, entry.data.client, year].filter(Boolean).join(" · ")}</p>
               {short && <p>{short}</p>}
@@ -131,18 +130,13 @@ const pathways = [
         })}
       </div>
       <div class="cta-row">
-        <a href="/projects/" class="bo">All projects</a>
+        <a href="/work/projects/" class="bo">All projects</a>
       </div>
     </section>
 
-    <section class="home-block" aria-labelledby="research-writing">
-      <h2 id="research-writing">Research and writing</h2>
+    <section class="home-block" aria-labelledby="research-editorial">
+      <h2 id="research-writing">Research and editorial</h2>
       <p class="intro">Formal publications, public writing and independent analysis, kept clearly separate.</p>
-      <ul class="theme-list">
-        {TOPICS.slice(0, 6).map((t) => (
-          <li><a href={`/writing/?topic=${t.slug}`}>{t.label}</a></li>
-        ))}
-      </ul>
       {latest && (
         <p class="prose" style="margin-top:1.5rem">
           Latest: <a href={`/blog/${latest.data.slug ?? latest.id}/`}>{latest.data.title}</a>
@@ -150,7 +144,7 @@ const pathways = [
       )}
       <div class="cta-row">
         <a href="/research/" class="bo">Research</a>
-        <a href="/writing/" class="bo">Writing</a>
+        <a href="/work/editorial/" class="bo">Writing</a>
       </div>
     </section>
 

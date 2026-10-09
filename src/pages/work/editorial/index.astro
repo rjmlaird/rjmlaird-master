@@ -1,0 +1,430 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import articles from "../../../data/articles.json";
+
+type Filter = { slug: string; label: string };
+
+type Entry = {
+  title: string;
+  url: string;
+  date: Date;
+  summary: string;
+  kind: string;
+  where: string;
+  topics: string[]; // topic slugs
+  publication: string; // publication slug ("" if none)
+  external: boolean;
+};
+
+type ExternalArticle = {
+  title?: string;
+  url?: string;
+  date?: string;
+  excerpt?: string;
+  publication?: string;
+  topics?: string | string[];
+};
+
+const isDefined = <T,>(value: T | null): value is T => value !== null;
+
+function isValidDate(value: Date): boolean {
+  return !Number.isNaN(value.getTime());
+}
+
+function parseDate(value: unknown): Date | null {
+  if (value instanceof Date) {
+    return isValidDate(value) ? value : null;
+  }
+
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+
+  const normalised = value.trim();
+  let parsed: Date;
+
+  if (/^\d{4}$/.test(normalised)) {
+    parsed = new Date(`${normalised}-01-01T00:00:00.000Z`);
+  } else if (/^\d{4}-\d{2}$/.test(normalised)) {
+    parsed = new Date(`${normalised}-01T00:00:00.000Z`);
+  } else if (/^\d{4}-\d{2}-\d{2}$/.test(normalised)) {
+    parsed = new Date(`${normalised}T00:00:00.000Z`);
+  } else {
+    parsed = new Date(normalised);
+  }
+
+  return isValidDate(parsed) ? parsed : null;
+}
+
+/* ---- Filters built from the data itself ---- */
+
+const topicLabels = new Map<string, string>(); // slug -> first-seen label
+const publicationLabels = new Map<string, string>(); // slug -> first-seen label
+
+const slugify = (value: string) =>
+  value
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+
+function toTopics(...inputs: unknown[]): string[] {
+  const slugs = new Set<string>();
+
+  for (const input of inputs) {
+    const values = Array.isArray(input)
+      ? input
+      : typeof input === "string"
+        ? [input]
+        : [];
+
+    for (const value of values) {
+      if (typeof value !== "string") continue;
+
+      const label = value.trim();
+      const slug = slugify(label);
+
+      if (!label || !slug) continue;
+
+      if (!topicLabels.has(slug)) {
+        topicLabels.set(slug, label);
+      }
+
+      slugs.add(slug);
+    }
+  }
+
+  return [...slugs];
+}
+
+function toPublication(value: unknown): string {
+  if (typeof value !== "string") return "";
+
+  const label = value.trim();
+  const slug = slugify(label);
+
+  if (!label || !slug) return "";
+
+  if (!publicationLabels.has(slug)) {
+    publicationLabels.set(slug, label);
+  }
+
+  return slug;
+}
+
+const posts = await getCollection("blog", ({ data }) => !data.draft);
+
+const blogEntries = posts
+  .map((post): Entry | null => {
+    const date = parseDate(post.data.pubDate);
+
+    if (!date) {
+      console.warn(
+        `[writing] Skipping blog post with an invalid pubDate: ${post.id}`,
+        post.data.pubDate,
+      );
+      return null;
+    }
+
+    return {
+      title: post.data.title ?? "Untitled post",
+      url: `/insights/blog/${post.data.slug ?? post.id}/`,
+      date,
+      summary: post.data.description ?? "",
+      kind: "Essay",
+      where: "This site",
+      topics: toTopics(post.data.category, post.data.tags),
+      publication: toPublication("This site"),
+      external: false,
+    };
+  })
+  .filter(isDefined);
+
+const externalArticles = Array.isArray(articles.articles)
+  ? (articles.articles as ExternalArticle[])
+  : [];
+
+const articleEntries = externalArticles
+  .map((article, index): Entry | null => {
+    const date = parseDate(article.date);
+
+    if (!date) {
+      console.warn(
+        `[writing] Skipping external article with an invalid date at index ${index}:`,
+        {
+          title: article.title,
+          date: article.date,
+          url: article.url,
+        },
+      );
+      return null;
+    }
+
+    if (!article.title || !article.url) {
+      console.warn(
+        `[writing] Skipping external article missing a title or URL at index ${index}:`,
+        article,
+      );
+      return null;
+    }
+
+    return {
+      title: article.title,
+      url: article.url,
+      date,
+      summary: article.excerpt ?? "",
+      kind: "Article",
+      where: article.publication ?? "",
+      topics: toTopics(article.topics),
+      publication: toPublication(article.publication),
+      external: true,
+    };
+  })
+  .filter(isDefined);
+
+const entries = [...blogEntries, ...articleEntries].sort(
+  (a, b) => b.date.getTime() - a.date.getTime(),
+);
+
+// Most-used first, then A–Z
+function buildFilters(
+  values: string[],
+  labels: Map<string, string>,
+): Filter[] {
+  const counts = new Map<string, number>();
+
+  for (const slug of values) {
+    counts.set(slug, (counts.get(slug) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(([slug]) => ({ slug, label: labels.get(slug) ?? slug }));
+}
+
+const usedTopics = buildFilters(
+  entries.flatMap((entry) => entry.topics),
+  topicLabels,
+);
+
+const usedPublications = buildFilters(
+  entries.map((entry) => entry.publication).filter(Boolean),
+  publicationLabels,
+);
+
+const fmt = (date: Date) =>
+  new Intl.DateTimeFormat("en-GB", {
+    year: "numeric",
+    month: "short",
+  }).format(date);
+---
+
+<Layout
+  title="Editorial Works"
+  description="Essays, articles and commentary by Ryan Laird on space, sustainability, science communication and digital strategy."
+>
+  <div class="wrap page writing-page">
+    <nav class="crumbs" aria-label="Breadcrumb">
+      <a href="/research/">Research and writing</a> / Writing
+    </nav>
+
+    <header class="page-head">
+      <p class="sl">Editorial</p>
+      <h1>Editorial Works</h1>
+      <p class="lede">
+        Essays published on this site and articles written for other publications. Filter by topic or publication.
+      </p>
+      <p class="prose timeline-note">
+        Most of the older pieces here date from my years as an editor in the
+        space sector (2015–2021), including Spaceoneers. From 2021 to 2023 I
+        led communications for ESA Business Applications at HE Space, and since
+        2023 my writing has come out of my own consultancy.
+        <a href="/about/#experience">See the full career timeline</a>.
+      </p>
+    </header>
+
+    <section class="writing-controls" aria-label="Filters">
+      <p class="tlbl" id="topic-label">Filter by topic</p>
+
+      <div class="filter-row" role="group" aria-labelledby="topic-label" id="topic-filters">
+        <button class="chip active" type="button" data-topic="all" aria-pressed="true">
+          All
+        </button>
+
+        {usedTopics.map((topic) => (
+          <button
+            class="chip"
+            type="button"
+            data-topic={topic.slug}
+            aria-pressed="false"
+          >
+            {topic.label}
+          </button>
+        ))}
+      </div>
+
+      {usedPublications.length > 1 && (
+        <>
+          <p class="tlbl" id="publication-label">Filter by publication</p>
+
+          <div
+            class="filter-row"
+            role="group"
+            aria-labelledby="publication-label"
+            id="publication-filters"
+          >
+            <button
+              class="chip active"
+              type="button"
+              data-publication="all"
+              aria-pressed="true"
+            >
+              All
+            </button>
+
+            {usedPublications.map((publication) => (
+              <button
+                class="chip"
+                type="button"
+                data-publication={publication.slug}
+                aria-pressed="false"
+              >
+                {publication.label}
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+    </section>
+
+    <ul class="entry-list" id="entries">
+      {entries.map((entry) => (
+        <li
+          data-topics={entry.topics.join(" ")}
+          data-publication={entry.publication}
+        >
+          <time class="when" datetime={entry.date.toISOString()}>
+            {fmt(entry.date)}
+          </time>
+
+          <div class="entry-content">
+            <h2>
+              <a
+                href={entry.url}
+                {...(entry.external
+                  ? {
+                      target: "_blank",
+                      rel: "noopener noreferrer",
+                    }
+                  : {})}
+              >
+                {entry.title}
+                {entry.external && <span class="sr-only"> (opens in a new tab)</span>}
+              </a>
+            </h2>
+
+            {entry.summary && <p>{entry.summary}</p>}
+
+            <p class="tags">
+              {[entry.kind, entry.where].filter(Boolean).join(" · ")}
+            </p>
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <p id="no-results" class="prose" hidden>
+      Nothing matches these filters yet.
+    </p>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const topicChips = [...document.querySelectorAll("#topic-filters .chip")];
+      const pubChips = [...document.querySelectorAll("#publication-filters .chip")];
+      const items = document.querySelectorAll("#entries li");
+      const empty = document.getElementById("no-results");
+
+      const state = { topic: "all", publication: "all" };
+
+      function syncChips(chips, key, value) {
+        chips.forEach((chip) => {
+          const isActive = chip.dataset[key] === value;
+
+          chip.setAttribute("aria-pressed", String(isActive));
+          chip.classList.toggle("active", isActive);
+        });
+      }
+
+      function apply() {
+        let shown = 0;
+
+        items.forEach((item) => {
+          const topics = (item.dataset.topics || "").split(" ");
+          const matchesTopic =
+            state.topic === "all" || topics.includes(state.topic);
+          const matchesPub =
+            state.publication === "all" ||
+            item.dataset.publication === state.publication;
+          const matches = matchesTopic && matchesPub;
+
+          item.hidden = !matches;
+
+          if (matches) {
+            shown += 1;
+          }
+        });
+
+        syncChips(topicChips, "topic", state.topic);
+        syncChips(pubChips, "publication", state.publication);
+
+        if (empty) {
+          empty.hidden = shown !== 0;
+        }
+
+        const url = new URL(window.location.href);
+
+        ["topic", "publication"].forEach((key) => {
+          if (state[key] === "all") {
+            url.searchParams.delete(key);
+          } else {
+            url.searchParams.set(key, state[key]);
+          }
+        });
+
+        window.history.replaceState(null, "", url);
+      }
+
+      topicChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          state.topic = chip.dataset.topic || "all";
+          apply();
+        });
+      });
+
+      pubChips.forEach((chip) => {
+        chip.addEventListener("click", () => {
+          state.publication = chip.dataset.publication || "all";
+          apply();
+        });
+      });
+
+      const params = new URL(window.location.href).searchParams;
+      const initialTopic = params.get("topic");
+      const initialPub = params.get("publication");
+
+      if (initialTopic && topicChips.some((c) => c.dataset.topic === initialTopic)) {
+        state.topic = initialTopic;
+      }
+
+      if (initialPub && pubChips.some((c) => c.dataset.publication === initialPub)) {
+        state.publication = initialPub;
+      }
+
+      apply();
+    })();
+  </script>
+</Layout>

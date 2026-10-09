@@ -1,0 +1,142 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import ProjectCard from "../../../components/Projects/ProjectCard.astro";
+import Filters from "../../../components/Projects/Filters.astro";
+
+const entries = await getCollection(
+  "projects",
+  ({ data }) => data.draft !== true
+);
+
+/* ---- Sort: most recent first ---- */
+
+// Accepts a Date, "2019", "2019-05" or "2019-05-14"; returns a timestamp or null
+function toTime(value: unknown): number | null {
+  if (value instanceof Date) {
+    const t = value.getTime();
+    return Number.isNaN(t) ? null : t;
+  }
+
+  if (typeof value === "number" && Number.isFinite(value)) {
+    // Treat bare numbers like 2019 as a year
+    return value >= 1000 && value <= 9999
+      ? Date.UTC(value, 0, 1)
+      : null;
+  }
+
+  if (typeof value !== "string" || !value.trim()) return null;
+
+  const v = value.trim();
+  const iso = /^\d{4}$/.test(v)
+    ? `${v}-01-01`
+    : /^\d{4}-\d{2}$/.test(v)
+      ? `${v}-01`
+      : v;
+
+  const t = new Date(iso).getTime();
+  return Number.isNaN(t) ? null : t;
+}
+
+// Uses the first date-like field the entry has. Adjust the list to match your schema.
+const DATE_FIELDS = ["endDate", "date", "pubDate", "startDate", "year", "updated"] as const;
+
+function projectTime(entry: (typeof entries)[number]): number | null {
+  const data = entry.data as Record<string, unknown>;
+
+  for (const field of DATE_FIELDS) {
+    const t = toTime(data[field]);
+    if (t !== null) return t;
+  }
+
+  return null;
+}
+
+const projects = [...entries].sort((a, b) => {
+  const ta = projectTime(a);
+  const tb = projectTime(b);
+
+  // Undated projects go last
+  if (ta === null && tb === null) {
+    return String((a.data as any).title ?? a.id).localeCompare(
+      String((b.data as any).title ?? b.id),
+    );
+  }
+  if (ta === null) return 1;
+  if (tb === null) return -1;
+
+  return tb - ta || String((a.data as any).title ?? a.id).localeCompare(
+    String((b.data as any).title ?? b.id),
+  );
+});
+---
+
+<Layout
+  title="Projects"
+  description="Space, sustainability and science-communication projects — filter by date, client, tags, type and status."
+>
+  <section class="project-index">
+    <div class="container pg-shell">
+      <header class="page-head">
+        <p class="sl">Projects</p>
+
+        <h1 class="fade">
+          Projects across <em>space, sustainability &amp; science policy</em>
+        </h1>
+
+        <div class="lede">
+          <p>
+            Work across space communications, Earth observation, public engagement and research. Entries are being
+            rewritten one at a time as full case studies, with context, my role and outcomes. Where a page is still
+            short, it is marked and kept out of search results until it is complete.
+          </p>
+        </div>
+      </header>
+
+      <Filters items={projects} />
+
+      {projects.length > 0 ? (
+        <div class="grid project-grid" id="projectGrid">
+          {projects.map((project) => (
+            <ProjectCard project={project} />
+          ))}
+        </div>
+      ) : (
+        <p class="lede">No projects to show yet.</p>
+      )}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  /* Three columns on desktop, two on tablet, one on mobile */
+  #projectGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  /* Cards come from a child component, so reach them with :global */
+  #projectGrid > :global(*) {
+    min-width: 0;   /* stops long titles or tags from stretching a column */
+    height: 100%;   /* equal-height cards in each row */
+  }
+
+  /* The filter script hides cards with [hidden]; make sure display rules never override it */
+  #projectGrid > :global([hidden]) {
+    display: none;
+  }
+
+  @media (max-width: 1100px) {
+    #projectGrid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 700px) {
+    #projectGrid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

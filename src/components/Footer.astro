@@ -1,59 +1,80 @@
 ---
 import socials from "../data/socials.json";
 import { Icon } from "astro-icon/components";
+import { resolveIcon, HIDDEN_SOCIALS } from "../lib/icons";
 
 const year = new Date().getFullYear();
-const selectedSocials = socials.filter((item) => item.type === "social");
+
+const selectedSocials = socials.filter(
+  (item) => item.type === "social" && !HIDDEN_SOCIALS.has(item.key),
+);
+
+const footerLinks = [
+  { href: "/work-with-me/", label: "Work with me" },
+  { href: "/cv/", label: "CV" },
+  { href: "/open-source/", label: "Open source" },
+  { href: "/press/", label: "Press" },
+  { href: "/contact/", label: "Contact" },
+];
 ---
 
 <footer class="footer">
   <div class="footer__top">
     <div class="footer__brand">
-      <a class="footer__logo" href="/" aria-label="Home">
-        <a href="/" class="logo">RJM<span>Laird</span></a>
-      </a>
+      <a class="logo" href="/" aria-label="Home">RJM<span>Laird</span></a>
+
       <p class="footer__copy">
-        Astrophysicist, science communicator and strategist. Founder and Director of <a href="https://greenorbit.space">Green Orbit Digital</a>.
+        Astrophysicist, science communicator and strategist. Founder and Director of
+        <a href="https://greenorbit.space">Green Orbit Digital</a>.
       </p>
 
+      <ul class="socials__list" role="list" aria-label="Social profiles">
+        {selectedSocials.map((item) => {
+          const name = resolveIcon(item.icon, item.key);
 
-      <ul class="socials__list" role="list">
-        {selectedSocials.map((item) => (
-          <li class="socials__item">
-            <a
-              class={`socials__link socials__link--${item.key}`}
-              href={item.url}
-              aria-label={item.label}
-              target="_blank"
-              rel="noreferrer noopener"
-              title={item.name}
-            >
-              <span class="socials__icon" aria-hidden="true">
-                <Icon name={item.icon} class="socials__svg" />
-              </span>
-            </a>
-          </li>
-        ))}
+          return (
+            <li class="socials__item">
+              <a
+                class={`socials__link socials__link--${item.key}`}
+                href={item.url}
+                aria-label={`${item.label} (opens in a new tab)`}
+                target="_blank"
+                rel="me noreferrer noopener"
+                title={item.name}
+              >
+                <span class="socials__icon" aria-hidden="true">
+                  {name && <Icon name={name} class="socials__svg" />}
+                </span>
+              </a>
+            </li>
+          );
+        })}
       </ul>
-        </div>
+    </div>
   </div>
 
   <div class="footer__bottom">
     <p>© {year} Ryan J. M. Laird. All rights reserved.</p>
-    <nav class="footer__links" aria-label="Footer"><a href="/work-with-me/">Work with me</a><a href="/cv/">CV</a><a href="/open-source/">Open source</a><a href="/press/">Press</a><a href="/contact/">Contact</a></nav>
+
+    <nav class="footer__links" aria-label="Footer">
+      {footerLinks.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
+    </nav>
   </div>
 </footer>
 
 <style>
+  /* global.css styles the bare `footer` element as a flex row, so reset it */
   .footer {
-    padding: 2rem 2.5rem;
+    display: block;
+    padding: 2rem var(--gutter);
     border-top: 1px solid var(--bd);
     background: var(--ink);
   }
 
   .footer__top {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
     gap: 2rem;
     align-items: start;
   }
@@ -61,43 +82,27 @@ const selectedSocials = socials.filter((item) => item.type === "social");
   .footer__brand {
     display: grid;
     gap: 0.75rem;
+    justify-items: start;
     min-width: 0;
   }
 
-  .footer__logo {
-    font-family: var(--D);
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    color: var(--w);
-    text-decoration: none;
-    line-height: 1;
-  }
-
-  .footer__logo span {
-    color: var(--teal);
-  }
-
   .footer__copy {
-    margin: 0;
     max-width: 32rem;
-    color: var(--m);
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 0.875rem;
     line-height: 1.75;
+    color: var(--m);
   }
 
-  .footer__socials {
-    display: flex;
-    align-items: flex-start;
-    justify-content: flex-end;
-  }
-
+  /* Socials */
   .socials__list {
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    list-style: none;
     margin: 0;
     padding: 0;
+    list-style: none;
   }
 
   .socials__item {
@@ -105,24 +110,46 @@ const selectedSocials = socials.filter((item) => item.type === "social");
     margin: 0;
   }
 
-  .footer__bottom {
-    margin-top: 1.75rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--bd);
-    color: var(--m);
-    font-size: 0.75rem;
+  .socials__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    color: var(--mb);
+    line-height: 0;
+    text-decoration: none;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
   }
 
-  .footer__bottom p {
-    margin: 0;
+  .socials__link:hover,
+  .socials__link:focus-visible {
+    border-color: var(--bm);
+    background: var(--lift);
+    color: var(--w);
   }
 
+  .socials__icon {
+    display: inline-flex;
+    color: currentColor;
+  }
+
+  .socials__svg {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: currentColor;
+  }
+
+  /* Bottom bar */
   .footer__bottom {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex-wrap: wrap;
-    gap: 0.75rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
     margin-top: 2rem;
     padding-top: 1.25rem;
     border-top: 1px solid var(--bd);
@@ -130,50 +157,55 @@ const selectedSocials = socials.filter((item) => item.type === "social");
     color: var(--m);
   }
 
+  .footer__bottom p {
+    margin: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  /* global.css styles every bare `nav` as the sticky top bar; undo that here */
   .footer__links {
+    position: static;
+    z-index: auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 0.5rem 1.25rem;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 
   .footer__links a,
   .footer__copy a {
-    color: var(--m);
+    color: var(--mb);
     text-decoration: underline;
     text-underline-offset: 3px;
+    transition: color 0.2s;
   }
 
   .footer__links a:hover,
-  .footer__copy a:hover {
+  .footer__links a:focus-visible,
+  .footer__copy a:hover,
+  .footer__copy a:focus-visible {
     color: var(--teal);
   }
 
-  @media (max-width: 900px) {
+  @media (max-width: 700px) {
     .footer {
-      padding: 1.75rem 1.25rem;
+      padding-block: 1.75rem;
     }
 
-    .footer__top {
-      grid-template-columns: 1fr;
-      gap: 1.5rem;
-    }
-
-    .footer__socials {
-      justify-content: flex-start;
-    }
-  }
-
-  @media (max-width: 640px) {
     .footer__copy {
       max-width: 100%;
     }
 
-    .socials__list {
-      gap: 0.45rem;
-    }
-
     .footer__bottom {
-      margin-top: 1.25rem;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-top: 1.5rem;
     }
   }
 </style>

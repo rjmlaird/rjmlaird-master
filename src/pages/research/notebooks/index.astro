@@ -1,9 +1,0 @@
----
-import PageLayout from '../../../research/layouts/PageLayout.astro';
-import NotebookCard from '../../../research/components/NotebookCard.astro';
-import { getNotebooks } from '../../../research/lib/content';
-const notebooks = await getNotebooks();
----
-<PageLayout title="Notebooks" lede="Reproducible notebooks, with their state shown honestly." crumbs={[{ label: 'Home', href: '/research/lab/' }, { label: 'Notebooks' }]}>
-  <div class="grid">{notebooks.map((n) => <NotebookCard notebook={n} />)}</div>
-</PageLayout>
