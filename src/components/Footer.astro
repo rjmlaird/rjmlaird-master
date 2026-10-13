@@ -3,29 +3,95 @@ import socials from "../data/socials.json";
 import { Icon } from "astro-icon/components";
 import { resolveIcon, HIDDEN_SOCIALS } from "../lib/icons";
 
-const year = new Date().getFullYear();
+type FooterLink = {
+  label: string;
+  href: string;
+  external?: boolean;
+};
+
+type FooterGroup = {
+  title: string;
+  links: FooterLink[];
+};
+
+const footerYear = new Date().getFullYear();
 
 const selectedSocials = socials.filter(
   (item) => item.type === "social" && !HIDDEN_SOCIALS.has(item.key),
 );
 
-const footerLinks = [
-  { href: "/work-with-me/", label: "Work with me" },
-  { href: "/cv/", label: "CV" },
-  { href: "/open-source/", label: "Open source" },
-  { href: "/press/", label: "Press" },
-  { href: "/contact/", label: "Contact" },
+const footerNavigation: FooterGroup[] = [
+  {
+    title: "Explore",
+    links: [
+      { label: "Portfolio", href: "/work/" },
+      { label: "Research", href: "/research/" },
+      { label: "Projects", href: "/work/projects/" },
+      { label: "Insights", href: "/insights/" },
+    ],
+  },
+  {
+    title: "Services",
+    links: [
+      {
+        label: "Strategic communication",
+        href: "/services/strategic-communication/",
+      },
+      {
+        label: "Digital strategy & systems",
+        href: "/services/digital-strategy-systems/",
+      },
+      {
+        label: "Teaching & mentoring",
+        href: "/services/teaching-mentoring/",
+      },
+      {
+        label: "Speaking & collaboration",
+        href: "/services/speaking-collaboration/",
+      },
+    ],
+  },
+  {
+    title: "Platforms",
+    links: [
+      { label: "Docs", href: "https://docs.rjmlaird.co.uk" },
+      { label: "Tools", href: "https://tools.rjmlaird.co.uk" },
+      { label: "Apps", href: "https://apps.rjmlaird.co.uk" },
+      { label: "Labs", href: "https://labs.rjmlaird.co.uk" },
+    ],
+  },
+  {
+    title: "Work with me",
+    links: [
+      { label: "Contact", href: "/contact/" },
+      {
+        label: "Booking Portal",
+        href: "https://booking.rjmlaird.co.uk",
+      },
+      {
+        label: "Impact Orbit Co.",
+        href: "https://impactorbit.co",
+        external: true,
+      },
+      {
+        label: "Space for Neurodiversity",
+        href: "https://spaceforneurodiversity.org",
+        external: true,
+      },
+    ],
+  },
 ];
 ---
 
 <footer class="footer">
   <div class="footer__top">
     <div class="footer__brand">
-      <a class="logo" href="/" aria-label="Home">RJM<span>Laird</span></a>
+      <a class="logo" href="/" aria-label="Ryan Laird home">
+        RJM<span>Laird</span>
+      </a>
 
       <p class="footer__copy">
-        Astrophysicist, science communicator and strategist. Founder and Director of
-        <a href="https://greenorbit.space">Green Orbit Digital</a>.
+        Astrophysicist, science communicator and digital strategist.
       </p>
 
       <ul class="socials__list" role="list" aria-label="Social profiles">
@@ -39,7 +105,7 @@ const footerLinks = [
                 href={item.url}
                 aria-label={`${item.label} (opens in a new tab)`}
                 target="_blank"
-                rel="me noreferrer noopener"
+                rel="me noopener noreferrer"
                 title={item.name}
               >
                 <span class="socials__icon" aria-hidden="true">
@@ -51,15 +117,51 @@ const footerLinks = [
         })}
       </ul>
     </div>
+
+    <nav class="footer__links" aria-label="Footer navigation">
+      {footerNavigation.map((group) => {
+        const groupId = `footer-${group.title.toLowerCase()}`;
+
+        return (
+          <section class="footer__group" aria-labelledby={groupId}>
+            <h2 id={groupId} class="footer__heading">
+              {group.title}
+            </h2>
+
+            <ul class="footer__list" role="list">
+              {group.links.map((link) => (
+                <li class="footer__item">
+                  <a
+                    class="footer__link"
+                    href={link.href}
+                    target={link.external ? "_blank" : undefined}
+                    rel={link.external ? "noopener noreferrer" : undefined}
+                  >
+                    {link.label}
+                    {link.external && (
+                      <>
+                        <span class="footer__external" aria-hidden="true">↗</span>
+                        <span class="sr-only"> (opens in a new tab)</span>
+                      </>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
+    </nav>
   </div>
 
   <div class="footer__bottom">
-    <p>© {year} Ryan J. M. Laird. All rights reserved.</p>
+    <p>© {footerYear} Ryan Laird. All rights reserved.</p>
 
-    <nav class="footer__links" aria-label="Footer">
-      {footerLinks.map((link) => (
-        <a href={link.href}>{link.label}</a>
-      ))}
+    <nav class="footer__meta" aria-label="Legal information">
+      <a href="/privacy/">Privacy policy</a>
+      <a href="/terms/">Terms of service</a>
+      <a href="/security/">Security</a>
+      <a href="https://api.rjmlaird.co.uk">API</a>
     </nav>
   </div>
 </footer>
@@ -75,7 +177,8 @@ const footerLinks = [
 
   .footer__top {
     display: grid;
-    gap: 2rem;
+    grid-template-columns: minmax(14rem, 1.1fr) minmax(0, 1.9fr);
+    gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
   }
 
@@ -143,6 +246,91 @@ const footerLinks = [
     fill: currentColor;
   }
 
+  /*
+    global.css styles every bare `nav` as the sticky top bar,
+    so reset it and make it a responsive navigation-group grid.
+  */
+  .footer__links {
+    position: static;
+    z-index: auto;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.5rem clamp(1.25rem, 3vw, 3rem);
+    align-items: start;
+    align-content: start;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .footer__group {
+    display: grid;
+    align-content: start;
+    align-self: start;
+    min-width: 0;
+  }
+
+  .footer__heading {
+    margin: 0 0 0.85rem;
+    color: var(--m);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  .footer__list {
+    display: grid;
+    align-content: start;
+    gap: 0.6rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .footer__item {
+    margin: 0;
+  }
+
+  /*
+    Shared styling for the top navigation and bottom legal links.
+    Both use the same size, colour, underline and interaction states.
+  */
+  .footer__links a,
+  .footer__copy a,
+  .footer__meta a {
+    display: inline-block;
+    padding-block: 0.15rem;
+    color: var(--mb);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    line-height: 1.5;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    transition: color 0.2s;
+  }
+
+  .footer__links a:hover,
+  .footer__links a:focus-visible,
+  .footer__copy a:hover,
+  .footer__copy a:focus-visible,
+  .footer__meta a:hover,
+  .footer__meta a:focus-visible {
+    color: var(--teal);
+  }
+
+  .footer__external {
+    display: inline-block;
+    margin-left: 0.2em;
+    font-size: 0.8em;
+    line-height: 1;
+  }
+
   /* Bottom bar */
   .footer__bottom {
     display: flex;
@@ -163,13 +351,16 @@ const footerLinks = [
     color: inherit;
   }
 
-  /* global.css styles every bare `nav` as the sticky top bar; undo that here */
-  .footer__links {
+  /*
+    global.css styles every bare `nav` as the sticky top bar,
+    so reset legal navigation as well.
+  */
+  .footer__meta {
     position: static;
     z-index: auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem 1.25rem;
+    gap: 0.75rem 1.25rem;
     min-height: 0;
     padding: 0;
     border: 0;
@@ -178,19 +369,22 @@ const footerLinks = [
     backdrop-filter: none;
   }
 
-  .footer__links a,
-  .footer__copy a {
-    color: var(--mb);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    transition: color 0.2s;
+  .footer a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 3px;
+    border-radius: 0.15rem;
   }
 
-  .footer__links a:hover,
-  .footer__links a:focus-visible,
-  .footer__copy a:hover,
-  .footer__copy a:focus-visible {
-    color: var(--teal);
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
   @media (max-width: 700px) {
@@ -198,14 +392,40 @@ const footerLinks = [
       padding-block: 1.75rem;
     }
 
+    .footer__top {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
     .footer__copy {
       max-width: 100%;
+    }
+
+    .footer__links {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 2rem 1.5rem;
     }
 
     .footer__bottom {
       flex-direction: column;
       align-items: flex-start;
       margin-top: 1.5rem;
+    }
+  }
+
+  @media (max-width: 420px) {
+    .footer__links {
+      grid-template-columns: 1fr;
+      gap: 1.75rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .socials__link,
+    .footer__links a,
+    .footer__copy a,
+    .footer__meta a {
+      transition: none;
     }
   }
 </style>

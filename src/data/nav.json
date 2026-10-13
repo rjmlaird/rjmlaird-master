@@ -27,28 +27,24 @@
       "href": "/services/",
       "children": [
         {
-          "label": "Strategy & advisory",
-          "href": "/services/strategy/"
+          "label": "Strategic communication",
+          "href": "/services/strategic-communication/"
         },
         {
-          "label": "Science & space communications",
-          "href": "/services/communications/"
+          "label": "Digital strategy & systems",
+          "href": "/services/digital-strategy-systems/"
         },
         {
-          "label": "Sustainability communications",
-          "href": "/services/sustainability/"
+          "label": "Teaching & mentoring",
+          "href": "/services/teaching-mentoring/"
         },
         {
-          "label": "Digital systems",
-          "href": "/services/digital-systems/"
+          "label": "Speaking & collaboration",
+          "href": "/services/speaking-collaboration/"
         },
         {
-          "label": "Speaking & workshops",
-          "href": "/services/speaking-workshops/"
-        },
-        {
-          "label": "Mentoring",
-          "href": "/services/mentoring/"
+          "label": "How I work",
+          "href": "/how-i-work/"
         }
       ]
     },
@@ -57,12 +53,12 @@
       "href": "/insights/",
       "children": [
         {
-          "label": "Blog",
-          "href": "/insights/blog/"
+          "label": "Articles",
+          "href": "/insights/articles/"
         },
         {
           "label": "Research",
-          "href": "/insights/research/"
+          "href": "/research/"
         },
         {
           "label": "Podcasts",
@@ -81,6 +77,10 @@
         {
           "label": "Biography",
           "href": "/about/bio/"
+        },
+        {
+          "label": "Experience & CV",
+          "href": "/about/experience/"
         },
         {
           "label": "Organisations & initiatives",
@@ -103,9 +103,8 @@
       "href": "/dev/"
     },
     {
-      "label": "Impact Orbit Co.",
-      "href": "https://impactorbit.co",
-      "external": true
+      "label": "Tutoring",
+      "href": "/tutoring/"
     }
   ],
   "cta": {

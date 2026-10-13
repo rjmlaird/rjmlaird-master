@@ -30,9 +30,13 @@
       "type": "boolean"
     },
     "id": {
-      "type": [
-        "string",
-        "number"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
       ]
     },
     "slug": {
@@ -480,15 +484,23 @@
       "type": "string"
     },
     "season": {
-      "type": [
-        "string",
-        "number"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
       ]
     },
     "episodeNumber": {
-      "type": [
-        "string",
-        "number"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
       ]
     },
     "duration": {
@@ -518,9 +530,13 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": [
-              "string",
-              "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ]
           },
           "title": {
@@ -536,15 +552,23 @@
             "type": "string"
           },
           "season": {
-            "type": [
-              "string",
-              "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ]
           },
           "episodeNumber": {
-            "type": [
-              "string",
-              "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ]
           },
           "publishedDate": {
@@ -581,9 +605,13 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": [
-              "string",
-              "number"
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "number"
+              }
             ]
           },
           "title": {

@@ -30,9 +30,13 @@
       "type": "boolean"
     },
     "id": {
-      "type": [
-        "string",
-        "number"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
       ]
     },
     "slug": {
@@ -446,9 +450,13 @@
       ]
     },
     "year": {
-      "type": [
-        "string",
-        "number"
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "number"
+        }
       ]
     },
     "$schema": {
