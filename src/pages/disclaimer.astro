@@ -1,0 +1,421 @@
+---
+import LegalNoticeLayout from "../layouts/LegalNotice.astro";
+import { siteLegal } from "../data/legal";
+import { defineSections } from "../lib/notice";
+import ContactBlock from "../components/legal/ContactBlock.astro";
+import LegalSection from "../components/legal/LegalSection.astro";
+import Mailto from "../components/legal/Mailto.astro";
+
+const lastUpdated = "2026-10-13";
+
+const s = defineSections({
+  purpose: "Purpose of this disclaimer",
+  "general-information": "General information only",
+  "professional-advice": "No professional advice",
+  "subject-matter": "Science, space and sustainability",
+  education: "Educational content",
+  "ai-content": "AI-assisted content",
+  accuracy: "Accuracy and currency",
+  "external-links": "External links and third parties",
+  availability: "Availability and security",
+  services: "Services, enquiries and bookings",
+  liability: "Liability",
+  "intellectual-property": "Copyright and reuse",
+  changes: "Changes to this disclaimer",
+  contact: "Contact",
+});
+---
+
+<LegalNoticeLayout
+  title="Website disclaimer"
+  description="Important information about the content, links and limitations of rjmlaird.co.uk."
+  eyebrow="Legal"
+  lead="This disclaimer explains the limits that apply to information published on this website, including articles, resources, tools, external links and professional commentary."
+  lastUpdated={lastUpdated}
+  sections={s.list}
+  related={["terms", "privacy", "cookies", "accessibility"]}
+>
+  <Fragment slot="summary">
+    <p>
+      Content on this website is provided for general information, education and
+      professional context. It is not a substitute for advice tailored to your
+      circumstances, and separate written terms apply if professional services
+      are agreed.
+    </p>
+  </Fragment>
+
+  <LegalSection section={s.by.purpose}>
+
+    <p>
+      This disclaimer applies to <a href={siteLegal.siteUrl}>{siteLegal.siteUrl}</a>, including its pages,
+      articles, resources, downloads, tools, media, links and other material
+      made available through the site.
+    </p>
+
+    <p>
+      It should be read alongside the <a href="/terms-of-use/">terms of use</a>, <a href="/privacy/">privacy notice</a> and <a href="/cookies/">cookie notice</a>.
+    </p>
+
+    <p>
+      In this disclaimer, “I”, “me” and “my” mean <strong> {siteLegal.controllerName}</strong>. “You” means anyone using,
+      viewing, sharing, relying on or otherwise interacting with this website
+      and its content.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["general-information"]}>
+
+    <p>
+      The content on this website is provided for general information,
+      education, discussion and professional context. It may include commentary,
+      analysis, personal perspectives, practical guidance, examples, opinion,
+      case-study material, links, resources and exploratory work.
+    </p>
+
+    <p>
+      Content is not intended to be comprehensive, definitive, complete or
+      suitable for every purpose. It may not reflect the latest developments,
+      evidence, legislation, regulation, standards, policy, technical practice
+      or sector conditions.
+    </p>
+
+    <p>
+      You should assess whether information is relevant and appropriate for your
+      own circumstances before acting on it. Where a decision could have legal,
+      financial, technical, regulatory, health, safety, educational or other
+      significant consequences, obtain appropriate independent professional
+      advice.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["professional-advice"]}>
+
+    <p>
+      Nothing on this website constitutes, or is intended to constitute, legal,
+      financial, tax, investment, insurance, accounting, medical, mental-health,
+      therapeutic, employment, recruitment, regulatory, compliance, engineering,
+      safety, academic or other specialist professional advice.
+    </p>
+
+    <p>
+      You must not rely on website content as an alternative to advice from a
+      suitably qualified professional who understands your specific
+      circumstances, obligations, risks and objectives.
+    </p>
+
+    <p>
+      Any discussion of strategy, communication, marketing, digital systems,
+      websites, analytics, sustainability, space, science, public engagement,
+      education, career development or related topics is presented for general
+      context. It does not create a professional-client relationship, duty of
+      care, fiduciary relationship, guarantee or obligation to provide services.
+    </p>
+
+    <p>
+      If you require professional services, the scope, deliverables, fees,
+      responsibilities, intellectual-property rights, confidentiality,
+      cancellation arrangements and liability provisions must be agreed in
+      writing before work begins.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["subject-matter"]}>
+
+    <p>
+      Content relating to science, space, astronomy, Earth observation, climate,
+      sustainability, technology, artificial intelligence, environmental data,
+      policy and innovation may simplify complex subjects for communication or
+      educational purposes.
+    </p>
+
+    <p>
+      Scientific understanding, technical standards, regulatory requirements,
+      operational conditions, commercial information, mission status, data
+      availability and policy positions can change. Statements may be incomplete,
+      time-sensitive, illustrative or dependent on context.
+    </p>
+
+    <p>
+      You should verify important claims against current primary sources,
+      official guidance, peer-reviewed research, applicable standards and
+      appropriately qualified advisers before using them in operational,
+      commercial, legal, policy, safety-critical, academic or public-facing
+      decisions.
+    </p>
+
+    <p>
+      References to space missions, agencies, programmes, companies, products,
+      datasets, research, policies or public figures do not imply endorsement,
+      partnership, sponsorship or approval unless explicitly stated.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.education}>
+
+    <p>
+      Educational resources, explanations, exercises, examples, diagrams,
+      calculations, study suggestions and related material are provided to
+      support learning and curiosity. They are not a substitute for formal
+      teaching, assessment, pastoral support, safeguarding arrangements,
+      examination guidance or professional educational advice.
+    </p>
+
+    <p>
+      Learners, parents, guardians, teachers and schools remain responsible for
+      checking suitability, accuracy, curriculum alignment, supervision,
+      accessibility and safe use in their own setting.
+    </p>
+
+    <p>
+      Examination specifications, qualification requirements, marking criteria
+      and educational guidance can change. Always check the current information
+      supplied by the relevant awarding organisation, school, college,
+      university or regulator.
+    </p>
+
+    <p>
+      Nothing on this website guarantees grades, examination outcomes,
+      university admission, employment, progression, funding or any other
+      particular result.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["ai-content"]}>
+
+    <p>
+      Some content, code, templates, research workflows, images, summaries or
+      other materials may have been created, refined, translated, analysed or
+      supported using artificial-intelligence tools. Where used, these tools are
+      intended to support, not replace, human judgement, editorial review and
+      subject-matter understanding.
+    </p>
+
+    <p>
+      AI-generated or AI-assisted material can contain errors, omissions,
+      outdated information, unsupported claims, bias, fabricated references,
+      insecure code or unsuitable recommendations. You are responsible for
+      independently reviewing, testing and validating any material before using
+      it.
+    </p>
+
+    <p>
+      In particular, do not rely on AI-assisted content from this site without
+      appropriate professional review where it may affect safety, law,
+      compliance, finances, health, children, security, privacy, critical
+      infrastructure or significant personal or organisational decisions.
+    </p>
+
+    <p>
+      Do not submit confidential, personal, commercially sensitive, controlled,
+      export-restricted or otherwise protected information into third-party AI
+      tools unless you have authority to do so and have assessed the relevant
+      terms, security, privacy and legal implications.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.accuracy}>
+
+    <p>
+      I aim to present information carefully and in good faith. However, I make
+      no representation or warranty that website content is accurate, complete,
+      current, reliable, suitable for a particular purpose or free from errors
+      or omissions.
+    </p>
+
+    <p>
+      Content may be updated, corrected, expanded, withdrawn, archived or
+      replaced at any time without notice. Older material may remain available
+      for context even where elements have become outdated.
+    </p>
+
+    <p>
+      If you believe that content is materially inaccurate, misleading, out of
+      date, infringing or otherwise problematic, please contact me using the
+      details below and include the relevant page URL and a clear explanation.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["external-links"]}>
+
+    <p>
+      This website may link to third-party websites, services, social-media
+      platforms, software, publications, repositories, booking tools,
+      newsletters, resources and organisations. These links are provided for
+      convenience, context or further information.
+    </p>
+
+    <p>
+      I do not control third-party websites and am not responsible for their
+      content, accuracy, availability, accessibility, security, privacy
+      practices, terms, products, services or any loss arising from your use of
+      them.
+    </p>
+
+    <p>
+      A link does not mean that I endorse, recommend, approve, sponsor or have
+      a formal relationship with the linked organisation, product, service or
+      content unless this is explicitly stated.
+    </p>
+
+    <p>
+      Before using a third-party service or providing it with personal,
+      financial, confidential or other sensitive information, you should review
+      its own terms, privacy notice, cookie notice, security arrangements and
+      suitability for your needs.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.availability}>
+
+    <p>
+      This website is provided on an “as available” basis. I do not guarantee
+      that it, or any content on it, will always be available, uninterrupted,
+      timely, secure, error-free, compatible with your device or free from
+      harmful components.
+    </p>
+
+    <p>
+      Access may be suspended, restricted, changed or withdrawn without notice
+      for maintenance, security, operational, legal or other reasons.
+    </p>
+
+    <p>
+      You are responsible for using appropriate security measures, including
+      current software, antivirus protection, secure passwords, backups and
+      sensible caution when opening links, downloading files or sharing
+      information online.
+    </p>
+
+    <p>
+      Nothing on this site is intended to guarantee the security of a particular
+      device, network, system, application, account, data set, workflow or
+      third-party service.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.services}>
+
+    <p>
+      Information on this website about services, areas of expertise, formats,
+      availability, prices, approaches, projects or examples of work is
+      informational only. It does not constitute a binding offer, quotation,
+      commitment to provide services or guarantee of availability.
+    </p>
+
+    <p>
+      Any advisory work, communication support, digital work, speaking
+      contribution, media activity, editorial commission, tutoring, mentoring,
+      workshop, event participation or collaboration is subject to separate
+      written confirmation.
+    </p>
+
+    <p>
+      The relevant agreement may take the form of a proposal, scope of work,
+      quote, invoice, booking confirmation, service agreement, event agreement
+      or other written terms. Those agreed terms take priority over this
+      disclaimer where there is any conflict.
+    </p>
+
+    <p>
+      Some organisation-level work may be delivered through <a href={siteLegal.impactOrbitUrl}>Impact Orbit Collective</a>. Booking routes may also be provided through <a href={siteLegal.bookingUrl}>booking.rjmlaird.co.uk</a>. Separate
+      notices, terms, payment conditions, cancellation policies and privacy
+      information may apply to those services.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.liability}>
+
+    <p>
+      Nothing in this disclaimer excludes or limits liability where it would be
+      unlawful to do so. This includes liability for death or personal injury
+      caused by negligence, fraud or fraudulent misrepresentation, and any
+      other liability that cannot lawfully be excluded or limited.
+    </p>
+
+    <p>
+      Subject to the paragraph above, and to the fullest extent permitted by
+      law, I do not accept liability for loss or damage arising from:
+    </p>
+
+    <ul>
+      <li>Your access to, use of or inability to use this website</li>
+      <li>Your reliance on information, commentary, tools or resources published on the site</li>
+      <li>Errors, omissions, inaccuracies, interruptions, delays or website unavailability</li>
+      <li>Decisions, actions or inaction taken on the basis of website content</li>
+      <li>Third-party websites, content, services, tools, products or resources</li>
+      <li>Viruses, malware, unauthorised access, data loss or system damage encountered through internet use</li>
+      <li>Indirect, consequential or purely economic loss, including loss of profit, revenue, business, opportunity, goodwill, data or reputation</li>
+    </ul>
+
+    <p>
+      These limitations apply to use of this website and its publicly available
+      content. They do not override separate written terms governing agreed
+      professional services, bookings, commissions, projects, events or other
+      engagements.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["intellectual-property"]}>
+
+    <p>
+      Unless stated otherwise, website content is protected by copyright and
+      other intellectual-property rights. You may view, share links to and quote
+      short extracts of material with clear attribution and without changing the
+      meaning or context.
+    </p>
+
+    <p>
+      You must not copy, reproduce, republish, adapt, translate, distribute,
+      sell, license, commercially exploit or present a substantial part of this
+      site’s content as your own without prior written permission.
+    </p>
+
+    <p>
+      This includes using website content to train, fine-tune, benchmark,
+      evaluate or develop artificial-intelligence or machine-learning systems,
+      except where expressly permitted by applicable law or agreed in writing.
+    </p>
+
+    <p>
+      See the <a href="/terms-of-use/">terms of use</a> for further information about
+      intellectual property and permission requests.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.changes}>
+
+    <p>
+      This disclaimer may be updated to reflect changes to the website, its
+      content, technology, services, legal requirements or operating
+      arrangements.
+    </p>
+
+    <p>
+      The current version will always appear on this page with the date it was
+      last updated. You should review it periodically when using the site.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.contact}>
+
+    <p>
+      If you have a question about this disclaimer, wish to report a concern
+      about website content or need to request permission to reuse material,
+      contact:
+    </p>
+
+    <ContactBlock name={siteLegal.controllerName} email={siteLegal.contactEmail} />
+  </LegalSection>
+
+  <Fragment slot="draft-note">
+    <p>
+      <strong>Before publishing:</strong> review this disclaimer against your
+      actual content, service routes, booking tools, external links, AI use,
+      downloadable resources and contractual arrangements. This is a practical
+      template, not legal advice. Obtain professional legal review where your
+      work involves regulated advice, children, high-risk technical subjects,
+      paid consumer services, significant commercial contracts or sensitive
+      data.
+    </p>
+  </Fragment>
+</LegalNoticeLayout>

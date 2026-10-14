@@ -1,0 +1,725 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const principles = [
+  {
+    number: "01",
+    title: "Start with the real question",
+    text: "A good brief is useful, but it is not always the whole problem. I begin by understanding the context, audience, decision, constraint and outcome that matter most.",
+  },
+  {
+    number: "02",
+    title: "Make complexity usable",
+    text: "Science, technology and sustainability do not need to be made simplistic to become clear. The work is to keep the evidence intact while making the idea easier to understand, use and share.",
+  },
+  {
+    number: "03",
+    title: "Choose the right level of intervention",
+    text: "Not every question needs a long project. Sometimes a focused conversation, a clearer structure, a piece of writing or a practical workshop is the most valuable next step.",
+  },
+  {
+    number: "04",
+    title: "Build for people, not just channels",
+    text: "Good communication considers the people receiving it: what they know already, what they need, what might exclude them and what will help them act with confidence.",
+  },
+  {
+    number: "05",
+    title: "Leave things clearer than I found them",
+    text: "The aim is not to create dependence. I try to leave behind clearer thinking, usable material, stronger systems and a more confident next step.",
+  },
+];
+
+const process = [
+  {
+    number: "01",
+    title: "Orient",
+    text: "We establish what is happening, what matters, who is involved and whether I am the right person to help.",
+    detail:
+      "This might be a short enquiry, a call, a review of existing material or a more structured discovery process.",
+  },
+  {
+    number: "02",
+    title: "Frame",
+    text: "We turn a broad request into a useful question, a proportionate scope and a clear definition of progress.",
+    detail:
+      "That may mean agreeing an audience, a message, a decision to support, a learning objective, a practical output or a combination of these.",
+  },
+  {
+    number: "03",
+    title: "Make",
+    text: "I develop the work with care for evidence, language, structure, accessibility and the setting in which it will be used.",
+    detail:
+      "The output could be strategy, writing, a workshop, a talk, mentoring, a content framework, a digital resource or a practical recommendation.",
+  },
+  {
+    number: "04",
+    title: "Review",
+    text: "We check that the work is accurate, useful, appropriate to the audience and ready for its intended purpose.",
+    detail:
+      "Where appropriate, this includes feedback, refinement, handover notes or a clear recommendation for what should happen next.",
+  },
+];
+
+const workingRelationships = [
+  {
+    title: "Direct and thoughtful",
+    text: "I value clear communication, honest expectations and constructive challenge. I will say when something needs more evidence, when a brief needs refining or when another route would be more useful.",
+  },
+  {
+    title: "Evidence-led",
+    text: "I work carefully with technical and scientific subject matter. Accuracy, source awareness and appropriate uncertainty matter, especially where public understanding, trust or policy context is involved.",
+  },
+  {
+    title: "Accessible by design",
+    text: "Accessibility is not an extra layer added at the end. It shapes language, structure, format, digital choices and how people are invited into a conversation.",
+  },
+  {
+    title: "Proportionate",
+    text: "I aim for the smallest useful intervention. That might mean a focused advisory session rather than a large programme, or a clearer page before a complete rebuild.",
+  },
+  {
+    title: "Collaborative",
+    text: "The strongest work comes from combining subject expertise, lived experience and practical knowledge. I bring communication, strategic and technical perspective, while respecting the expertise already in the room.",
+  },
+  {
+    title: "Responsible",
+    text: "I care about the social and environmental consequences of communication and digital work. This includes sustainability, inclusion, privacy, accessibility and the long-term usefulness of what gets made.",
+  },
+];
+
+const directWork = [
+  {
+    title: "Focused advisory",
+    text: "A practical outside perspective on a communications, content, digital or project question.",
+    href: "https://booking.rjmlaird.co.uk/advisory/",
+    label: "Explore advisory",
+  },
+  {
+    title: "Teaching and tutoring",
+    text: "Support with physics, astronomy, science communication and complex topics.",
+    href: "https://booking.rjmlaird.co.uk/teaching/",
+    label: "Explore teaching",
+  },
+  {
+    title: "Career mentoring",
+    text: "Structured conversations for students and professionals considering what comes next.",
+    href: "https://booking.rjmlaird.co.uk/mentoring/",
+    label: "Explore mentoring",
+  },
+  {
+    title: "Talks and collaboration",
+    text: "Speaking, panels, workshops, media contributions and public-engagement requests.",
+    href: "https://booking.rjmlaird.co.uk/speaking/",
+    label: "Make a request",
+  },
+];
+---
+
+<Layout
+  title="How I work"
+  description="How Ryan Laird approaches strategy, writing, teaching, mentoring and collaboration across space, sustainability and technology."
+>
+  <main>
+    <section class="hero">
+      <div class="wrap hero__inner">
+        <p class="eyebrow">How I work</p>
+
+        <h1>
+          Careful thinking.<br />
+          Useful work.<br />
+          Clear next steps.
+        </h1>
+
+        <div class="hero__content">
+          <p class="hero__lead">
+            I work with people and organisations trying to communicate complex
+            ideas clearly, accurately and responsibly, especially across space,
+            sustainability, science and technology.
+          </p>
+
+          <p>
+            The work may involve strategy, writing, teaching, mentoring,
+            workshops, talks or digital systems. The method is consistent:
+            understand the real question, make the complexity usable and build
+            something that helps people move forward.
+          </p>
+        </div>
+
+        <div class="hero__actions">
+          <a class="button button--primary" href="#start">
+            Start a conversation
+          </a>
+
+          <a class="button button--secondary" href="#process">
+            See the process
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro section">
+      <div class="wrap intro__grid">
+        <div>
+          <p class="eyebrow">The approach</p>
+          <h2>Rigour without unnecessary complication.</h2>
+        </div>
+
+        <div class="intro__content">
+          <p>
+            Complex work often becomes difficult not because the subject is
+            inherently inaccessible, but because the purpose, audience or
+            decision has not been made clear enough.
+          </p>
+
+          <p>
+            My role is to help make that clarity possible. I bring a background
+            in astrophysics and science communication alongside practical
+            experience in strategy, editorial work, digital systems, teaching
+            and public engagement.
+          </p>
+
+          <p>
+            That means taking technical subjects seriously while communicating
+            in a way that people can understand, discuss and use.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="principles section section--bordered">
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Principles</p>
+            <h2>What guides the work.</h2>
+          </div>
+
+          <p>
+            The format changes from project to project. These principles do not.
+          </p>
+        </div>
+
+        <ol class="principles__list">
+          {
+            principles.map((principle) => (
+              <li class="principle">
+                <span class="principle__number">{principle.number}</span>
+
+                <div>
+                  <h3>{principle.title}</h3>
+                  <p>{principle.text}</p>
+                </div>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </section>
+
+    <section id="process" class="process section">
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Process</p>
+            <h2>A simple way of moving work forward.</h2>
+          </div>
+
+          <p>
+            The process scales up or down depending on the work. A mentoring
+            conversation may move through it in an hour. A strategy project may
+            take longer.
+          </p>
+        </div>
+
+        <div class="process__grid">
+          {
+            process.map((step) => (
+              <article class="process-card">
+                <p class="process-card__number">{step.number}</p>
+                <h3>{step.title}</h3>
+                <p class="process-card__lead">{step.text}</p>
+                <p>{step.detail}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="relationships section section--bordered">
+      <div class="wrap relationships__grid">
+        <div class="relationships__intro">
+          <p class="eyebrow">Working together</p>
+          <h2>What you can expect from me.</h2>
+
+          <p>
+            Good work needs a relationship that is clear, respectful and
+            practical. I aim to be straightforward about what I can offer,
+            where the limits are and what will make the work most useful.
+          </p>
+        </div>
+
+        <div class="relationships__list">
+          {
+            workingRelationships.map((item) => (
+              <article class="relationship">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+              </article>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="boundaries section">
+      <div class="wrap boundaries__grid">
+        <div>
+          <p class="eyebrow">Scope</p>
+          <h2>Knowing when another route is better.</h2>
+        </div>
+
+        <div class="boundaries__content">
+          <p>
+            This site is a place for my personal practice: writing, research,
+            teaching, mentoring, talks, focused advisory work and thoughtful
+            collaboration.
+          </p>
+
+          <p>
+            Larger organisation-level projects, including full communication
+            strategies, websites, retained support, campaigns, major digital
+            work and multi-part training programmes, are usually better
+            delivered through Green Orbit Digital.
+          </p>
+
+          <a
+            class="text-link"
+            href="https://greenorbit.digital/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit Green Orbit Digital
+            <span class="sr-only">, opens in a new tab</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="start" class="start section section--bordered">
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Start here</p>
+            <h2>Choose the route that fits.</h2>
+          </div>
+
+          <p>
+            If you know what you need, begin with the relevant route. If not,
+            the booking portal can help you choose.
+          </p>
+        </div>
+
+        <div class="work-grid">
+          {
+            directWork.map((item) => (
+              <article class="work-card">
+                <h3>{item.title}</h3>
+                <p>{item.text}</p>
+
+                <a href={item.href}>
+                  {item.label}
+                  <span aria-hidden="true"> →</span>
+                  <span class="sr-only">, opens the booking portal</span>
+                </a>
+              </article>
+            ))
+          }
+        </div>
+
+        <div class="start__footer">
+          <p>
+            Not sure where to begin? Start with a short routing conversation or
+            send a concise outline of what you are trying to do.
+          </p>
+
+          <a
+            class="button button--primary"
+            href="https://booking.rjmlaird.co.uk/choose/"
+          >
+            Help me choose
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    padding-block: clamp(2rem, 6vw, 5rem) clamp(5rem, 12vw, 10rem);
+  }
+
+  .hero__inner {
+    max-width: 78rem;
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: var(--teal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .hero h1 {
+    max-width: 62rem;
+    margin: 0.8rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 9vw, 8.5rem);
+    font-weight: 400;
+    letter-spacing: -0.07em;
+    line-height: 0.84;
+  }
+
+  .hero__content {
+    max-width: 42rem;
+    margin-top: clamp(2rem, 5vw, 4rem);
+  }
+
+  .hero__content p {
+    margin: 0;
+    color: var(--mb);
+    font-size: clamp(1rem, 1.8vw, 1.18rem);
+    line-height: 1.75;
+  }
+
+  .hero__content p + p {
+    margin-top: 1.15rem;
+  }
+
+  .hero__lead {
+    color: var(--w) !important;
+    font-size: clamp(1.2rem, 2.4vw, 1.55rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .button--primary {
+    border-color: var(--teal);
+    color: var(--bg);
+    background: var(--teal);
+  }
+
+  .button--primary:hover,
+  .button--primary:focus-visible {
+    border-color: var(--w);
+    color: var(--bg);
+    background: var(--w);
+  }
+
+  .button--secondary {
+    border-color: var(--bd);
+    color: var(--w);
+    background: transparent;
+  }
+
+  .button--secondary:hover,
+  .button--secondary:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .section {
+    padding-block: clamp(4.5rem, 10vw, 9rem);
+  }
+
+  .section--bordered {
+    border-top: 1px solid var(--bd);
+  }
+
+  .intro__grid,
+  .relationships__grid,
+  .boundaries__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1fr);
+    gap: clamp(2rem, 10vw, 10rem);
+    align-items: start;
+  }
+
+  h2 {
+    max-width: 34rem;
+    margin: 0.7rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-size: clamp(2.2rem, 5vw, 4.6rem);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
+  }
+
+  .intro__content,
+  .boundaries__content {
+    max-width: 39rem;
+  }
+
+  .intro__content p,
+  .boundaries__content p,
+  .relationships__intro > p {
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .intro__content p + p,
+  .boundaries__content p + p {
+    margin-top: 1.1rem;
+  }
+
+  .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.55fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    align-items: end;
+    padding-bottom: clamp(2rem, 5vw, 4rem);
+  }
+
+  .section-heading > p {
+    max-width: 25rem;
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .principles__list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--bd);
+    list-style: none;
+  }
+
+  .principle {
+    display: grid;
+    grid-template-columns: minmax(4rem, 0.15fr) minmax(0, 1fr);
+    gap: clamp(1.25rem, 4vw, 4rem);
+    padding-block: clamp(1.5rem, 3vw, 2.25rem);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .principle__number,
+  .process-card__number {
+    color: var(--teal);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .principle h3,
+  .work-card h3,
+  .relationship h3,
+  .process-card h3 {
+    margin: 0;
+    color: var(--w);
+    font-size: clamp(1.2rem, 2vw, 1.5rem);
+    line-height: 1.25;
+  }
+
+  .principle p,
+  .relationship p,
+  .process-card p,
+  .work-card p {
+    max-width: 42rem;
+    margin: 0.65rem 0 0;
+    color: var(--mb);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .process__grid,
+  .work-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--bd);
+    border-left: 1px solid var(--bd);
+  }
+
+  .process-card,
+  .work-card {
+    min-height: 18rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-right: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .process-card__number {
+    margin: 0 0 clamp(2rem, 5vw, 4.5rem);
+  }
+
+  .process-card__lead {
+    color: var(--w) !important;
+  }
+
+  .relationships__intro {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .relationships__intro > p {
+    max-width: 32rem;
+    margin-top: 1.5rem;
+  }
+
+  .relationships__list {
+    border-top: 1px solid var(--bd);
+  }
+
+  .relationship {
+    padding-block: 1.5rem;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .text-link {
+    display: inline-flex;
+    margin-top: 1.5rem;
+    color: var(--w);
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration-color: var(--teal);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .text-link:hover,
+  .text-link:focus-visible {
+    color: var(--teal);
+  }
+
+  .work-card {
+    display: flex;
+    flex-direction: column;
+    min-height: 15rem;
+  }
+
+  .work-card a {
+    display: inline-flex;
+    width: fit-content;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    color: var(--w);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration-color: var(--teal);
+    text-underline-offset: 0.25em;
+  }
+
+  .work-card a:hover,
+  .work-card a:focus-visible {
+    color: var(--teal);
+  }
+
+  .start__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .start__footer p {
+    max-width: 35rem;
+    margin: 0;
+    color: var(--mb);
+    font-size: 0.98rem;
+    line-height: 1.7;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 800px) {
+    .intro__grid,
+    .relationships__grid,
+    .boundaries__grid,
+    .section-heading {
+      grid-template-columns: 1fr;
+    }
+
+    .relationships__intro {
+      position: static;
+    }
+
+    .section-heading {
+      gap: 1.5rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .hero h1 {
+      font-size: clamp(3.25rem, 17vw, 5rem);
+      line-height: 0.87;
+    }
+
+    .process__grid,
+    .work-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .principle {
+      grid-template-columns: 1fr;
+      gap: 0.65rem;
+    }
+
+    .process-card,
+    .work-card {
+      min-height: auto;
+    }
+
+    .process-card__number {
+      margin-bottom: 2.5rem;
+    }
+
+    .start__footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

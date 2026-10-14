@@ -1,0 +1,43 @@
+---
+interface Props {
+  title?: string;
+  id?: string;
+}
+
+const { title, id } = Astro.props;
+---
+
+<div class="callout" id={id}>
+  {title && <h3>{title}</h3>}
+  <slot />
+</div>
+
+<style>
+  .callout {
+    padding: 1.25rem 1.5rem;
+    margin-top: 1.5rem;
+    border: 1px solid var(--bd);
+    background: var(--lift);
+  }
+
+  h3 {
+    margin: 0;
+    color: var(--w);
+  }
+
+  .callout :global(p) {
+    max-width: 46rem;
+    margin: 0.75rem 0 0;
+  }
+
+  .callout :global(.small-print) {
+    color: var(--m);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 700px) {
+    .callout {
+      padding: 1.1rem 1.2rem;
+    }
+  }
+</style>

@@ -1,0 +1,700 @@
+---
+import LegalNoticeLayout from "../layouts/LegalNotice.astro";
+import { siteLegal } from "../data/legal";
+import { defineSections } from "../lib/notice";
+import ContactBlock from "../components/legal/ContactBlock.astro";
+import DataTable from "../components/legal/DataTable.astro";
+import DefinitionItem from "../components/legal/DefinitionItem.astro";
+import DefinitionList from "../components/legal/DefinitionList.astro";
+import LegalSection from "../components/legal/LegalSection.astro";
+import Mailto from "../components/legal/Mailto.astro";
+
+const lastUpdated = "2026-10-13";
+
+const s = defineSections({
+  overview: "Overview",
+  controller: "Who is responsible",
+  scope: "What this covers",
+  information: "Information collected",
+  sources: "Where information comes from",
+  processing: "How information is used",
+  "sensitive-data": "Sensitive information",
+  sharing: "Sharing information",
+  transfers: "International transfers",
+  retention: "How long information is kept",
+  security: "Security",
+  cookies: "Cookies and analytics",
+  marketing: "Email updates",
+  "automated-decisions": "Automated decisions",
+  rights: "Your rights",
+  children: "Children and young people",
+  changes: "Changes to this notice",
+  contact: "Contact and complaints",
+});
+
+const processorRows = [
+  {
+    activity: "Website hosting, delivery and security",
+    data: "IP address, device and browser information, security logs, site requests and limited technical information.",
+    purpose:
+      "To host, secure, maintain and troubleshoot rjmlaird.co.uk, and protect it from misuse or attack.",
+    lawfulBasis:
+      "Legitimate interests: maintaining a secure, reliable and effective professional website.",
+    recipients:
+      "TODO: Name your hosting, CDN, DNS, security and form-infrastructure providers.",
+    retention:
+      "TODO: State the actual retention period for infrastructure and security logs.",
+  },
+  {
+    activity: "Contact and project enquiries",
+    data: "Name, email address, organisation, role, message, relevant links, project context, timescale, budget information and other details you provide.",
+    purpose:
+      "To respond to your enquiry, assess whether there is a suitable fit, arrange a conversation and prepare a relevant next step.",
+    lawfulBasis:
+      "Legitimate interests: responding to relevant professional enquiries and developing appropriate professional relationships. Contract may apply where you ask me to take steps before entering an agreement.",
+    recipients:
+      "Email, form and customer-relationship-management providers. TODO: Name the actual providers.",
+    retention:
+      "TODO: For example, 12 months after the last meaningful contact for enquiries that do not lead to work.",
+  },
+  {
+    activity: "Calls, proposals and agreed work",
+    data: "Contact details, meeting notes, project information, scope, agreements, correspondence, deliverables and relevant service records.",
+    purpose:
+      "To scope, arrange, deliver, manage and review agreed advisory, communication, speaking, editorial, education or collaboration work.",
+    lawfulBasis:
+      "Contract: to take steps at your request before an agreement and to perform the agreement. Legitimate interests may also apply to maintaining records and managing the professional relationship.",
+    recipients:
+      "Email, calendar, document-storage, project-management, invoicing and collaboration providers. TODO: Name the actual providers.",
+    retention:
+      "TODO: State your service-record retention period and explain the criteria used.",
+  },
+  {
+    activity: "Speaking, media and collaboration requests",
+    data: "Contact details, organisation or publication, event details, audience, proposed subject, dates, format, location, travel, access, recording and usage requirements.",
+    purpose:
+      "To assess, quote for, arrange and deliver a speaking, editorial, media or collaborative contribution.",
+    lawfulBasis:
+      "Legitimate interests: responding to a relevant professional request. Contract applies where a contribution is agreed.",
+    recipients:
+      "Email, calendar, document-storage and relevant event-delivery suppliers. TODO: Name actual providers where appropriate.",
+    retention:
+      "TODO: State your retention period for unsuccessful requests and confirmed engagements.",
+  },
+  {
+    activity: "Newsletter and optional updates",
+    data: "Email address, name where provided, subscription preferences, consent record, delivery and engagement information where enabled.",
+    purpose:
+      "To send the updates you have chosen to receive and maintain evidence of consent and suppression requests.",
+    lawfulBasis:
+      "Consent. You can withdraw consent at any time by using the unsubscribe link or contacting me.",
+    recipients:
+      "TODO: Name your newsletter or email-marketing provider.",
+    retention:
+      "Until you unsubscribe, withdraw consent, the list is retired, or a reasonable suppression record must be retained to respect your opt-out.",
+  },
+  {
+    activity: "Financial, tax and accounting records",
+    data: "Name, contact details, organisation, invoice details, payment status, service information and relevant correspondence.",
+    purpose:
+      "To issue invoices, manage payments, maintain accounts and meet tax, accounting and legal obligations.",
+    lawfulBasis:
+      "Legal obligation and, where necessary, contract.",
+    recipients:
+      "Payment, invoicing, accounting and professional-adviser providers. TODO: Name actual providers.",
+    retention:
+      "TODO: Confirm the period required by your accountant and applicable UK tax law.",
+  },
+  {
+    activity: "Cookies, analytics and website improvement",
+    data: "Cookie identifiers, device and browser information, pages viewed, referring source, approximate location and interaction information, depending on the tools used.",
+    purpose:
+      "To understand whether the site is useful, identify technical issues and improve content and navigation. Non-essential analytics should operate only with the required consent.",
+    lawfulBasis:
+      "Consent for non-essential cookies or analytics. Legitimate interests may apply to strictly necessary security and service-operation technologies.",
+    recipients:
+      "TODO: Name your analytics, consent-management and embedded-service providers.",
+    retention:
+      "TODO: State cookie and analytics retention periods, with full detail in the cookie notice.",
+  },
+  {
+    activity: "Legal claims, complaints and safeguarding concerns",
+    data: "Relevant contact details, correspondence, incident information, records and evidence necessary to handle the matter.",
+    purpose:
+      "To investigate and respond to concerns, protect rights and safety, meet legal obligations, establish or defend legal claims, and comply with relevant safeguarding responsibilities.",
+    lawfulBasis:
+      "Legal obligation, legitimate interests and, where applicable, establishment, exercise or defence of legal claims.",
+    recipients:
+      "Professional advisers, insurers, safeguarding authorities, regulators, law-enforcement bodies or other parties where necessary and lawful.",
+    retention:
+      "TODO: Define retention periods in your complaints, safeguarding and incident-management policies.",
+  },
+];
+const processingColumns = [
+  { key: "activity", label: "Activity", width: "15%" },
+  { key: "data", label: "Information used", width: "24%" },
+  { key: "purposeAndBasis", label: "Purpose and lawful basis", width: "31%" },
+  { key: "recipientsAndRetention", label: "Recipients and retention", width: "30%" },
+];
+
+const processingRows = processorRows.map((row) => ({
+  activity: row.activity,
+  data: row.data,
+  purposeAndBasis: [
+    { label: "Purpose", value: row.purpose },
+    { label: "Lawful basis", value: row.lawfulBasis },
+  ],
+  recipientsAndRetention: [
+    { label: "Recipients", value: row.recipients },
+    { label: "Retention", value: row.retention },
+  ],
+}));
+---
+
+<LegalNoticeLayout
+  title="Privacy notice"
+  description="How rjmlaird.co.uk collects, uses, stores and protects personal information."
+  eyebrow="Legal"
+  lead="This notice explains how personal information is collected and used when you visit this website, contact me, enquire about work, subscribe to updates or otherwise engage with my professional services."
+  lastUpdated={lastUpdated}
+  sections={s.list}
+  related={["cookies", "terms", "accessibility", "safeguarding"]}
+>
+  <Fragment slot="summary">
+    <p>
+      I use personal information to respond to relevant enquiries, arrange and
+      deliver agreed work, maintain necessary professional and financial
+      records, send updates where you have opted in, and keep this website
+      secure. I do not sell personal information.
+    </p>
+  </Fragment>
+
+  <LegalSection section={s.by.overview}>
+
+    <p>
+      This privacy notice explains how I handle personal information in
+      connection with <a href={siteLegal.siteUrl}>{siteLegal.siteUrl}</a> and
+      related professional activity.
+    </p>
+
+    <p>
+      It is intended to help you understand what information may be collected,
+      why it is needed, how it is used, who may receive it, how long it may be
+      retained and the choices and rights available to you.
+    </p>
+
+    <p>
+      This notice does not replace the privacy notices of independent websites,
+      platforms or organisations that you may visit through links from this
+      site. Those organisations are responsible for their own information and
+      data-handling practices.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.controller}>
+
+    <p>
+      <strong>{siteLegal.controllerName}</strong> is the data controller for
+      personal information collected through this website.
+    </p>
+
+    <p>
+      In this notice, “I”, “me” and “my” mean {siteLegal.controllerName}.
+      “You” means a visitor to this site, an enquirer, client, collaborator,
+      event organiser, editor, journalist, recruiter, student, parent, guardian
+      or other person whose information is provided in connection with my work.
+    </p>
+
+    <DefinitionList>
+      <DefinitionItem term="Controller">{siteLegal.controllerName}</DefinitionItem>
+
+      <DefinitionItem term="Website">
+          <a href={siteLegal.siteUrl}>{siteLegal.siteUrl}</a>
+        </DefinitionItem>
+
+      <DefinitionItem term="Privacy contact">
+          <Mailto email={siteLegal.privacyEmail} />
+        </DefinitionItem>
+
+      <DefinitionItem term="Location">{siteLegal.country}</DefinitionItem>
+    </DefinitionList>
+  </LegalSection>
+
+  <LegalSection section={s.by.scope}>
+
+    <p>This notice applies when you:</p>
+
+    <ul>
+      <li>Visit or interact with rjmlaird.co.uk</li>
+      <li>Use a contact form or email address published on this site</li>
+      <li>Ask about advisory, communication, digital, editorial or collaboration work</li>
+      <li>Request a talk, panel contribution, interview or media comment</li>
+      <li>Subscribe to a newsletter or other optional updates, where available</li>
+      <li>Follow a link to the separate booking portal at booking.rjmlaird.co.uk</li>
+      <li>Are referred to Impact Orbit Collective for organisation-level work</li>
+    </ul>
+
+    <p>
+      The booking portal, payment providers, calendar providers and other
+      independent services may provide additional privacy information when you
+      use them. Please read those notices alongside this one where applicable.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.information}>
+
+    <p>
+      The information collected depends on how you use the site and the context
+      of your interaction. It may include the following categories.
+    </p>
+
+    <h3>Contact and identity information</h3>
+
+    <ul>
+      <li>Name</li>
+      <li>Email address</li>
+      <li>Telephone number, where you provide it</li>
+      <li>Organisation, role, sector and professional profile information</li>
+      <li>Preferred contact method and communication preferences</li>
+    </ul>
+
+    <h3>Enquiry and project information</h3>
+
+    <ul>
+      <li>Your message and the reason you are contacting me</li>
+      <li>Project, service, event or collaboration context</li>
+      <li>Relevant links, documents or attachments you choose to share</li>
+      <li>Timescales, budget information and intended outcomes, where provided</li>
+      <li>Meeting notes, correspondence and agreed next steps</li>
+    </ul>
+
+    <h3>Speaking, media and public-engagement information</h3>
+
+    <ul>
+      <li>Event, programme, publication or project name</li>
+      <li>Audience, subject, brief, format and session requirements</li>
+      <li>Date, location, online platform, travel and accessibility information</li>
+      <li>Recording, photography, editorial, licensing or usage requirements</li>
+    </ul>
+
+    <h3>Technical and usage information</h3>
+
+    <ul>
+      <li>IP address and approximate location derived from it</li>
+      <li>Browser, device, operating system and screen information</li>
+      <li>Pages viewed, referring source, site interactions and error information</li>
+      <li>Security, performance and service-operation logs</li>
+      <li>Cookie identifiers and consent preferences, where applicable</li>
+    </ul>
+
+    <h3>Financial and transaction information</h3>
+
+    <p>
+      If work is agreed, relevant records may include invoices, payment status,
+      tax information and associated correspondence. Payment-card details are
+      handled by the relevant payment provider and are not stored directly by
+      me unless explicitly stated otherwise.
+    </p>
+
+    <h3>Information you choose to provide</h3>
+
+    <p>
+      You may choose to provide additional information through forms, email,
+      documents, calls or other communications. Please provide only what is
+      relevant to your enquiry or the work being discussed.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.sources}>
+
+    <p>Most personal information is collected directly from you, for example when you:</p>
+
+    <ul>
+      <li>Submit a form, send an email or arrange a call</li>
+      <li>Subscribe to optional updates</li>
+      <li>Provide information during a project, event or collaboration</li>
+      <li>Use the website and its essential or consented technologies</li>
+    </ul>
+
+    <p>In limited circumstances, information may also come from:</p>
+
+    <ul>
+      <li>A colleague, employer, client, parent, guardian or event organiser acting on your behalf</li>
+      <li>Publicly available professional sources, such as your organisation’s website or public professional profile</li>
+      <li>A referral partner, collaborator or associated organisation, where relevant to a legitimate enquiry</li>
+      <li>Service providers that support website, booking, payment or communication processes</li>
+    </ul>
+
+    <p>
+      If I receive your information from someone else in a way that requires
+      further privacy information to be provided, I will do so as required by
+      applicable law.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.processing}>
+
+    <p>
+      The table below sets out the main processing activities on this site and
+      in related professional work. It links the information used to the reason
+      for using it, the lawful basis relied upon, likely recipients and
+      retention approach.
+    </p>
+
+    <DataTable caption="Processing activities" columns={processingColumns} rows={processingRows} minWidth="68rem" />
+
+    <p>
+      Where I rely on legitimate interests, I consider whether the processing is
+      necessary, proportionate and reasonably expected in the context of the
+      relationship or interaction. I do not use legitimate interests where your
+      rights and interests override those interests.
+    </p>
+
+    <p>
+      If providing particular information is required to enter or perform a
+      contract, I will explain this at the relevant point. If you do not provide
+      necessary information, it may not be possible to respond fully to an
+      enquiry, enter an agreement or provide the requested service.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["sensitive-data"]}>
+
+    <p>
+      Please do not send special-category personal information through this
+      website unless it is necessary for a specific agreed purpose. This may
+      include information about health, disability, racial or ethnic origin,
+      religious beliefs, political opinions, trade-union membership, genetics,
+      biometrics, sex life or sexual orientation.
+    </p>
+
+    <p>
+      If sensitive information is genuinely needed, for example to understand
+      an accessibility requirement or meet a safeguarding responsibility, I
+      will explain the purpose, the relevant legal condition and any additional
+      handling arrangements before or when the information is collected.
+    </p>
+
+    <p>
+      TODO: Add your actual special-category-data condition and safeguarding
+      process if you expect to process this information regularly.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.sharing}>
+
+    <p>
+      Personal information is not sold. It is shared only where necessary to
+      operate this website, respond to a request, provide agreed work, meet a
+      legal obligation, protect rights and safety, or with your agreement.
+    </p>
+
+    <h3>Service providers</h3>
+
+    <p>
+      Relevant service providers may process information on my behalf. These
+      may include providers of hosting, content delivery, security, forms,
+      email, calendars, document storage, newsletter delivery, analytics,
+      booking, invoicing and payment services.
+    </p>
+
+    <p>
+      TODO: Replace this with a named list of your actual providers, including
+      their function and location where appropriate.
+    </p>
+
+    <h3>Professional advisers and authorities</h3>
+
+    <p>
+      Information may be shared with accountants, insurers, legal advisers,
+      professional advisers, regulators, public authorities or law-enforcement
+      bodies where necessary and lawful.
+    </p>
+
+    <h3>Impact Orbit Collective referrals</h3>
+
+    <p>
+      Some organisation-level work is more appropriately delivered through
+      <a href={siteLegal.impactOrbitUrl}>Impact Orbit Collective</a>. This
+      includes, for example, wider communication strategies, multi-part digital
+      projects, retained support, campaigns, larger training programmes or
+      team-based delivery.
+    </p>
+
+    <p>
+      Where your enquiry is suitable for referral, relevant information may be
+      shared with Impact Orbit Collective only to the extent needed to discuss
+      or progress the request, and where appropriate with your knowledge or
+      agreement.
+    </p>
+
+    <h3>Business changes</h3>
+
+    <p>
+      If a business, service or relevant assets are reorganised, transferred or
+      acquired, personal information may be shared with relevant professional
+      advisers and prospective parties where lawful and subject to appropriate
+      confidentiality protections.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.transfers}>
+
+    <p>
+      Some technology providers may store or access personal information outside
+      the United Kingdom. Where this results in a restricted transfer under UK
+      data-protection law, appropriate safeguards will be used where required.
+    </p>
+
+    <p>
+      Depending on the provider and destination, this may include UK adequacy
+      regulations, the UK International Data Transfer Agreement, the UK Addendum
+      to EU Standard Contractual Clauses, or another lawful transfer mechanism.
+    </p>
+
+    <p>
+      TODO: Name each relevant provider, destination country and transfer
+      mechanism. State how someone can request a copy of the relevant safeguard
+      information, subject to legitimate confidentiality restrictions.
+    </p>
+
+    <p>
+      You can contact <Mailto email={siteLegal.privacyEmail} /> if you would like further information about the international-transfer arrangements that apply to your information.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.retention}>
+
+    <p>
+      Information is retained only for as long as reasonably necessary for the
+      purpose for which it was collected, including service delivery, financial
+      records, professional administration, legal obligations, safeguarding,
+      resolving disputes and enforcing agreements.
+    </p>
+
+    <DefinitionList>
+      <DefinitionItem term="General enquiries">
+          TODO: Insert a defined period, for example 12 months after the last
+          meaningful contact, unless the enquiry develops into a client,
+          supplier, collaborator or other ongoing relationship.
+        </DefinitionItem>
+
+      <DefinitionItem term="Proposals and project records">
+          TODO: Insert your actual retention period and any distinction between
+          unsuccessful proposals, completed work and ongoing work.
+        </DefinitionItem>
+
+      <DefinitionItem term="Financial records">
+          TODO: Confirm the applicable period with your accountant and include
+          the final retention period here.
+        </DefinitionItem>
+
+      <DefinitionItem term="Newsletter data">
+          Retained until you unsubscribe, withdraw consent, the list is retired,
+          or limited suppression information is needed to ensure you are not
+          contacted again against your preference.
+        </DefinitionItem>
+
+      <DefinitionItem term="Website and security logs">
+          TODO: Insert your actual log-retention period, based on provider
+          configuration and security requirements.
+        </DefinitionItem>
+
+      <DefinitionItem term="Safeguarding, complaints and legal matters">
+          TODO: Define retention periods in the relevant policy, based on the
+          nature of the concern, applicable law and professional advice.
+        </DefinitionItem>
+    </DefinitionList>
+
+    <p>
+      When information is no longer needed, it will be securely deleted,
+      anonymised or archived only where continued retention is necessary.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.security}>
+
+    <p>
+      Reasonable technical and organisational measures are used to protect
+      personal information against unauthorised access, accidental loss, misuse,
+      alteration, disclosure or destruction.
+    </p>
+
+    <p>These measures may include:</p>
+
+    <ul>
+      <li>Access controls and least-privilege access to relevant systems</li>
+      <li>Strong account security and multi-factor authentication where available</li>
+      <li>Encrypted connections where supported by the service provider</li>
+      <li>Reputable hosting, payment, booking and communication providers</li>
+      <li>Regular review of systems, suppliers and access arrangements</li>
+      <li>Appropriate procedures for responding to suspected data incidents</li>
+    </ul>
+
+    <p>
+      No online system can be guaranteed completely secure. Please avoid sending
+      unnecessary sensitive information through ordinary email or website forms.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.cookies}>
+
+    <p>
+      This website may use cookies, local storage and similar technologies. Some are necessary for security, accessibility, form handling and core website functionality. Others may support analytics, embedded content or service improvement.
+    </p>
+
+    <p>
+      Non-essential cookies and similar technologies should be used only with the consent required by applicable law. You can find more detail in the <a href="/cookies/">cookie notice</a>.
+    </p>
+
+    <p>
+      TODO: Ensure the cookie notice lists every actual technology, provider,
+      purpose, category, lifespan and available consent choice.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.marketing}>
+
+    <p>
+      If you choose to subscribe to a newsletter or other optional updates, I
+      will use your contact information to send the communications you requested.
+    </p>
+
+    <p>
+      You can unsubscribe at any time by using the link in an email or by
+      contacting <Mailto email={siteLegal.privacyEmail} />.
+      Withdrawing consent will not affect the lawfulness of processing that took
+      place before it was withdrawn.
+    </p>
+
+    <p>
+      TODO: Remove this section if you do not operate a newsletter or optional
+      email-update service.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["automated-decisions"]}>
+
+    <p>
+      I do not make decisions about you solely by automated means where those
+      decisions would produce legal effects or similarly significant effects.
+    </p>
+
+    <p>
+      TODO: Update this section if you introduce automated eligibility,
+      profiling, scoring, routing or decision-making tools that have a
+      significant effect on individuals.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.rights}>
+
+    <p>
+      Depending on the circumstances and the legal basis used, you may have the
+      right to:
+    </p>
+
+    <ul>
+      <li>Ask for access to the personal information held about you</li>
+      <li>Ask for inaccurate or incomplete information to be corrected</li>
+      <li>Ask for information to be erased in certain circumstances</li>
+      <li>Ask for processing to be restricted in certain circumstances</li>
+      <li>Object to processing based on legitimate interests</li>
+      <li>Receive a portable copy of certain information you provided</li>
+      <li>Withdraw consent at any time where consent is relied upon</li>
+      <li>Complain to the UK Information Commissioner’s Office</li>
+    </ul>
+
+    <h3>How to make a request</h3>
+
+    <p>
+      To exercise a right, email
+      <Mailto email={siteLegal.privacyEmail} />.
+      Please state what you are requesting and provide enough information to
+      help identify the relevant records.
+    </p>
+
+    <p>
+      I may need to verify your identity before completing a request. Requests
+      are normally handled without charge, although a reasonable fee or refusal
+      may be permitted where a request is manifestly unfounded or excessive.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.children}>
+
+    <p>
+      This main website is primarily intended for professional, educational and
+      organisational audiences. If services for a person under 18 are offered,
+      enquiries and arrangements should normally be made by a parent, guardian
+      or school.
+    </p>
+
+    <p>
+      Where information about a child or young person is processed, it will be
+      handled only as necessary for the relevant activity and in line with
+      applicable safeguarding arrangements.
+    </p>
+
+    <p>
+      See the <a href="/safeguarding/">safeguarding policy</a> for further
+      information once published.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.changes}>
+
+    <p>
+      This notice may be updated where services, suppliers, website technology,
+      legal requirements or data-handling arrangements change. The current
+      version will always be published on this page with the date it was last
+      updated.
+    </p>
+
+    <p>
+      Where a significant change materially affects how information is used, I
+      will take appropriate steps to bring it to the attention of affected
+      people where reasonably practicable.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.contact}>
+
+    <p>
+      For questions, concerns or requests relating to this privacy notice,
+      contact:
+    </p>
+
+    <ContactBlock name={siteLegal.controllerName} email={siteLegal.privacyEmail} />
+
+    <p>
+      If you are unhappy with how your information has been handled, please
+      contact me first so that I can try to resolve the issue.
+    </p>
+
+    <p>
+      You also have the right to complain to the UK Information Commissioner’s
+      Office:
+    </p>
+
+    <address>
+      Information Commissioner’s Office<br />
+      Wycliffe House<br />
+      Water Lane<br />
+      Wilmslow<br />
+      Cheshire SK9 5AF<br />
+      <a href={siteLegal.icoComplaintUrl}>ico.org.uk/make-a-complaint</a>
+    </address>
+  </LegalSection>
+
+  <Fragment slot="footer-note">
+    <p>
+      <strong>Before publication:</strong> replace all TODO text with your
+      actual providers, jurisdictions, transfer safeguards, retention periods,
+      form purposes and operational processes. Review this notice whenever you
+      add or remove a supplier, form, booking process, analytics tool,
+      newsletter platform or service.
+    </p>
+  </Fragment>
+</LegalNoticeLayout>
+

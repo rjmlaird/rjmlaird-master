@@ -1,39 +1,1153 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import enquiries from "../data/enquiries.json";
 
-const mailto = (t: (typeof enquiries.types)[number]) =>
-  `mailto:${enquiries.email}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(t.body)}`;
+const formAction = "https://formspree.io/f/YOUR_FORMSPREE_FORM_ID";
+
+const enquiryTypes = [
+  {
+    id: "communications-project",
+    value: "communications-project",
+    title: "Discuss a communications project",
+    summary:
+      "Strategy, content or digital work for an organisation.",
+    note:
+      "Organisation-level strategic communication and digital projects are delivered through Impact Orbit Co.",
+  },
+  {
+    id: "mentoring",
+    value: "mentoring",
+    title: "Ask about mentoring",
+    summary:
+      "Career reflection and direction in science, space or sustainability.",
+    note:
+      "For early- and mid-career professionals, career changers and people considering their next step.",
+  },
+  {
+    id: "teaching-speaking",
+    value: "teaching-speaking",
+    title: "Enquire about teaching, workshops or speaking",
+    summary:
+      "Tutoring, guest talks, workshops and training.",
+    note:
+      "For schools, universities, charities, networks, professional teams and event organisers.",
+  },
+  {
+    id: "research-editorial",
+    value: "research-editorial",
+    title: "Propose a research or editorial collaboration",
+    summary:
+      "Research projects, commissioned writing, interviews and press.",
+    note:
+      "For researchers, editors, journalists, public-engagement teams and collaborators.",
+  },
+  {
+    id: "other",
+    value: "other",
+    title: "Something else",
+    summary:
+      "A general question, introduction, invitation or idea.",
+    note:
+      "Choose this if none of the routes above quite fits.",
+  },
+];
 ---
 
-<Layout schemaType="ContactPage" title="Contact" description="Contact Ryan Laird about communications projects, mentoring, teaching and speaking, or research and editorial collaboration.">
-  <div class="wrap page">
-    <header class="page-head">
-      <h1>Contact</h1>
-      <p class="lead">
-        Pick the option that matches your enquiry. Each opens an email with a few prompts so I have what I need to reply
-        usefully. I aim to respond within a few working days.
-      </p>
-    </header>
+<Layout
+  title="Contact Ryan Laird"
+  description="Get in touch with Ryan Laird about strategic communication, digital strategy, teaching, mentoring, speaking, research and editorial collaboration."
+>
+  <main class="contact-page">
+    <section class="contact-hero" aria-labelledby="contact-title">
+      <div class="wrap contact-hero__grid">
+        <div>
+          <p class="eyebrow">Contact</p>
 
-    <div class="route-grid">
-      {enquiries.types.map((t, i) => (
-        <article class="route" id={t.id} data-tone={["teal", "violet", "sky", "amber"][i]}>
-          <h3>{t.label}</h3>
-          <p>{t.hint}.</p>
-          <a class="go" href={mailto(t)}>Email about this</a>
-        </article>
-      ))}
-    </div>
+          <h1 id="contact-title">
+            Start with the question.
+          </h1>
+        </div>
 
-    <section class="block">
-      <h2>Other ways to reach me</h2>
-      <ul class="plain-list">
-        <li>Email: <a class="link" href={`mailto:${enquiries.email}`}>{enquiries.email}</a></li>
-        <li>Book a short discovery call: <a class="link" href={enquiries.calUrl} rel="noopener">cal.com/rjmlaird/discovery</a></li>
-        <li>Organisation-level communications projects: <a class="link" href="https://greenorbit.space">Green Orbit Digital</a></li>
-        <li>Press and media: <a class="link" href="/press/">press kit</a></li>
-      </ul>
+        <div class="contact-hero__content">
+          <p class="lead">
+            I work with organisations, teams, students, professionals, event
+            hosts, editors and research collaborators.
+          </p>
+
+          <p>
+            Choose the closest route below and share a little context. If a
+            different route, collaborator or Impact Orbit Co. is a better fit,
+            I will say so.
+          </p>
+
+          <p class="response-note">
+            I aim to reply within <strong>three working days</strong>. Please
+            do not send confidential, sensitive or time-critical information
+            through this form.
+          </p>
+        </div>
+      </div>
     </section>
-  </div>
+
+    <section class="contact-routes" aria-labelledby="routes-title">
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Choose a route</p>
+            <h2 id="routes-title">What would you like to discuss?</h2>
+          </div>
+
+          <p>
+            Selecting a route helps tailor the questions below. You can still
+            explain the enquiry in your own words.
+          </p>
+        </div>
+
+        <div class="route-grid" data-contact-routes>
+          {
+            enquiryTypes.map((type, index) => (
+              <label class="route-option" for={`type-${type.id}`}>
+                <input
+                  type="radio"
+                  id={`type-${type.id}`}
+                  name="enquiry_type"
+                  value={type.value}
+                  checked={index === 0}
+                />
+
+                <span class="route-option__content">
+                  <span class="route-option__title">{type.title}</span>
+                  <span class="route-option__summary">{type.summary}</span>
+                  <span class="route-option__note">{type.note}</span>
+                </span>
+              </label>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-form-section" aria-labelledby="form-title">
+      <div class="wrap contact-form-layout">
+        <div class="contact-form-intro">
+          <p class="eyebrow">Enquiry form</p>
+
+          <h2 id="form-title">A little context helps.</h2>
+
+          <p>
+            You do not need a finished brief. A clear outline of the situation,
+            the outcome you need and any useful timing is enough to begin.
+          </p>
+
+          <div class="contact-form-intro__links">
+            <a href="/services/">View services</a>
+            <a href="/how-i-work/">How I work</a>
+            <a
+              href="https://impactorbit.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Impact Orbit Co.
+              <span class="sr-only">, opens in a new tab</span>
+            </a>
+          </div>
+        </div>
+
+        <form
+          class="contact-form"
+          action={formAction}
+          method="POST"
+          enctype="multipart/form-data"
+          accept-charset="UTF-8"
+        >
+          <input
+            type="hidden"
+            name="_subject"
+            value="New enquiry from rjmlaird.co.uk"
+          />
+
+          <input
+            type="hidden"
+            name="_next"
+            value="https://rjmlaird.co.uk/contact/thanks/"
+          />
+
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">
+              Leave this field empty
+              <input
+                id="website"
+                name="_gotcha"
+                type="text"
+                tabindex="-1"
+                autocomplete="off"
+              />
+            </label>
+          </div>
+
+          <fieldset>
+            <legend>Your details</legend>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Name <span aria-hidden="true">*</span></label>
+                <input
+                  id="name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  required
+                />
+              </div>
+
+              <div class="field">
+                <label for="email">
+                  Email address <span aria-hidden="true">*</span>
+                </label>
+                <input
+                  id="email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  inputmode="email"
+                  required
+                />
+              </div>
+
+              <div class="field">
+                <label for="organisation">Organisation, school or publication</label>
+                <input
+                  id="organisation"
+                  name="organisation"
+                  type="text"
+                  autocomplete="organization"
+                />
+              </div>
+
+              <div class="field">
+                <label for="role">Your role</label>
+                <input
+                  id="role"
+                  name="role"
+                  type="text"
+                  autocomplete="organization-title"
+                />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset data-panel="communications-project">
+            <legend>About the project</legend>
+
+            <div class="field">
+              <label for="project-summary">
+                What are you trying to communicate, improve or make possible?
+              </label>
+              <textarea
+                id="project-summary"
+                name="project_summary"
+                rows="5"
+              ></textarea>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="project-service">Most relevant area</label>
+                <select id="project-service" name="project_service">
+                  <option value="">Please choose</option>
+                  <option value="Strategic communication">
+                    Strategic communication
+                  </option>
+                  <option value="Positioning and messaging">
+                    Positioning and messaging
+                  </option>
+                  <option value="Content strategy and editorial">
+                    Content strategy and editorial
+                  </option>
+                  <option value="Digital strategy and systems">
+                    Digital strategy and systems
+                  </option>
+                  <option value="Website or information architecture">
+                    Website or information architecture
+                  </option>
+                  <option value="Analytics, workflows or automation">
+                    Analytics, workflows or automation
+                  </option>
+                  <option value="Not sure yet">Not sure yet</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="project-stage">Current stage</label>
+                <select id="project-stage" name="project_stage">
+                  <option value="">Please choose</option>
+                  <option value="Exploring an idea">Exploring an idea</option>
+                  <option value="Planning a project">Planning a project</option>
+                  <option value="Need support soon">Need support soon</option>
+                  <option value="Reviewing existing work">
+                    Reviewing existing work
+                  </option>
+                  <option value="Looking for an ongoing partner">
+                    Looking for an ongoing partner
+                  </option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="project-timing">Ideal timing</label>
+                <input
+                  id="project-timing"
+                  name="project_timing"
+                  type="text"
+                  placeholder="For example: January to March 2027"
+                />
+              </div>
+
+              <div class="field">
+                <label for="project-budget">Indicative budget</label>
+                <select id="project-budget" name="project_budget">
+                  <option value="">Prefer not to say</option>
+                  <option value="Under £1,000">Under £1,000</option>
+                  <option value="£1,000 to £3,000">£1,000 to £3,000</option>
+                  <option value="£3,000 to £7,500">£3,000 to £7,500</option>
+                  <option value="£7,500 to £15,000">£7,500 to £15,000</option>
+                  <option value="Over £15,000">Over £15,000</option>
+                  <option value="To be discussed">To be discussed</option>
+                </select>
+              </div>
+            </div>
+
+            <p class="field-note">
+              Organisation-level strategic communication and digital work may
+              be delivered through Impact Orbit Co.
+            </p>
+          </fieldset>
+
+          <fieldset data-panel="mentoring" hidden>
+            <legend>About mentoring</legend>
+
+            <div class="field">
+              <label for="mentoring-context">
+                What would you like space to think through?
+              </label>
+              <textarea
+                id="mentoring-context"
+                name="mentoring_context"
+                rows="5"
+                placeholder="For example: career direction, a move into the sector, confidence, professional development or a difficult decision."
+              ></textarea>
+            </div>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="mentoring-stage">Career stage</label>
+                <select id="mentoring-stage" name="mentoring_stage">
+                  <option value="">Please choose</option>
+                  <option value="Student or recent graduate">
+                    Student or recent graduate
+                  </option>
+                  <option value="Early career">Early career</option>
+                  <option value="Mid-career">Mid-career</option>
+                  <option value="Career change or return">
+                    Career change or return
+                  </option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="mentoring-format">Preferred format</label>
+                <select id="mentoring-format" name="mentoring_format">
+                  <option value="">Please choose</option>
+                  <option value="One-off conversation">
+                    One-off conversation
+                  </option>
+                  <option value="Short series of sessions">
+                    Short series of sessions
+                  </option>
+                  <option value="Not sure yet">Not sure yet</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="mentoring-availability">
+                  General availability
+                </label>
+                <input
+                  id="mentoring-availability"
+                  name="mentoring_availability"
+                  type="text"
+                  placeholder="For example: weekday evenings or Fridays"
+                />
+              </div>
+            </div>
+
+            <p class="field-note">
+              Mentoring is reflective and practical support. It is not therapy,
+              legal advice, recruitment representation or a guarantee of a role,
+              funding or other outcome.
+            </p>
+          </fieldset>
+
+          <fieldset data-panel="teaching-speaking" hidden>
+            <legend>About the session or event</legend>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="teaching-type">Type of request</label>
+                <select id="teaching-type" name="teaching_type">
+                  <option value="">Please choose</option>
+                  <option value="Physics or astronomy tutoring">
+                    Physics or astronomy tutoring
+                  </option>
+                  <option value="Guest lecture or classroom session">
+                    Guest lecture or classroom session
+                  </option>
+                  <option value="Workshop or training">
+                    Workshop or training
+                  </option>
+                  <option value="Conference talk or panel">
+                    Conference talk or panel
+                  </option>
+                  <option value="Podcast or media contribution">
+                    Podcast or media contribution
+                  </option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="audience">Audience</label>
+                <input
+                  id="audience"
+                  name="audience"
+                  type="text"
+                  placeholder="For example: Year 12 students, researchers or leadership team"
+                />
+              </div>
+
+              <div class="field">
+                <label for="event-date">Date or timeframe</label>
+                <input id="event-date" name="event_date" type="text" />
+              </div>
+
+              <div class="field">
+                <label for="event-format">Format and location</label>
+                <select id="event-format" name="event_format">
+                  <option value="">Please choose</option>
+                  <option value="Online">Online</option>
+                  <option value="In person, UK">In person, UK</option>
+                  <option value="In person, Europe">In person, Europe</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="To be agreed">To be agreed</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="event-fee">Speaker or delivery budget</label>
+                <select id="event-fee" name="event_fee">
+                  <option value="">Prefer not to say</option>
+                  <option value="Unpaid or voluntary">
+                    Unpaid or voluntary
+                  </option>
+                  <option value="Honorarium available">
+                    Honorarium available
+                  </option>
+                  <option value="Paid engagement">Paid engagement</option>
+                  <option value="To be discussed">To be discussed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="event-brief">
+                What would you like the session, contribution or collaboration to achieve?
+              </label>
+              <textarea
+                id="event-brief"
+                name="event_brief"
+                rows="5"
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset data-panel="research-editorial" hidden>
+            <legend>About the collaboration</legend>
+
+            <div class="form-grid">
+              <div class="field">
+                <label for="collaboration-type">Type of collaboration</label>
+                <select id="collaboration-type" name="collaboration_type">
+                  <option value="">Please choose</option>
+                  <option value="Research project">Research project</option>
+                  <option value="Commissioned article or report">
+                    Commissioned article or report
+                  </option>
+                  <option value="Interview or press request">
+                    Interview or press request
+                  </option>
+                  <option value="Editorial commission">
+                    Editorial commission
+                  </option>
+                  <option value="Public-engagement collaboration">
+                    Public-engagement collaboration
+                  </option>
+                  <option value="Academic or institutional collaboration">
+                    Academic or institutional collaboration
+                  </option>
+                  <option value="Other">Other</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="collaboration-deadline">Deadline or timeframe</label>
+                <input
+                  id="collaboration-deadline"
+                  name="collaboration_deadline"
+                  type="text"
+                />
+              </div>
+
+              <div class="field">
+                <label for="collaboration-fee">Commission or fee</label>
+                <select id="collaboration-fee" name="collaboration_fee">
+                  <option value="">Prefer not to say</option>
+                  <option value="Unpaid collaboration">
+                    Unpaid collaboration
+                  </option>
+                  <option value="Paid commission">Paid commission</option>
+                  <option value="Honorarium available">
+                    Honorarium available
+                  </option>
+                  <option value="To be discussed">To be discussed</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="collaboration-brief">
+                What is the subject, audience and intended outcome?
+              </label>
+              <textarea
+                id="collaboration-brief"
+                name="collaboration_brief"
+                rows="5"
+              ></textarea>
+            </div>
+
+            <div class="field">
+              <label for="relevant-link">
+                Brief, publication, call for contributors or relevant link
+              </label>
+              <input
+                id="relevant-link"
+                name="relevant_link"
+                type="url"
+                inputmode="url"
+                placeholder="https://"
+              />
+            </div>
+          </fieldset>
+
+          <fieldset data-panel="other" hidden>
+            <legend>About your enquiry</legend>
+
+            <div class="field">
+              <label for="general-message">
+                What would you like to discuss?
+              </label>
+              <textarea
+                id="general-message"
+                name="general_message"
+                rows="6"
+              ></textarea>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Anything else</legend>
+
+            <div class="field">
+              <label for="message">
+                Additional context, links or questions
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                rows="5"
+                placeholder="Include anything else that would help me understand your enquiry."
+              ></textarea>
+            </div>
+
+            <div class="field">
+              <label for="attachment">
+                Attach a brief or supporting document
+                <span class="optional">(optional)</span>
+              </label>
+              <input
+                id="attachment"
+                name="attachment"
+                type="file"
+                accept=".pdf,.doc,.docx,.txt,.ppt,.pptx"
+              />
+              <p class="field-note">
+                Please do not upload confidential, personal or sensitive
+                information. Share only material you are authorised to provide.
+              </p>
+            </div>
+          </fieldset>
+
+          <fieldset class="consent-fieldset">
+            <legend>Privacy</legend>
+
+            <label class="checkbox-field" for="privacy-consent">
+              <input
+                id="privacy-consent"
+                name="privacy_consent"
+                type="checkbox"
+                required
+              />
+
+              <span>
+                I understand that my information will be used to respond to this
+                enquiry, in line with the <a href="/privacy/">privacy notice</a>.
+                <span aria-hidden="true">*</span>
+              </span>
+            </label>
+          </fieldset>
+
+          <div class="form-actions">
+            <button class="button button--primary" type="submit">
+              Send enquiry
+            </button>
+
+            <p>
+              By submitting this form, you are asking for a response to your
+              enquiry. It does not create a contract or commitment to provide
+              services.
+            </p>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="contact-alternatives" aria-labelledby="alternatives-title">
+      <div class="wrap contact-alternatives__grid">
+        <div>
+          <p class="eyebrow">Other routes</p>
+          <h2 id="alternatives-title">Prefer a different way to begin?</h2>
+        </div>
+
+        <div>
+          <p>
+            For a short introductory conversation, you can book a suitable time
+            directly. For routine service requests, the form is usually the best
+            starting point because it provides useful context in advance.
+          </p>
+
+          <div class="cta-row">
+            <a
+              class="button button--secondary"
+              href="https://cal.com/rjmlaird/intro"
+            >
+              Book an introductory call
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
 </Layout>
+
+<script>
+  const form = document.querySelector(".contact-form");
+  const radios = document.querySelectorAll(
+    'input[name="enquiry_type"]',
+  );
+  const panels = document.querySelectorAll("[data-panel]");
+
+  const updateVisiblePanel = () => {
+    const selected = document.querySelector(
+      'input[name="enquiry_type"]:checked',
+    );
+
+    if (!(selected instanceof HTMLInputElement)) return;
+
+    panels.forEach((panel) => {
+      if (!(panel instanceof HTMLElement)) return;
+
+      const isActive = panel.dataset.panel === selected.value;
+      panel.hidden = !isActive;
+
+      panel.querySelectorAll("input, select, textarea").forEach((field) => {
+        if (
+          field instanceof HTMLInputElement ||
+          field instanceof HTMLSelectElement ||
+          field instanceof HTMLTextAreaElement
+        ) {
+          field.disabled = !isActive;
+        }
+      });
+    });
+  };
+
+  radios.forEach((radio) => {
+    radio.addEventListener("change", updateVisiblePanel);
+  });
+
+  updateVisiblePanel();
+
+  form?.addEventListener("submit", () => {
+    const selected = document.querySelector(
+      'input[name="enquiry_type"]:checked',
+    );
+
+    if (!(selected instanceof HTMLInputElement)) return;
+
+    const subject = form.querySelector('input[name="_subject"]');
+
+    if (subject instanceof HTMLInputElement) {
+      subject.value = `New ${selected.value.replaceAll("-", " ")} enquiry from rjmlaird.co.uk`;
+    }
+  });
+</script>
+
+<style>
+  .contact-page {
+    --form-border: var(--bd);
+  }
+
+  .contact-hero,
+  .contact-routes,
+  .contact-form-section,
+  .contact-alternatives {
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .contact-routes,
+  .contact-alternatives {
+    border-top: 1px solid var(--form-border);
+  }
+
+  .contact-hero__grid,
+  .contact-form-layout,
+  .contact-alternatives__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: clamp(2rem, 9vw, 9rem);
+    align-items: start;
+  }
+
+  .eyebrow,
+  .card-eyebrow {
+    margin: 0;
+    color: var(--teal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  h1,
+  h2 {
+    margin: 0.7rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.92;
+  }
+
+  h1 {
+    max-width: 48rem;
+    font-size: clamp(3rem, 7vw, 7rem);
+  }
+
+  h2 {
+    max-width: 35rem;
+    font-size: clamp(2.1rem, 4.5vw, 4rem);
+  }
+
+  .contact-hero__content {
+    max-width: 39rem;
+  }
+
+  .contact-hero__content p,
+  .contact-form-intro > p,
+  .contact-alternatives__grid p {
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .contact-hero__content p + p,
+  .contact-form-intro > p + p,
+  .contact-alternatives__grid p + p {
+    margin-top: 1.1rem;
+  }
+
+  .lead {
+    color: var(--w) !important;
+    font-size: clamp(1.15rem, 2vw, 1.45rem) !important;
+    line-height: 1.6 !important;
+  }
+
+  .response-note {
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--form-border);
+    font-size: 0.92rem !important;
+  }
+
+  .section-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.55fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: end;
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .section-heading > p {
+    max-width: 26rem;
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--form-border);
+    border-left: 1px solid var(--form-border);
+  }
+
+  .route-option {
+    position: relative;
+    display: block;
+    min-height: 14rem;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border-right: 1px solid var(--form-border);
+    border-bottom: 1px solid var(--form-border);
+    cursor: pointer;
+    transition:
+      background 0.2s ease,
+      color 0.2s ease;
+  }
+
+  .route-option:hover {
+    background: var(--lift);
+  }
+
+  .route-option input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    clip-path: inset(50%);
+  }
+
+  .route-option:has(input:focus-visible) {
+    outline: 2px solid var(--teal);
+    outline-offset: -3px;
+  }
+
+  .route-option:has(input:checked) {
+    background: var(--lift);
+    box-shadow: inset 0 3px 0 var(--teal);
+  }
+
+  .route-option__content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .route-option__title {
+    color: var(--w);
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .route-option__summary {
+    margin-top: 0.75rem;
+    color: var(--mb);
+    font-size: 0.98rem;
+    line-height: 1.65;
+  }
+
+  .route-option__note {
+    margin-top: auto;
+    padding-top: 1.5rem;
+    color: var(--m);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .contact-form-layout {
+    align-items: start;
+  }
+
+  .contact-form-intro {
+    position: sticky;
+    top: 2rem;
+  }
+
+  .contact-form-intro__links {
+    display: grid;
+    gap: 0.65rem;
+    margin-top: 1.75rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--form-border);
+  }
+
+  .contact-form-intro__links a {
+    width: fit-content;
+    color: var(--w);
+    font-size: 0.92rem;
+    font-weight: 700;
+    text-decoration-color: var(--teal);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .contact-form {
+    border-top: 1px solid var(--form-border);
+  }
+
+  .contact-form fieldset {
+    min-width: 0;
+    padding: 1.75rem 0;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--form-border);
+  }
+
+  .contact-form legend {
+    padding: 0;
+    color: var(--w);
+    font-size: 1.15rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.15rem;
+    margin-top: 1.25rem;
+  }
+
+  .field {
+    margin-top: 1.25rem;
+  }
+
+  .form-grid .field {
+    margin-top: 0;
+  }
+
+  .field label,
+  .checkbox-field {
+    display: block;
+    color: var(--w);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 0.55rem;
+    padding: 0.8rem 0.85rem;
+    border: 1px solid var(--form-border);
+    border-radius: 0;
+    color: var(--w);
+    background: var(--lift);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .field textarea {
+    min-height: 8rem;
+    resize: vertical;
+  }
+
+  .field input[type="file"] {
+    padding: 0.65rem;
+  }
+
+  .field input::placeholder,
+  .field textarea::placeholder {
+    color: var(--m);
+  }
+
+  .field input:focus-visible,
+  .field select:focus-visible,
+  .field textarea:focus-visible,
+  .checkbox-field input:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+  }
+
+  .optional {
+    color: var(--m);
+    font-weight: 400;
+  }
+
+  .field-note {
+    margin: 0.7rem 0 0;
+    color: var(--m);
+    font-size: 0.84rem;
+    line-height: 1.6;
+  }
+
+  .consent-fieldset {
+    padding-bottom: 1.5rem !important;
+  }
+
+  .checkbox-field {
+    display: flex;
+    gap: 0.75rem;
+    align-items: flex-start;
+    margin-top: 1rem;
+    color: var(--mb);
+    font-weight: 400;
+  }
+
+  .checkbox-field input {
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    margin-top: 0.15rem;
+    accent-color: var(--teal);
+  }
+
+  .checkbox-field a {
+    color: var(--w);
+    text-decoration-color: var(--teal);
+    text-underline-offset: 0.2em;
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem 1.5rem;
+    align-items: center;
+    padding-top: 1.5rem;
+  }
+
+  .form-actions p {
+    max-width: 31rem;
+    margin: 0;
+    color: var(--m);
+    font-size: 0.82rem;
+    line-height: 1.6;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid transparent;
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .button--primary {
+    border-color: var(--teal);
+    color: var(--bg);
+    background: var(--teal);
+  }
+
+  .button--primary:hover,
+  .button--primary:focus-visible {
+    border-color: var(--w);
+    color: var(--bg);
+    background: var(--w);
+  }
+
+  .button--secondary {
+    border-color: var(--form-border);
+    color: var(--w);
+    background: transparent;
+  }
+
+  .button--secondary:hover,
+  .button--secondary:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .honeypot {
+    position: absolute;
+    left: -10000px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 800px) {
+    .contact-hero__grid,
+    .contact-form-layout,
+    .contact-alternatives__grid,
+    .section-heading {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-form-intro {
+      position: static;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .route-grid,
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .route-option {
+      min-height: auto;
+    }
+
+    .route-option__note {
+      margin-top: 1.25rem;
+    }
+
+    .form-actions {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
+</style>

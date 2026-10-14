@@ -1,0 +1,40 @@
+---
+type Item = string | { lead: string; text: string };
+
+interface Props {
+  /** Omit to supply your own <li> children via the default slot. */
+  items?: Item[];
+  ordered?: boolean;
+  variant?: "default" | "steps";
+}
+
+const { items, ordered = false, variant = "default" } = Astro.props;
+const Tag = ordered ? "ol" : "ul";
+---
+
+<Tag class:list={{ steps: variant === "steps" }}>
+  {
+    items ? (
+      items.map((item) => (
+        <li>
+          {typeof item === "string" ? item : (<><strong>{item.lead}:</strong> {item.text}</>)}
+        </li>
+      ))
+    ) : (
+      <slot />
+    )
+  }
+</Tag>
+
+<style>
+  .steps {
+    display: grid;
+    gap: 0.85rem;
+    margin: 1.25rem 0 0;
+    padding-left: 1.35rem;
+  }
+
+  .steps :global(li) {
+    padding-left: 0.25rem;
+  }
+</style>

@@ -5,186 +5,1073 @@ import { isEvidenceReady, cleanText } from "../lib/content-quality.mjs";
 import selected from "../data/selected-work.json";
 import enquiries from "../data/enquiries.json";
 
-const resolved = (
+const selectedWork = (
   await Promise.all(
     selected.items.map(async (item) => {
-      const entries = await getCollection(item.collection as "projects" | "initiatives", ({ data }) => data.draft !== true);
-      const entry = entries.find((e) => (e.data.slug ?? e.id) === item.slug);
-      return entry ? { ...item, entry } : null;
-    })
-  )
-).filter((x): x is NonNullable<typeof x> => x !== null);
+      const entries = await getCollection(
+        item.collection as "projects" | "initiatives",
+        ({ data }) => data.draft !== true,
+      );
 
-const posts = (await getCollection("blog", ({ data }) => !data.draft)).sort(
-  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
-const latest = posts[0];
+      const entry = entries.find(
+        (entry) => (entry.data.slug ?? entry.id) === item.slug,
+      );
+
+      return entry ? { ...item, entry } : null;
+    }),
+  )
+).filter((item): item is NonNullable<typeof item> => item !== null);
+
+const posts = (
+  await getCollection("blog", ({ data }) => !data.draft)
+).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const latestPost = posts[0];
 
 const pathways = [
   {
     tone: "teal",
-    title: "Strategy and communication",
-    text: "Positioning, content and digital strategy for organisations that handle technical, scientific or environmental subject matter.",
-    proof: "Led marketing for ESA Business Applications, delivered through HE Space.",
-    href: "/consulting/",
-    cta: "See how I work with organisations",
+    action: "I plan",
+    title: "Strategic communication",
+    story:
+      "When the subject is technical, contested or still taking shape, the first task is often to create a shared direction. I help teams decide what they need to say, who needs to hear it and how communication can support meaningful progress.",
+    outcomes: [
+      "Positioning and messaging",
+      "Communication and content strategy",
+      "Audience, stakeholder and engagement planning",
+    ],
+    for: "Space, Earth observation, climate, sustainability, science and technology organisations.",
+    href: "/services/#strategic-communication",
+    cta: "Explore strategic communication",
   },
   {
     tone: "sky",
-    title: "Research and writing",
-    text: "Publications, articles and commentary on space, climate, Earth observation and how science reaches the public.",
-    proof: "MPhys in Astrophysics, including research experience on cometary nuclei.",
-    href: "/research/",
-    cta: "Read the research and writing",
+    action: "I build",
+    title: "Digital strategy and systems",
+    story:
+      "Useful digital work is not only about a new website. It is about giving people better ways to publish, organise, find, measure and improve the work that already matters.",
+    outcomes: [
+      "Websites and information architecture",
+      "Content operations and publishing systems",
+      "Analytics, workflows and practical automation",
+    ],
+    for: "Teams improving their website, content operations, information architecture, analytics, workflows or automation.",
+    href: "/services/#digital-strategy-systems",
+    cta: "Explore digital strategy and systems",
   },
   {
     tone: "violet",
+    action: "I teach",
     title: "Teaching and mentoring",
-    text: "Tutoring, talks, workshops and one-to-one mentoring for students, teams and people changing direction.",
-    proof: "I run Leicester Space Week, a citywide space festival.",
-    href: "/work-with-me/#teaching-and-mentoring",
+    story:
+      "Learning works best when it connects knowledge with confidence and practical next steps. I teach scientific subjects, facilitate useful conversations and support people as they develop their own direction.",
+    outcomes: [
+      "Physics and astronomy tuition",
+      "Guest teaching, workshops and training",
+      "One-to-one mentoring and career reflection",
+    ],
+    for: "Students, adult learners, schools, universities, charities, networks and professional teams.",
+    href: "/services/#teaching-mentoring",
     cta: "Explore teaching and mentoring",
   },
   {
     tone: "amber",
-    title: "Digital systems and open work",
-    text: "Websites, data pipelines and small tools, built in the open where I can.",
-    proof: "Code and experiments on GitHub at rjmlaird.",
-    href: "/open-source/",
-    cta: "Browse the lab",
+    action: "I contribute",
+    title: "Speaking and collaboration",
+    story:
+      "Some work needs a contributor rather than a consultant: someone who can bring an informed perspective, connect ideas clearly and help a conversation reach the right people.",
+    outcomes: [
+      "Talks, panels and podcasts",
+      "Editorial commissions and interviews",
+      "Research and public-engagement collaboration",
+    ],
+    for: "Event organisers, journalists, editors, universities, public-engagement teams and research collaborators.",
+    href: "/services/#speaking-collaboration",
+    cta: "Explore speaking and collaboration",
   },
 ];
+
 ---
 
 <Layout
-  title="Ryan Laird — CMktr MInstP"
-  description="Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology. Strategy, writing, teaching and mentoring."
+  title="Ryan Laird — Science, communication and strategy"
+  description="Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology through strategic communication, digital systems, teaching, mentoring and public engagement."
 >
-  <div class="home">
+  <main class="home">
     <section class="home-hero" aria-labelledby="home-title">
-      <div>
-        <h1 id="home-title">Science, communication and digital strategy for complex ideas.</h1>
-        <p class="lead">
-          I’m Ryan Laird: an astrophysicist, communicator and strategist working across space, sustainability and technology.
-        </p>
-        <p class="support">
-          I help organisations and individuals explain difficult science clearly and accurately, through strategy,
-          writing, teaching and mentoring. Based in Leicester, working across the UK and Europe.
-        </p>
-        <div class="cta-row">
-          <a href="/work-with-me/" class="bp">Work with me</a>
-          <a href="/research/" class="bo">Research and writing</a>
-          <a href="/projects/" class="bo">Selected projects</a>
+      <div class="wrap home-hero__grid">
+        <div class="home-hero__content">
+          <p class="eyebrow">Ryan Laird · CMktr MInstP</p>
+
+          <h1 id="home-title">
+            Science, communication and digital strategy for complex ideas.
+          </h1>
+
+          <p class="lead">
+            I am an astrophysicist, science communicator and strategist working
+            across space, sustainability and technology.
+          </p>
+
+          <p class="support">
+            I help organisations, teams and individuals make complex work
+            clearer, more accurate and more useful through communication,
+            digital practice, teaching and collaboration.
+          </p>
+
+          <p class="location">
+            Based in Leicester. Working across the UK, Europe and online.
+          </p>
+
+          <div class="cta-row" aria-label="Primary links">
+            <a class="button button--primary" href="/services/">
+              Explore services
+            </a>
+
+            <a class="button button--secondary" href="/how-i-work/">
+              How I work
+            </a>
+          </div>
         </div>
-      </div>
-      <div class="portrait">
-        <img src="/img/person/ryan-laird.jpg" alt="Portrait of Ryan Laird" width="720" height="900" loading="eager" fetchpriority="high" decoding="async" />
+
+        <figure class="portrait">
+          <img
+            src="/img/person/ryan-laird.jpg"
+            alt="Portrait of Ryan Laird"
+            width="720"
+            height="900"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+          />
+        </figure>
       </div>
     </section>
 
     <section class="cred-strip" aria-label="Credentials">
-      <ul>
-        <li><strong>MPhys</strong> Astrophysics</li>
-        <li><strong>CMktr</strong> Chartered Marketer</li>
-        <li><strong>MInstP</strong> Institute of Physics</li>
-        <li><strong>MCIPR</strong> Chartered Institute of Public Relations</li>
-        <li><strong>Founder and Director</strong> Green Orbit Digital</li>
-      </ul>
-    </section>
-
-    <section class="home-block" aria-labelledby="what-i-do">
-      <h2 id="what-i-do">What I do</h2>
-      <p class="intro">Four connected strands of work. Pick the one that matches what you need.</p>
-      <div class="pathway-grid">
-        {pathways.map((p) => (
-          <article class="pathway" data-tone={p.tone}>
-            <h3>{p.title}</h3>
-            <p>{p.text}</p>
-            <p class="proof"><strong>Evidence:</strong> {p.proof}</p>
-            <a class="go" href={p.href}>{p.cta}</a>
-          </article>
-        ))}
+      <div class="wrap">
+        <ul>
+          <li><strong>MPhys</strong> Astrophysics</li>
+          <li><strong>CMktr</strong> Chartered Marketer</li>
+          <li><strong>MInstP</strong> Institute of Physics</li>
+          <li><strong>MCIPR</strong> Chartered Institute of Public Relations</li>
+          <li><strong>Founder and Director</strong> Impact Orbit Co.</li>
+        </ul>
       </div>
     </section>
 
-    <section class="home-block" aria-labelledby="selected-work">
-      <h2 id="selected-work">Selected work</h2>
-      <p class="intro">
-        A short selection across space communications, Earth observation and public engagement. Fuller case studies are
-        being added one at a time.
-      </p>
-      <div class="work-grid">
-        {resolved.map(({ entry, sector, year, role, outcome, collection }) => {
-          const summary = outcome || cleanText(entry.data.description);
-          const short = summary.length > 170 ? summary.slice(0, summary.lastIndexOf(" ", 167)) + "…" : summary;
-          const ready = isEvidenceReady(entry.data, entry.body ?? "");
-          return (
-            <a class="work-card" href={`/work/${collection}/${entry.data.slug ?? entry.id}/`}>
-              <h3>{entry.data.title}</h3>
-              <p class="meta">{[sector, entry.data.client, year].filter(Boolean).join(" · ")}</p>
-              {short && <p>{short}</p>}
-              {role && <p class="role"><strong>My role:</strong> {role}</p>}
-              {!ready && <p class="role">Full case study in preparation.</p>}
+<section class="section services" aria-labelledby="services-title">
+  <header class="section-header">
+    <div>
+      <p class="eyebrow">How I contribute</p>
+
+      <h2 id="services-title">
+        From complex work to useful progress.
+      </h2>
+    </div>
+
+    <p>
+      My work starts in different places: a difficult message, an underused
+      website, a question someone wants to understand or a conversation worth
+      bringing into the open. The routes below describe what I do when I am
+      asked to help.
+    </p>
+  </header>
+
+  <div class="service-stories">
+    {
+      pathways.map((pathway, index) => (
+        <article class="service-story" data-tone={pathway.tone}>
+          <div class="service-story__number" aria-hidden="true">
+            {String(index + 1).padStart(2, "0")}
+          </div>
+
+          <div class="service-story__title">
+            <p class="service-story__action">{pathway.action}</p>
+            <h3>{pathway.title}</h3>
+          </div>
+
+          <div class="service-story__content">
+            <p class="service-story__lead">{pathway.story}</p>
+
+            <ul class="service-story__outcomes">
+              {
+                pathway.outcomes.map((outcome) => (
+                  <li>{outcome}</li>
+                ))
+              }
+            </ul>
+
+            <p class="service-story__for">
+              <strong>For:</strong> {pathway.for}
+            </p>
+
+            <a class="text-link" href={pathway.href}>
+              {pathway.cta}
+              <span aria-hidden="true"> →</span>
             </a>
-          );
-        })}
-      </div>
-      <div class="cta-row">
-        <a href="/work/projects/" class="bo">All projects</a>
-      </div>
-    </section>
-
-    <section class="home-block" aria-labelledby="research-editorial">
-      <h2 id="research-writing">Research and editorial</h2>
-      <p class="intro">Formal publications, public writing and independent analysis, kept clearly separate.</p>
-      {latest && (
-        <p class="prose" style="margin-top:1.5rem">
-          Latest: <a href={`/blog/${latest.data.slug ?? latest.id}/`}>{latest.data.title}</a>
-        </p>
-      )}
-      <div class="cta-row">
-        <a href="/research/" class="bo">Research</a>
-        <a href="/work/editorial/" class="bo">Writing</a>
-      </div>
-    </section>
-
-    <section class="home-block" aria-labelledby="teach-mentor">
-      <h2 id="teach-mentor">Teaching, mentoring and public engagement</h2>
-      <p class="intro">
-        If you want to understand a subject, change direction, or bring a speaker or workshop to your group, start here.
-      </p>
-      <div class="split">
-        <article class="route" data-tone="violet">
-          <h3>Mentoring</h3>
-          <p>One-to-one conversations for early- and mid-career people in space, sustainability, science communication and mission-led digital work.</p>
-          <a class="go" href="/mentoring/">How mentoring works</a>
+          </div>
         </article>
-        <article class="route" data-tone="violet">
-          <h3>Tutoring, talks and workshops</h3>
-          <p>Physics and astronomy tutoring, guest lectures, and workshops on communicating complex topics, for schools, universities, charities and teams.</p>
-          <a class="go" href="/teaching/">Teaching, tutoring and workshops</a>
-        </article>
-      </div>
-    </section>
-
-    <section class="home-block" aria-labelledby="green-orbit">
-      <h2 id="green-orbit">Green Orbit Digital</h2>
-      <p class="prose">
-        I am also Founder and Director of Green Orbit Digital, a specialist communications practice for space,
-        sustainability and mission-led organisations. Organisation-level projects are delivered through
-        <a href="https://greenorbit.space">Green Orbit Digital</a>; this site is where I write, teach, mentor and share research.
-      </p>
-    </section>
-
-    <section class="route-cta" aria-labelledby="next-step">
-      <h2 id="next-step">Where would you like to start?</h2>
-      <p class="intro">Choose the closest match and I’ll reply with the right next step.</p>
-      <div class="options">
-        {enquiries.types.map((t) => (
-          <a href={`/contact/#${t.id}`}>{t.label}<span>{t.hint}</span></a>
-        ))}
-      </div>
-    </section>
-    <div class="home-end"></div>
+      ))
+    }
   </div>
+
+  <p class="section-action">
+    <a class="button button--secondary" href="/services/">
+      View all services
+    </a>
+  </p>
+</section>
+
+
+    <section
+      class="home-block home-block--bordered"
+      aria-labelledby="selected-work-title"
+    >
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Selected work</p>
+            <h2 id="selected-work-title">
+              Work across science, space and public interest.
+            </h2>
+          </div>
+
+          <p>
+            A selection of projects spanning communication, Earth observation,
+            sustainability, digital work and public engagement.
+          </p>
+        </div>
+
+        <div class="work-grid">
+          {
+            selectedWork.map(
+              ({ entry, sector, year, role, outcome, collection }) => {
+                const summary = outcome || cleanText(entry.data.description);
+                const shortSummary =
+                  summary.length > 170
+                    ? `${summary.slice(0, summary.lastIndexOf(" ", 167))}…`
+                    : summary;
+
+                const ready = isEvidenceReady(entry.data, entry.body ?? "");
+                const slug = entry.data.slug ?? entry.id;
+                const metadata = [sector, entry.data.client, year]
+                  .filter(Boolean)
+                  .join(" · ");
+
+                return (
+                  <a
+                    class="work-card"
+                    href={`/work/${collection}/${slug}/`}
+                  >
+                    {metadata && (
+                      <p class="work-card__meta">{metadata}</p>
+                    )}
+
+                    <h3>{entry.data.title}</h3>
+
+                    {shortSummary && <p>{shortSummary}</p>}
+
+                    {role && (
+                      <p class="work-card__role">
+                        <strong>My role:</strong> {role}
+                      </p>
+                    )}
+
+                    {!ready && (
+                      <p class="work-card__status">
+                        Expanded case study in preparation.
+                      </p>
+                    )}
+
+                    <span class="work-card__link">
+                      View project <span aria-hidden="true">→</span>
+                    </span>
+                  </a>
+                );
+              },
+            )
+          }
+        </div>
+
+        <div class="section-actions">
+          <a class="button button--secondary" href="/work/projects/">
+            View all projects
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-block" aria-labelledby="research-writing-title">
+      <div class="wrap feature-grid">
+        <div>
+          <p class="eyebrow">Research and writing</p>
+          <h2 id="research-writing-title">
+            Evidence, explanation and informed perspective.
+          </h2>
+        </div>
+
+        <div class="feature-grid__content">
+          <p>
+            I write and contribute to research on astrophysics, Earth
+            observation, space sustainability, climate and how science reaches
+            the public.
+          </p>
+
+          {
+            latestPost && (
+              <p class="latest-post">
+                <span>Latest writing</span>
+                <a href={`/blog/${latestPost.data.slug ?? latestPost.id}/`}>
+                  {latestPost.data.title}
+                </a>
+              </p>
+            )
+          }
+
+          <div class="cta-row">
+            <a class="button button--secondary" href="/research/">
+              Explore research
+            </a>
+
+            <a class="button button--secondary" href="/work/editorial/">
+              Read writing and commentary
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section
+      class="home-block home-block--bordered"
+      aria-labelledby="learning-title"
+    >
+      <div class="wrap">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Learning and engagement</p>
+            <h2 id="learning-title">
+              Build understanding, confidence and direction.
+            </h2>
+          </div>
+
+          <p>
+            Support for people and groups who want to understand a subject more
+            deeply, communicate more effectively or think through a useful next
+            step.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="route" data-tone="violet">
+            <p class="card-eyebrow">One-to-one support</p>
+
+            <h3>Mentoring</h3>
+
+            <p>
+              Structured conversations for early- and mid-career professionals,
+              career changers and people exploring space, sustainability,
+              science communication or mission-led digital work.
+            </p>
+
+            <a class="go" href="/mentoring/">
+              How mentoring works
+              <span aria-hidden="true"> →</span>
+            </a>
+          </article>
+
+          <article class="route" data-tone="violet">
+            <p class="card-eyebrow">For groups and events</p>
+
+            <h3>Teaching, workshops and talks</h3>
+
+            <p>
+              Physics and astronomy tuition, guest teaching, workshops and
+              public talks for schools, universities, charities, professional
+              teams and wider communities.
+            </p>
+
+            <a class="go" href="/teaching/">
+              Explore teaching and workshops
+              <span aria-hidden="true"> →</span>
+            </a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="impact-orbit" aria-labelledby="impact-orbit-title">
+      <div class="wrap feature-grid">
+        <div>
+          <p class="eyebrow">Organisation-level projects</p>
+          <h2 id="impact-orbit-title">Impact Orbit Co.</h2>
+        </div>
+
+        <div class="feature-grid__content">
+          <p>
+            Larger organisation-level projects in strategic communication and
+            digital strategy and systems are delivered through Impact Orbit Co.
+          </p>
+
+          <p>
+            This site is the home of my personal practice: research, writing,
+            teaching, mentoring, speaking and selected collaborations.
+          </p>
+
+          <a
+            class="button button--secondary"
+            href="https://impactorbit.co/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Visit Impact Orbit Co.
+            <span class="sr-only">, opens in a new tab</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="route-cta" aria-labelledby="next-step-title">
+      <div class="wrap">
+        <p class="eyebrow">Not sure where to start?</p>
+
+        <h2 id="next-step-title">Tell me what you are trying to do.</h2>
+
+        <p class="intro">
+          Choose the closest option and describe what you have in mind. If a
+          different route, collaborator or Impact Orbit Co. is a better fit, I
+          will say so.
+        </p>
+
+        <div class="options">
+          {
+            enquiries.types.map((type) => (
+              <a href={`/contact/#${type.id}`}>
+                <strong>{type.label}</strong>
+                <span>{type.hint}</span>
+                <span aria-hidden="true">→</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </main>
 </Layout>
+
+<style>
+  .home {
+    overflow: hidden;
+  }
+
+  .home-hero {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(4.5rem, 10vw, 8rem);
+  }
+
+  .home-hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.65fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    align-items: end;
+  }
+
+  .eyebrow,
+  .card-eyebrow {
+    margin: 0;
+    color: var(--teal);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .home h1,
+  .home h2 {
+    margin: 0.75rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+
+  .home h1 {
+    max-width: 57rem;
+    font-size: clamp(3.3rem, 7.5vw, 7.5rem);
+  }
+
+  .home h2 {
+    max-width: 37rem;
+    font-size: clamp(2.25rem, 4.8vw, 4.6rem);
+  }
+
+  .lead {
+    max-width: 43rem;
+    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    color: var(--w);
+    font-size: clamp(1.18rem, 2vw, 1.5rem);
+    line-height: 1.55;
+  }
+
+  .support,
+  .location {
+    max-width: 39rem;
+    margin: 1rem 0 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .location {
+    color: var(--m);
+    font-size: 0.9rem;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 1.75rem;
+  }
+
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.9rem;
+    padding: 0.85rem 1.1rem;
+    border: 1px solid transparent;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .button--primary {
+    border-color: var(--teal);
+    color: var(--bg);
+    background: var(--teal);
+  }
+
+  .button--primary:hover,
+  .button--primary:focus-visible {
+    border-color: var(--w);
+    color: var(--bg);
+    background: var(--w);
+  }
+
+  .button--secondary {
+    border-color: var(--bd);
+    color: var(--w);
+    background: transparent;
+  }
+
+  .button--secondary:hover,
+  .button--secondary:focus-visible {
+    border-color: var(--teal);
+    color: var(--teal);
+  }
+
+  .portrait {
+    max-width: 25rem;
+    margin: 0 0 0 auto;
+    overflow: hidden;
+    background: var(--lift);
+  }
+
+  .portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .cred-strip {
+    border-block: 1px solid var(--bd);
+  }
+
+  .cred-strip ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    padding: 1.1rem 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .cred-strip li {
+    color: var(--m);
+    font-size: 0.82rem;
+    line-height: 1.5;
+  }
+
+  .cred-strip strong {
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  .home-block,
+  .impact-orbit,
+  .route-cta {
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .home-block--bordered,
+  .impact-orbit,
+  .route-cta {
+    border-top: 1px solid var(--bd);
+  }
+
+  .section-heading,
+  .feature-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.58fr);
+    gap: clamp(2rem, 8vw, 8rem);
+    align-items: end;
+  }
+
+  .section-heading {
+    padding-bottom: clamp(2rem, 4vw, 3.5rem);
+  }
+
+  .section-heading > p,
+  .feature-grid__content > p,
+  .intro {
+    max-width: 30rem;
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .pathway-grid,
+  .work-grid,
+  .split {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 1px solid var(--bd);
+    border-left: 1px solid var(--bd);
+  }
+
+  .pathway,
+  .work-card,
+  .route {
+    display: flex;
+    flex-direction: column;
+    min-height: 17rem;
+    padding: clamp(1.5rem, 3vw, 2.25rem);
+    border-right: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .pathway[data-tone="teal"] {
+    --accent: var(--teal);
+  }
+
+  .pathway[data-tone="sky"] {
+    --accent: var(--sky, var(--teal));
+  }
+
+  .pathway[data-tone="violet"],
+  .route[data-tone="violet"] {
+    --accent: var(--violet, var(--teal));
+  }
+
+  .pathway[data-tone="amber"] {
+    --accent: var(--amber, var(--teal));
+  }
+
+  .pathway {
+    box-shadow: inset 0 3px 0 transparent;
+    transition:
+      background 0.2s ease,
+      box-shadow 0.2s ease;
+  }
+
+  .pathway:hover {
+    background: var(--lift);
+    box-shadow: inset 0 3px 0 var(--accent);
+  }
+
+  .pathway .card-eyebrow,
+  .route .card-eyebrow {
+    color: var(--accent, var(--teal));
+  }
+
+  .pathway h3,
+  .work-card h3,
+  .route h3 {
+    margin: 0.8rem 0 0;
+    color: var(--w);
+    font-size: clamp(1.2rem, 2vw, 1.55rem);
+    line-height: 1.25;
+  }
+
+  .pathway > p:not(.card-eyebrow),
+  .work-card > p,
+  .route > p:not(.card-eyebrow) {
+    margin: 0.75rem 0 0;
+    color: var(--mb);
+    font-size: 0.96rem;
+    line-height: 1.7;
+  }
+
+  .pathway__for {
+    margin-top: auto !important;
+    padding-top: 1.5rem;
+    color: var(--m) !important;
+    font-size: 0.84rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .pathway__for strong {
+    color: var(--w);
+  }
+
+  .go,
+  .work-card__link {
+    display: inline-flex;
+    width: fit-content;
+    margin-top: 1.25rem;
+    color: var(--w);
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration-color: var(--teal);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .go:hover,
+  .go:focus-visible,
+  .work-card:hover .work-card__link,
+  .work-card:focus-visible .work-card__link {
+    color: var(--teal);
+  }
+
+  .section-actions {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .work-card {
+    min-height: 18rem;
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .work-card:hover,
+  .work-card:focus-visible {
+    background: var(--lift);
+  }
+
+  .work-card__meta {
+    margin: 0 !important;
+    color: var(--teal) !important;
+    font-size: 0.76rem !important;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    line-height: 1.4 !important;
+    text-transform: uppercase;
+  }
+
+  .work-card__role,
+  .work-card__status {
+    color: var(--m) !important;
+    font-size: 0.84rem !important;
+  }
+
+  .work-card__role strong {
+    color: var(--w);
+  }
+
+  .work-card__link {
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+
+  .feature-grid {
+    align-items: start;
+  }
+
+  .feature-grid__content {
+    max-width: 39rem;
+  }
+
+  .feature-grid__content > p + p {
+    margin-top: 1.15rem;
+  }
+
+  .latest-post {
+    display: grid;
+    gap: 0.35rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .latest-post span {
+    color: var(--m);
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .latest-post a {
+    width: fit-content;
+    color: var(--w);
+    font-size: 1.06rem;
+    font-weight: 700;
+    line-height: 1.45;
+    text-decoration-color: var(--teal);
+    text-underline-offset: 0.25em;
+  }
+
+  .latest-post a:hover,
+  .latest-post a:focus-visible {
+    color: var(--teal);
+  }
+
+  .route {
+    min-height: 15rem;
+  }
+
+  .route[data-tone="violet"] {
+    box-shadow: inset 0 3px 0 var(--violet, var(--teal));
+  }
+
+  .route .go {
+    margin-top: auto;
+    padding-top: 1.5rem;
+  }
+
+  .impact-orbit {
+    background: var(--lift);
+  }
+
+  .impact-orbit .button {
+    margin-top: 1.75rem;
+  }
+
+  .route-cta .intro {
+    max-width: 39rem;
+    margin-top: 1.25rem;
+  }
+
+  .options {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    margin-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--bd);
+    border-left: 1px solid var(--bd);
+  }
+
+  .options a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.35rem 1rem;
+    min-height: 8.75rem;
+    padding: 1.35rem;
+    border-right: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+    color: var(--w);
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .options a:hover,
+  .options a:focus-visible {
+    background: var(--lift);
+  }
+
+  .options strong {
+    font-size: 1rem;
+    line-height: 1.4;
+  }
+
+  .options span:first-of-type {
+    grid-column: 1;
+    color: var(--mb);
+    font-size: 0.88rem;
+    line-height: 1.55;
+  }
+
+  .options span:last-child {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: var(--teal);
+    font-size: 1.25rem;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 4px;
+  }
+
+  @media (max-width: 850px) {
+    .home-hero__grid,
+    .section-heading,
+    .feature-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .portrait {
+      max-width: 22rem;
+      margin: 0;
+    }
+
+    .section-heading {
+      gap: 1.5rem;
+    }
+  }
+
+.service-stories {
+  border-top: 1px solid var(--bd);
+}
+
+.service-story {
+  display: grid;
+  grid-template-columns: minmax(3rem, 0.12fr) minmax(13rem, 0.5fr) minmax(
+      18rem,
+      0.75fr
+    );
+  gap: clamp(1.25rem, 4vw, 5rem);
+  padding-block: clamp(2rem, 4vw, 3.5rem);
+  border-bottom: 1px solid var(--bd);
+}
+
+.service-story[data-tone="teal"] {
+  --accent: var(--teal);
+}
+
+.service-story[data-tone="sky"] {
+  --accent: var(--sky, var(--teal));
+}
+
+.service-story[data-tone="violet"] {
+  --accent: var(--violet, var(--teal));
+}
+
+.service-story[data-tone="amber"] {
+  --accent: var(--amber, var(--teal));
+}
+
+.service-story__number {
+  color: var(--accent);
+  font-family: var(--font-mono, inherit);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+}
+
+.service-story__action {
+  margin: 0;
+  color: var(--accent);
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+.service-story h3 {
+  margin: 0.35rem 0 0;
+  color: var(--w);
+  font-family: var(--font-display);
+  font-size: clamp(1.55rem, 3vw, 2.6rem);
+  font-weight: 400;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+}
+
+.service-story__content {
+  max-width: 42rem;
+}
+
+.service-story__lead {
+  margin: 0;
+  color: var(--w);
+  font-size: 1.02rem;
+  line-height: 1.75;
+}
+
+.service-story__outcomes {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  list-style: none;
+}
+
+.service-story__outcomes li {
+  color: var(--mb);
+  font-size: 0.94rem;
+  line-height: 1.55;
+}
+
+.service-story__outcomes li::before {
+  margin-right: 0.65rem;
+  color: var(--accent);
+  content: "—";
+}
+
+.service-story__for {
+  margin: 1.4rem 0 0;
+  color: var(--m);
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.service-story__for strong {
+  color: var(--w);
+}
+
+.service-story .text-link {
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 850px) {
+  .service-story {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: 1rem 1.5rem;
+  }
+
+  .service-story__content {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 560px) {
+  .service-story {
+    grid-template-columns: 1fr;
+    gap: 0.8rem;
+  }
+
+  .service-story__content {
+    grid-column: auto;
+  }
+
+  .service-story__number {
+    margin-bottom: 0.5rem;
+  }
+}
+
+</style>

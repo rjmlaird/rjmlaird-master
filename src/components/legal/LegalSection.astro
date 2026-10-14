@@ -1,0 +1,17 @@
+---
+import type { NoticeSection } from "../../lib/notice";
+
+interface Props {
+  section: Pick<NoticeSection, "id" | "label">;
+  /** Override the heading when it should differ from the nav label. */
+  title?: string;
+}
+
+const { section, title = section.label } = Astro.props;
+const headingId = `${section.id}-heading`;
+---
+
+<section id={section.id} aria-labelledby={headingId}>
+  <h2 id={headingId}>{title}</h2>
+  <slot />
+</section>

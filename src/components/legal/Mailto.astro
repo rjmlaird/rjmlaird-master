@@ -1,0 +1,11 @@
+---
+interface Props {
+  email: string;
+  subject?: string;
+}
+
+const { email, subject } = Astro.props;
+const href = `mailto:${email}${subject ? `?subject=${encodeURIComponent(subject)}` : ""}`;
+---
+
+<a href={href}><slot>{email}</slot></a>

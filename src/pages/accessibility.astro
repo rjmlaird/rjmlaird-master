@@ -1,0 +1,545 @@
+---
+import LegalNoticeLayout from "../layouts/LegalNotice.astro";
+import DataTable from "../components/legal/DataTable.astro";
+import DefinitionItem from "../components/legal/DefinitionItem.astro";
+import DefinitionList from "../components/legal/DefinitionList.astro";
+import ContactBlock from "../components/legal/ContactBlock.astro";
+import ItemList from "../components/legal/ItemList.astro";
+import LegalSection from "../components/legal/LegalSection.astro";
+import { siteLegal } from "../data/legal";
+import { defineSections } from "../lib/notice";
+
+const created = "2026-10-14";
+const lastReviewed = "2026-10-14";
+const lastUpdated = lastReviewed;
+
+const s = defineSections({
+  commitment: "Our commitment",
+  scope: "Scope and third-party content",
+  conformance: "Conformance status",
+  measures: "Measures supporting accessibility",
+  features: "Accessibility features",
+  "keyboard-and-assistive-technology": "Keyboard and assistive technology support",
+  "known-limitations": "Known limitations",
+  "content-formats": "Content and formats",
+  feedback: "Feedback and contact",
+  technical: "Technical information",
+  assessment: "Assessment approach",
+  enforcement: "Escalating a concern",
+  changes: "Changes to this statement",
+});
+
+const limitationColumns = [
+  { key: "area", label: "Area", width: "15%" },
+  { key: "limitation", label: "Potential limitation", width: "30%" },
+  { key: "alternative", label: "Alternative or support", width: "30%" },
+  { key: "action", label: "Planned action", width: "25%" },
+];
+
+const knownLimitations = [
+  {
+    area: "Older content",
+    limitation:
+      "Some older articles, images, embedded media or archived project pages may not have complete or sufficiently descriptive alternative text, or meet the same standard as newer content.",
+    alternative:
+      "Contact me to request a plain-text summary, an image description or specific information from the page.",
+    action:
+      "Review significant archived content when it is updated, promoted or requested.",
+  },
+  {
+    area: "Diagrams, charts and maps",
+    limitation:
+      "Project and research material may include complex diagrams, charts, maps, astronomy imagery or technical terminology that is difficult to represent in a short text alternative.",
+    alternative:
+      "Request a written explanation, data table, longer description or alternative format.",
+    action:
+      "Add explanatory text, captions, summaries and data alternatives where practical and useful.",
+  },
+  {
+    area: "Audio and video",
+    limitation:
+      "Some media may not yet have captions, transcripts or equivalent text alternatives.",
+    alternative:
+      "Request a transcript, summary or alternative route to the information.",
+    action:
+      "Add captions and transcripts to frequently used media as it is published or updated.",
+  },
+  {
+    area: "Third-party services",
+    limitation:
+      "Booking, payment, video, social-media, map, form or newsletter tools are controlled by third parties and may not meet the same accessibility standard.",
+    alternative:
+      "Contact me for another way to enquire, book, receive information or complete the task.",
+    action:
+      "Prefer accessible providers where practical and review embedded tools when alternatives exist.",
+  },
+  {
+    area: "Documents and downloads",
+    limitation:
+      "Some documents, downloadable files or externally hosted resources, particularly older PDFs, slides and spreadsheets, may not be fully accessible.",
+    alternative:
+      "Request the information in HTML, plain text, an accessible document format or another reasonable format.",
+    action:
+      "Review frequently used downloads and provide accessible alternatives where practical.",
+  },
+  {
+    area: "Experimental tools and lab projects",
+    limitation:
+      "Experimental tools, apps or lab projects may be under development and may have known interaction or compatibility limitations.",
+    alternative:
+      "Contact me for the underlying information or results in another format.",
+    action:
+      "Record known issues and fix them according to impact and technical feasibility.",
+  },
+  {
+    area: "Assistive technology coverage",
+    limitation:
+      "Some pages may not yet have been manually tested with every major screen reader and browser combination.",
+    alternative:
+      "Report the problem, including your browser, device and assistive technology, and I will work with you to find another route.",
+    action:
+      "Extend manual testing across the combinations listed in the assessment approach.",
+  },
+];
+---
+
+<LegalNoticeLayout
+  title="Accessibility statement"
+  description="Accessibility information for rjmlaird.co.uk, including conformance status, known limitations and how to request support."
+  eyebrow="Accessibility"
+  lead="I aim to make this website usable by as many people as possible, including people who use assistive technologies, navigate by keyboard, use magnification or require reduced motion."
+  lastUpdated={lastUpdated}
+  sections={s.list}
+  related={["privacy", "cookies", "terms", "contact"]}
+>
+  <Fragment slot="summary">
+    <p>
+      This website is partially conformant with WCAG 2.2 Level AA. Some content
+      and third-party services have known limitations, listed below. If you
+      meet a barrier, contact me and I will work to provide the information in
+      a format you can use.
+    </p>
+  </Fragment>
+
+  <LegalSection section={s.by.commitment}>
+    <p>
+      I aim to make this website usable by as many people as possible,
+      including people who use assistive technologies, navigate by keyboard,
+      use magnification or require reduced motion. This includes people who are
+      disabled or neurodivergent, have temporary impairments, or use different
+      devices and browsers.
+    </p>
+
+    <p>
+      I am continually improving the accessibility of this site and consider
+      accessibility throughout content, design and development work. This
+      includes using semantic HTML, clear language, accessible interaction
+      patterns and testing with a combination of automated and manual methods.
+    </p>
+
+    <p>
+      If something does not work for you, or you need information in another
+      format, please get in touch using the <a href={s.by.feedback.href}>feedback and contact</a> details.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.scope}>
+    <p>
+      This statement covers the content and interface controlled by {siteLegal.controllerName}
+      on <a href={siteLegal.siteUrl}>{siteLegal.siteUrl}</a>, including public
+      pages, articles, project pages, resources, contact routes and legal
+      notices published within it. Separate websites, applications and
+      subdomains may have their own accessibility statements.
+    </p>
+
+    <p>It does not automatically cover:</p>
+
+    <ItemList
+      items={[
+        "External websites.",
+        "Third-party booking or payment services.",
+        "Embedded media platforms.",
+        "External documents.",
+        "Linked applications.",
+        "Other subdomains or separate digital products.",
+        "Client, partner or publisher websites.",
+      ]}
+    />
+
+    <p>
+      The booking portal at <a href={siteLegal.bookingUrl}>{siteLegal.bookingUrl}</a> is a separate service and may have its
+      own accessibility information. Those services may have their own
+      statements and support arrangements. Where I control a linked subdomain
+      or application, I will aim to publish a separate statement or clearly
+      identify its accessibility status. If a third-party service is creating a
+      barrier to accessing my work or making an enquiry, contact me and I will
+      try to offer a suitable alternative route.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.conformance}>
+    <p>
+      The Web Content Accessibility Guidelines (WCAG) define requirements for
+      improving the accessibility of web content. WCAG 2.2 defines three
+      conformance levels: A, AA and AAA.
+    </p>
+
+    <p>
+      <strong>This website is partially conformant with WCAG 2.2 Level AA.</strong>
+    </p>
+
+    <p>
+      Partially conformant means that some parts of the website may not fully
+      conform to the applicable accessibility standard. This status reflects
+      the current state of testing and does not mean that every page or
+      interaction has been assessed comprehensively.
+    </p>
+
+    <p>
+      I will update this statement when significant changes are made, when new
+      testing identifies an issue or when known issues have been resolved. A
+      conformance claim should reflect recent testing and should identify known
+      limitations clearly.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.measures}>
+    <p>I take the following measures to support accessibility:</p>
+
+    <ItemList
+      items={[
+        "Include accessibility requirements in planning, design and development.",
+        "Use semantic HTML and meaningful document structure.",
+        "Review accessibility during code review and content review.",
+        "Test keyboard navigation and visible focus states.",
+        "Test interactive components with assistive technologies where practical.",
+        "Use automated testing to identify potential accessibility issues.",
+        "Track known issues and improvements in the relevant project repository.",
+        "Welcome accessibility feedback and use it to improve the site.",
+        "Consider accessibility when selecting third-party services, embeds and media.",
+      ]}
+    />
+
+    <p>
+      Accessibility is an ongoing responsibility rather than a one-time
+      compliance exercise. Automated tools can identify some problems, but they
+      cannot determine whether every interaction, explanation or piece of
+      content works well for every person. I also aim to use clear language,
+      explain specialist terms where useful and structure long content into
+      manageable sections.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.features}>
+    <p>
+      The website is designed to include the following features where relevant:
+    </p>
+
+    <ItemList
+      items={[
+        "A skip link to bypass repeated navigation and move directly to the main content.",
+        "Semantic HTML elements, including header, nav, main, section and footer.",
+        "A logical heading hierarchy.",
+        "Descriptive page titles and link text.",
+        "Keyboard access to interactive elements.",
+        "Visible focus indicators.",
+        "Appropriate landmark regions for assistive technology navigation.",
+        "Responsive layouts for different screen sizes and orientations.",
+        "Support for user preferences such as reduced motion where applicable.",
+        "Text alternatives for informative images.",
+        "Decorative images marked so they are not unnecessarily announced.",
+        "Accessible labels and descriptions for form controls.",
+        "Clear identification of form errors and required fields.",
+        "Appropriate language attributes to support pronunciation.",
+        "Accessible colour contrast for text and essential interface elements.",
+        "Content that remains usable when text is enlarged.",
+        "Accessible handling of menus, disclosures, tabs and other interactive components where present.",
+        "Screen-reader labels for controls whose purpose is not clear from visible text.",
+        "Links to transcripts, captions or alternative formats where those are available.",
+      ]}
+    />
+
+    <p>
+      Not every feature is present on every page. Some content may depend on
+      third-party services or embedded technologies whose accessibility I
+      cannot fully control.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["keyboard-and-assistive-technology"]}>
+    <p>
+      The website is intended to support keyboard-only navigation without
+      requiring a mouse or other pointing device, and to work with current
+      mainstream browsers and assistive technologies such as screen readers,
+      screen magnifiers, browser zoom, reading tools and voice-control
+      software.
+    </p>
+
+    <p>Where interactive components are used, I aim to provide:</p>
+
+    <ItemList
+      items={[
+        "Logical focus order.",
+        "Visible focus styles.",
+        "Keyboard-operable controls.",
+        "Appropriate names, roles and states.",
+        "Sensible focus management when menus, dialogs or other temporary interfaces open and close.",
+        "Escape-key support where it is appropriate for dismissible interfaces.",
+      ]}
+    />
+
+    <p>
+      Support may vary according to the browser, operating system, assistive
+      technology and device being used. The website does not require JavaScript
+      for basic page reading and navigation wherever that can reasonably be
+      avoided, although some enhanced interactions may depend on JavaScript.
+    </p>
+
+    <p>
+      If you experience a problem with a particular browser, device or
+      assistive technology, please include those details when reporting it.
+      This makes the problem easier to reproduce.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["known-limitations"]}>
+    <p>
+      I am aware that accessibility can vary across pages, content types and
+      third-party services. Where a barrier is known, I aim to describe it,
+      explain the impact and provide an alternative where possible. If you
+      encounter a barrier that is not listed here, please contact me so that I
+      can investigate it.
+    </p>
+
+    <DataTable
+      caption="Known limitations"
+      columns={limitationColumns}
+      rows={knownLimitations}
+      minWidth="66rem"
+    />
+
+    <p>
+      Known issues may also be recorded in the relevant public project
+      repository, where that is appropriate and does not expose private or
+      security-sensitive information.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by["content-formats"]}>
+    <p>
+      If you cannot access something on this website because of its format,
+      content, design or technical implementation, you can ask for help or an
+      alternative version. Depending on the material, I may be able to
+      provide:
+    </p>
+
+    <ItemList
+      items={[
+        "A plain-text or HTML version of information.",
+        "A text-only summary of a page, article, image, diagram or chart.",
+        "A larger-print, higher-contrast or simplified version of content.",
+        "A structured text version of a downloadable document.",
+        "A data table or written explanation for a chart or visualisation.",
+        "A transcript, summary or alternative route for audio or video content.",
+        "An alternative way to make an enquiry, arrange a conversation or access a service.",
+      ]}
+    />
+
+    <p>
+      Please describe what you are trying to access and the format that would
+      be most useful. This helps me respond more effectively.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.feedback}>
+    <p>I welcome feedback about the accessibility of this website.</p>
+
+    <p>Please contact me if:</p>
+
+    <ItemList
+      items={[
+        "You cannot access information or functionality.",
+        "A page is difficult to navigate using a keyboard or assistive technology.",
+        "An image, video, document or chart does not have a suitable alternative.",
+        "A form produces an unclear or inaccessible error.",
+        "You need information in an alternative format.",
+        "You have a suggestion for improving accessibility.",
+      ]}
+    />
+
+    <h3>How to contact me</h3>
+
+    <ContactBlock name={siteLegal.controllerName} email={siteLegal.contactEmail} />
+
+    <p>
+      TODO: Add the GitHub repository or accessibility issue page link, and a
+      phone number or contact form if you can offer one. W3C recommends more
+      than one feedback route where possible.
+    </p>
+
+    <h3>What to include</h3>
+
+    <p>When reporting a problem, it is helpful to include:</p>
+
+    <ItemList
+      items={[
+        "The page URL.",
+        "A description of the barrier.",
+        "The device, browser or assistive technology being used, if known.",
+        "Any steps needed to reproduce the problem.",
+        "The format or support that would help you access the information.",
+      ]}
+    />
+
+    <h3>Response time</h3>
+
+    <p>
+      I will acknowledge accessibility feedback within
+      <strong> TODO: insert number</strong> business days where possible and
+      will aim to provide an initial response or practical alternative within
+      <strong> TODO: insert number</strong> business days.
+    </p>
+
+    <p>
+      Some requests may take longer where the content is complex, supplied by a
+      third party, requires specialist conversion or needs to be recreated. If
+      so, I will explain the next step and expected timescale.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.technical}>
+    <p>
+      The accessibility of this website relies on the following technologies:
+    </p>
+
+    <ItemList
+      items={[
+        "HTML.",
+        "CSS.",
+        "JavaScript, where needed for enhanced interactions.",
+        "WAI-ARIA, used only where native HTML does not provide the required semantics.",
+        "SVG, images, audio, video and other media formats where used.",
+        "Modern web browsers and assistive technologies.",
+      ]}
+    />
+
+    <p>
+      The site is built with Astro. The technology used to generate a page does
+      not itself guarantee accessibility; the accessibility of the resulting
+      content and interface is what matters.
+    </p>
+
+    <p>
+      WCAG conformance depends on using technologies in an
+      accessibility-supported way, and on making information or functionality
+      available through an accessible method where a particular technology is
+      not accessible.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.assessment}>
+    <p>I assess accessibility through a combination of:</p>
+
+    <ItemList
+      items={[
+        "Self-evaluation by the site maintainer.",
+        "Automated testing with tools such as axe, Lighthouse and WAVE.",
+        "Keyboard-only navigation.",
+        "Browser zoom and text enlargement checks.",
+        "Responsive testing across different viewport sizes.",
+        "Manual inspection of headings, landmarks, labels, links and focus order.",
+        "Screen-reader testing with tools such as VoiceOver, NVDA or other available assistive technologies.",
+        "Review of colour contrast and non-text contrast.",
+        "Testing of forms, menus, dialogs, tabs and other interactive components.",
+        "Community feedback and accessibility audits where available.",
+      ]}
+    />
+
+    <p>
+      Automated testing is used as an aid rather than as proof of full
+      accessibility. W3C recommends that an accessibility statement include
+      practical information about known limitations, testing environments and
+      the ways accessibility has been assessed.
+    </p>
+
+    <DefinitionList>
+      <DefinitionItem term="Assessed by">
+        Self-assessment by {siteLegal.controllerName}
+      </DefinitionItem>
+      <DefinitionItem term="Last tested">
+        TODO: Insert the date of your most recent hands-on testing.
+      </DefinitionItem>
+      <DefinitionItem term="Tested combinations">
+        TODO: List the browser and assistive-technology combinations you have
+        actually checked, for example NVDA with Firefox or VoiceOver with
+        Safari.
+      </DefinitionItem>
+    </DefinitionList>
+  </LegalSection>
+
+  <LegalSection section={s.by.enforcement}>
+    <p>
+      This is an independent professional website and is not presented as a
+      public-sector website or mobile application for the purposes of the
+      Public Sector Bodies (Websites and Mobile Applications) (No. 2)
+      Accessibility Regulations 2018.
+    </p>
+
+    <p>
+      If you have raised an accessibility concern and do not believe it has
+      been addressed appropriately, please contact me again with the details
+      and the support you need. I will review the matter and try to find a
+      reasonable solution.
+    </p>
+
+    <p>
+      You may also wish to seek independent advice about your rights under
+      applicable equality, consumer, education or other relevant law. This
+      statement does not limit any rights you may have under law.
+    </p>
+  </LegalSection>
+
+  <LegalSection section={s.by.changes}>
+    <p>I may update this statement when:</p>
+
+    <ItemList
+      items={[
+        "The website or its technology changes.",
+        "New accessibility testing is completed.",
+        "A known limitation is resolved.",
+        "A significant new feature or content type is published.",
+        "Feedback identifies a material accessibility issue.",
+      ]}
+    />
+
+    <DefinitionList>
+      <DefinitionItem term="Statement created">
+        <time datetime={created}>14 October 2026</time>
+      </DefinitionItem>
+      <DefinitionItem term="Last reviewed">
+        <time datetime={lastReviewed}>14 October 2026</time>
+      </DefinitionItem>
+      <DefinitionItem term="Next review">
+        TODO: Insert a planned review date. Review at least annually, and
+        sooner after major design, platform or functionality changes.
+      </DefinitionItem>
+    </DefinitionList>
+  </LegalSection>
+
+  <Fragment slot="draft-note">
+    <p>
+      <strong>Before publishing:</strong> replace every TODO, then check each
+      claim against the live site. In particular confirm that the skip link,
+      reduced-motion support, form error handling, language attributes and
+      “no JavaScript needed for basic reading” statements are true, and that
+      you have run the automated and screen-reader checks listed under
+      assessment. Remove any limitation row that does not apply. Do not claim
+      more than “partially conformant” without a documented full assessment.
+      Also remove leftover template material if you copied from the Accessible
+      Astro theme: “Template notice”, “Get this theme on GitHub”, “Use this
+      theme”, the generic footer, theme project links and the sample
+      astronaut image credit. Link this statement from the footer of every
+      page.
+    </p>
+  </Fragment>
+</LegalNoticeLayout>

@@ -1,0 +1,22 @@
+---
+import { legalLinks, type LegalLinkKey } from "../../data/legal";
+
+interface Props {
+  keys: LegalLinkKey[];
+  lead?: string;
+}
+
+const { keys, lead = "It should be read alongside the" } = Astro.props;
+---
+
+<p>
+  {lead}
+  {
+    keys.map((key, i) => (
+      <>
+        {i > 0 && (i === keys.length - 1 ? " and " : ", ")}
+        <a href={legalLinks[key].href}>{legalLinks[key].label.toLowerCase()}</a>
+      </>
+    ))
+  }.
+</p>

@@ -1,0 +1,36 @@
+---
+import Mailto from "./Mailto.astro";
+
+interface Props {
+  email: string;
+  /** Shown above the email, e.g. the controller's name. */
+  name?: string;
+  /** Prefix before the address. Pass "" to omit. */
+  label?: string;
+  variant?: "plain" | "callout";
+}
+
+const { email, name, label = "Email", variant = "plain" } = Astro.props;
+---
+
+<address class:list={["contact", { "contact--callout": variant === "callout" }]}>
+  {name && (<>{name}<br /></>)}
+  {label && `${label}: `}<Mailto email={email} />
+</address>
+
+<style>
+  .contact--callout {
+    padding: 1.1rem 1.25rem;
+    margin: 1.25rem 0 0;
+    border-left: 3px solid var(--teal);
+    color: var(--mb);
+    background: var(--lift);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .contact--callout :global(a) {
+    color: var(--w);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+import { siteLegal } from "../../data/legal";
+
+interface Props {
+  /** "notice", "terms", "disclaimer", … */
+  noun: string;
+  /** What "You" means in this document. */
+  you: string;
+}
+
+const { noun, you } = Astro.props;
+---
+
+<p>
+  In this {noun}, “I”, “me” and “my” mean <strong>{siteLegal.controllerName}</strong>.
+  “You” means {you}.
+</p>

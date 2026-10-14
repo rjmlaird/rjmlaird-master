@@ -1,0 +1,461 @@
+---
+import Layout from "./Layout.astro";
+import { legalLinks, type LegalLinkKey } from "../data/legal";
+
+interface NoticeSection {
+  id: string;
+  label: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  eyebrow?: string;
+  lead?: string;
+  lastUpdated?: string;
+  sections?: NoticeSection[];
+  /** Keys from legalLinks; rendered under the section nav. */
+  related?: LegalLinkKey[];
+  /** Plain-text summary. Use the `summary` slot instead when it needs links. */
+  summary?: string;
+  backHref?: string;
+  backLabel?: string;
+  showSummary?: boolean;
+}
+
+const {
+  title,
+  description,
+  eyebrow = "Legal",
+  lead,
+  lastUpdated,
+  sections = [],
+  related = [],
+  summary,
+  backHref = "/",
+  backLabel = "Home",
+  showSummary = false,
+} = Astro.props;
+
+const hasSummary = Boolean(summary) || Astro.slots.has("summary");
+const hasExtra = related.length > 0 || Astro.slots.has("aside");
+const hasNav = sections.length > 0 || hasExtra;
+const hasFooterNote = Astro.slots.has("footer-note");
+
+// Pre-publish checklists are for the author only: they render in `astro dev`
+// and are stripped from production builds.
+const hasDraftNote = import.meta.env.DEV && Astro.slots.has("draft-note");
+
+const formattedDate = lastUpdated
+  ? new Intl.DateTimeFormat("en-GB", { dateStyle: "long", timeZone: "UTC" }).format(
+      new Date(lastUpdated)
+    )
+  : undefined;
+---
+
+<Layout title={title} description={description}>
+  <main class="legal-page">
+    <div class="wrap legal-page__wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <ol>
+          <li><a href={backHref}>{backLabel}</a></li>
+          <li aria-current="page">{title}</li>
+        </ol>
+      </nav>
+
+      <header class="legal-hero">
+        <p class="eyebrow">{eyebrow}</p>
+
+        <h1>{title}</h1>
+
+        {
+          lead && (
+            <p class="lead">
+              {lead}
+            </p>
+          )
+        }
+
+        {
+          lastUpdated && (
+            <p class="last-updated">
+              Last updated: <time datetime={lastUpdated}>{formattedDate}</time>
+            </p>
+          )
+        }
+      </header>
+
+      {
+        (showSummary || hasSummary) && (
+          <aside class="notice" aria-labelledby="summary-heading">
+            <h2 id="summary-heading">In brief</h2>
+            <slot name="summary">
+              <p>
+                {summary ??
+                  "This notice explains how this website or service operates and what you can expect when using it."}
+              </p>
+            </slot>
+          </aside>
+        )
+      }
+
+      <div class:list={["legal-layout", { "legal-layout--single": !hasNav }]}>
+        {
+          hasNav && (
+            <aside
+              class="legal-nav"
+              aria-label={sections.length > 0 ? "On this page" : "Related information"}
+            >
+              {
+                sections.length > 0 && (
+                  <>
+                    <p class="legal-nav__title">On this page</p>
+
+                    <ol>
+                      {sections.map((section) => (
+                        <li>
+                          <a href={`#${section.id}`}>{section.label}</a>
+                        </li>
+                      ))}
+                    </ol>
+                  </>
+                )
+              }
+
+              {
+                hasExtra && (
+                  <nav class="legal-nav__extra" aria-label="Related notices">
+                    {related.map((key) => (
+                      <a href={legalLinks[key].href}>{legalLinks[key].label}</a>
+                    ))}
+                    <slot name="aside" />
+                  </nav>
+                )
+              }
+            </aside>
+          )
+        }
+
+        <article class="legal-content">
+          <slot />
+        </article>
+      </div>
+
+      {
+        hasFooterNote && (
+          <aside class="legal-footer-note">
+            <slot name="footer-note" />
+          </aside>
+        )
+      }
+
+      {
+        hasDraftNote && (
+          <aside class="legal-footer-note legal-draft-note" aria-label="Draft note (development only)">
+            <slot name="draft-note" />
+          </aside>
+        )
+      }
+    </div>
+  </main>
+</Layout>
+
+<style>
+  .legal-page {
+    padding-block: clamp(1.5rem, 4vw, 3.5rem) clamp(4rem, 9vw, 8rem);
+  }
+
+  .legal-page__wrap {
+    max-width: 78rem;
+  }
+
+  .crumbs {
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+  }
+
+  .crumbs ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .crumbs li,
+  .crumbs a {
+    color: var(--m);
+    font-size: 0.8rem;
+  }
+
+  .crumbs a {
+    text-underline-offset: 0.2em;
+  }
+
+  .crumbs li + li::before {
+    margin-right: 0.45rem;
+    color: var(--mb);
+    content: "/";
+  }
+
+  .eyebrow {
+    margin: 0;
+    color: var(--teal);
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+  }
+
+  .legal-hero {
+    max-width: 52rem;
+    padding-bottom: clamp(2.5rem, 6vw, 5rem);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .legal-hero h1 {
+    margin: 0.7rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-size: clamp(3rem, 7vw, 6rem);
+    font-weight: 400;
+    letter-spacing: -0.06em;
+    line-height: 0.9;
+  }
+
+  .lead {
+    max-width: 46rem;
+    margin: 1.5rem 0 0;
+    color: var(--mb);
+    font-size: clamp(1.05rem, 2vw, 1.3rem);
+    line-height: 1.7;
+  }
+
+  .last-updated {
+    margin: 1.5rem 0 0;
+    color: var(--m);
+    font-size: 0.85rem;
+  }
+
+  .notice {
+    max-width: 62rem;
+    padding: 1.25rem 1.5rem;
+    margin-block: clamp(2rem, 5vw, 4rem);
+    border-left: 3px solid var(--teal);
+    background: var(--lift);
+  }
+
+  .notice h2 {
+    margin: 0;
+    color: var(--w);
+    font-size: 1rem;
+  }
+
+  .notice :global(p) {
+    margin: 0.6rem 0 0;
+    color: var(--mb);
+    font-size: 0.95rem;
+    line-height: 1.65;
+  }
+
+  .legal-layout {
+    display: grid;
+    grid-template-columns: minmax(11rem, 0.45fr) minmax(0, 1fr);
+    gap: clamp(2.5rem, 8vw, 8rem);
+    align-items: start;
+  }
+
+  .legal-layout--single {
+    grid-template-columns: minmax(0, 52rem);
+  }
+
+  .legal-nav {
+    position: sticky;
+    top: 2rem;
+    padding-top: 0.3rem;
+  }
+
+  .legal-nav__title {
+    margin: 0 0 0.8rem;
+    color: var(--w);
+    font-size: 0.85rem;
+    font-weight: 700;
+  }
+
+  .legal-nav ol {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .legal-nav a {
+    color: var(--m);
+    font-size: 0.85rem;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .legal-nav a:hover,
+  .legal-nav a:focus-visible {
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .legal-nav__extra {
+    display: grid;
+    gap: 0.75rem;
+    padding-top: 1.25rem;
+    margin-top: 1.25rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .legal-nav__extra:first-child {
+    padding-top: 0;
+    margin-top: 0;
+    border-top: 0;
+  }
+
+  .legal-draft-note {
+    border-style: dashed;
+    border-color: var(--teal);
+  }
+
+  .legal-content {
+    max-width: 52rem;
+  }
+
+  .legal-content :global(section) {
+    scroll-margin-top: 2rem;
+  }
+
+  .legal-content :global(section + section) {
+    padding-top: clamp(2.5rem, 5vw, 4rem);
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+    border-top: 1px solid var(--bd);
+  }
+
+  .legal-content :global(h2) {
+    margin: 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-size: clamp(1.6rem, 3vw, 2.35rem);
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+
+  .legal-content :global(h3) {
+    margin: 1.75rem 0 0;
+    color: var(--w);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .legal-content :global(p),
+  .legal-content :global(li),
+  .legal-content :global(dd),
+  .legal-content :global(address) {
+    color: var(--mb);
+    font-size: 0.98rem;
+    font-style: normal;
+    line-height: 1.75;
+  }
+
+  .legal-content :global(p) {
+    margin: 1rem 0 0;
+  }
+
+  .legal-content :global(ul),
+  .legal-content :global(ol) {
+    display: grid;
+    gap: 0.65rem;
+    margin: 1.25rem 0 0;
+    padding-left: 1.2rem;
+  }
+
+  .legal-content :global(li::marker) {
+    color: var(--teal);
+  }
+
+  .legal-content :global(a),
+  .legal-footer-note :global(a) {
+    color: var(--w);
+    text-decoration-color: var(--teal);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  .legal-content :global(a:hover),
+  .legal-content :global(a:focus-visible),
+  .legal-footer-note :global(a:hover),
+  .legal-footer-note :global(a:focus-visible) {
+    color: var(--teal);
+  }
+
+  .legal-footer-note {
+    max-width: 52rem;
+    padding: 1.25rem 1.5rem;
+    margin-top: clamp(3rem, 7vw, 6rem);
+    border: 1px solid var(--bd);
+    background: var(--lift);
+  }
+
+  .legal-footer-note :global(p) {
+    margin: 0;
+    color: var(--mb);
+    font-size: 0.9rem;
+    line-height: 1.65;
+  }
+
+  .legal-page a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 850px) {
+    .legal-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .legal-nav {
+      position: static;
+      padding: 1.25rem;
+      border: 1px solid var(--bd);
+      background: var(--lift);
+    }
+
+    .legal-nav ol {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      column-gap: 1rem;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .legal-nav ol {
+      grid-template-columns: 1fr;
+    }
+
+    .notice,
+    .legal-footer-note {
+      padding: 1.1rem 1.2rem;
+    }
+  }
+
+  @media print {
+    .crumbs,
+    .legal-nav,
+    .legal-draft-note {
+      display: none;
+    }
+
+    .legal-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

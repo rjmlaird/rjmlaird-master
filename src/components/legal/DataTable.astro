@@ -1,0 +1,145 @@
+---
+import type { Column, Row } from "../../lib/notice";
+
+interface Props {
+  /** Accessible name for the scrollable region and the table. */
+  caption: string;
+  columns: Column[];
+  rows: Row[];
+  /** Below this width the table scrolls horizontally. */
+  minWidth?: string;
+}
+
+const { caption, columns, rows, minWidth = "52rem" } = Astro.props;
+const [rowHeader, ...rest] = columns;
+---
+
+<div class="table-wrap" tabindex="0" role="region" aria-label={caption}>
+  <table style={`min-width:${minWidth}`}>
+    <caption class="sr-only">{caption}</caption>
+
+    <colgroup>
+      {columns.map((column) => <col style={column.width ? `width:${column.width}` : undefined} />)}
+    </colgroup>
+
+    <thead>
+      <tr>
+        {columns.map((column) => <th scope="col">{column.label}</th>)}
+      </tr>
+    </thead>
+
+    <tbody>
+      {
+        rows.map((row) => (
+          <tr>
+            <th scope="row">{row[rowHeader.key]}</th>
+            {rest.map((column) => {
+              const cell = row[column.key];
+              return (
+                <td>
+                  {typeof cell === "string" && cell}
+                  {Array.isArray(cell) &&
+                    cell.map((part) => (
+                      <p>
+                        <strong>{part.label}:</strong> {part.value}
+                      </p>
+                    ))}
+                  {cell && typeof cell === "object" && !Array.isArray(cell) && (
+                    <a href={cell.href}>{cell.text ?? cell.href}</a>
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .table-wrap {
+    margin-top: 1.5rem;
+    overflow-x: auto;
+    border: 1px solid var(--bd);
+    background: var(--lift);
+  }
+
+  .table-wrap:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 3px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  th,
+  td {
+    padding: 1rem;
+    border-right: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+    vertical-align: top;
+    color: var(--mb);
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.65;
+  }
+
+  thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    color: var(--w);
+    background: var(--lift);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  tbody th {
+    min-width: 9rem;
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  th:last-child,
+  td:last-child {
+    border-right: 0;
+  }
+
+  tbody tr:last-child > * {
+    border-bottom: 0;
+  }
+
+  td p {
+    margin: 0;
+  }
+
+  td p + p {
+    margin-top: 0.85rem;
+  }
+
+  td strong {
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 700px) {
+    .table-wrap {
+      margin-inline: -1rem;
+    }
+  }
+</style>
