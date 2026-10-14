@@ -30,13 +30,9 @@
       "type": "boolean"
     },
     "id": {
-      "anyOf": [
-        {
-          "type": "string"
-        },
-        {
-          "type": "number"
-        }
+      "type": [
+        "string",
+        "number"
       ]
     },
     "slug": {

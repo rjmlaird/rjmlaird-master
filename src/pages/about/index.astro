@@ -2,38 +2,486 @@
 import Layout from "../../layouts/Layout.astro";
 import Story from "../../sections/story.section.astro";
 import About from "../../sections/about.section.astro";
+import AboutCard from "../../components/About/AboutCard.astro";
 ---
 
-<Layout schemaType="ProfilePage" title="About" description="About Ryan Laird: from astrophysics to science communication, sustainability and digital strategy, and founder of Green Orbit Digital.">
+<Layout
+  schemaType="ProfilePage"
+  title="About"
+  description="Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology."
+>
   <div class="wrap page">
     <header class="page-head">
       <p class="sl">About</p>
 
-      <h1>Where science, communication and digital systems meet</h1>
+      <h1>
+        Science, communication and digital systems—brought together to make
+        complex work clearer and more useful.
+      </h1>
 
       <p class="lede">
-        I trained as an astrophysicist and now work where science, communication and digital systems meet. The common
-        thread is making complex material clear without losing accuracy.
+        I am an astrophysicist, science communicator and strategist working
+        across space, sustainability and technology. I help organisations and
+        individuals make complex ideas understandable without losing the
+        evidence, nuance or ambition behind them.
       </p>
+
+      <div class="cta-row no-print">
+        <a class="bp" href="/work-with-me/">Work with me</a>
+        <a class="bo" href="/about/experience/">Explore my experience</a>
+      </div>
     </header>
+
+    <nav class="about-nav no-print" aria-label="About section navigation">
+      <a href="/about/" aria-current="page">Overview</a>
+      <a href="/about/bio/">Biography</a>
+      <a href="/about/experience/">Experience &amp; CV</a>
+      <a href="/about/organisations/">Organisations &amp; initiatives</a>
+      <a href="/about/press/">Press &amp; media</a>
+    </nav>
   </div>
 
-  <Story />
+
+  <div class="wrap page">
+    <section class="block what-i-do" aria-labelledby="what-i-do-heading">
+      <div class="section-head">
+        <p class="sl">Current practice</p>
+        <h2 id="what-i-do-heading">What I do</h2>
+      </div>
+
+      <div class="practice-grid">
+        <AboutCard
+          icon="◌"
+          title="Strategy & communication"
+          description="I clarify complex propositions, audiences and narratives for space, sustainability and mission-led work."
+          tags={["Positioning", "Narrative", "Engagement"]}
+          variant="teal"
+          link="/work-with-me/"
+          linkLabel="Work with me"
+        />
+
+        <AboutCard
+          icon="✦"
+          title="Writing & research"
+          description="I write, research and translate technical subjects into useful, evidence-led material for wider audiences."
+          tags={["Science communication", "Analysis", "Editorial"]}
+          variant="violet"
+          link="/writing/"
+          linkLabel="Read my writing"
+        />
+
+        <AboutCard
+          icon="⌁"
+          title="Teaching & mentoring"
+          description="I support people to develop understanding, confidence and practical ways of working with complex subjects."
+          tags={["Teaching", "Mentoring", "Learning"]}
+          variant="amber"
+          link="/work-with-me/"
+          linkLabel="Explore ways to work together"
+        />
+
+        <AboutCard
+          icon="◐"
+          title="Initiative building"
+          description="I create platforms and collaborations around space, sustainability, inclusion and place."
+          tags={["Partnerships", "Programmes", "Public value"]}
+          variant="teal"
+          link="/about/organisations/"
+          linkLabel="View organisations & initiatives"
+        />
+      </div>
+    </section>
+  </div>
+
   <About />
 
   <div class="wrap page">
-    <section class="block" style="margin-top:0" aria-labelledby="god-heading">
-      <h2 id="god-heading">Ryan Laird and Green Orbit Digital</h2>
-      <p class="prose">
-        This site is my personal one: my research, writing, teaching and mentoring. Green Orbit Digital is the separate
-        practice I founded and direct for organisation-level communications and strategy. If you need a team to deliver
-        a project, start at <a href="https://greenorbit.space">greenorbit.space</a>. If you want my own voice, expertise
-        or time, start at <a href="/work-with-me/">Work with me</a>.
-      </p>
-      <div class="cta-row no-print">
-        <a class="bp" href="/cv/">View my CV</a>
-        <a class="bo" href="/contact/">Get in touch</a>
+    <section class="block" aria-labelledby="experience-heading">
+      <div class="split-block">
+        <div>
+          <p class="sl">Experience & recognition</p>
+          <h2 id="experience-heading">A scientific foundation, applied across communication and strategy.</h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            I hold an MPhys in Astrophysics and am a Chartered Marketer
+            (CMktr), a Member of the Institute of Physics and a Member of the
+            Chartered Institute of Public Relations.
+          </p>
+
+          <p>
+            My experience includes communications and marketing work for ESA
+            Business Applications through HE Space, alongside digital,
+            research, engagement and initiative-building work across science
+            and technology.
+          </p>
+
+          <p>
+            This site presents a selective view of that work. For a
+            chronological, application-ready CV, visit
+            <a href="https://rjmlaird.cv">rjmlaird.cv</a>.
+          </p>
+
+          <div class="cta-row no-print">
+            <a class="bp" href="/about/experience/">View selected experience</a>
+            <a class="bo" href="https://rjmlaird.cv">Open full CV</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="organisations-heading">
+      <div class="section-head">
+        <p class="sl">Organisations & initiatives</p>
+        <h2 id="organisations-heading">Work at different scales</h2>
+        <p class="section-intro">
+          Some work is delivered through organisations I have founded or
+          direct. Other work takes place through collaborative initiatives
+          designed to connect people, ideas and institutions around shared
+          challenges.
+        </p>
+      </div>
+
+      <div class="organisation-grid">
+        <AboutCard
+          icon="◐"
+          subtitle="Organisation-level work"
+          title="Green Orbit Digital"
+          description="A specialist communications and strategy practice for space, sustainability and mission-led organisations."
+          tags={["Communications", "Strategy", "Space", "Sustainability"]}
+          variant="teal"
+          link="https://greenorbit.space"
+          linkLabel="Visit Green Orbit Digital"
+        />
+
+        <AboutCard
+          icon="◈"
+          subtitle="Collaborative platform"
+          title="Impact Orbit"
+          description="A purpose-led platform for developing collaborative initiatives around sustainability, technology, culture and public value."
+          tags={["Partnerships", "Programmes", "Impact"]}
+          variant="violet"
+          link="/about/organisations/"
+          linkLabel="Explore organisations & initiatives"
+        />
+
+        <AboutCard
+          icon="✦"
+          subtitle="Space City Leicester"
+          title="Leicester Space Week"
+          description="A citywide platform connecting Leicester's space heritage, research, enterprise, skills and public engagement."
+          tags={["Space", "Place", "Public engagement"]}
+          variant="amber"
+          link="https://leicesterspaceweek.org"
+          linkLabel="Visit Leicester Space Week"
+        />
+      </div>
+
+      <div class="section-actions no-print">
+        <a class="text-link" href="/about/organisations/">
+          Explore all organisations and initiatives <span aria-hidden="true">→</span>
+        </a>
+      </div>
+    </section>
+
+    <section class="block personal-work" aria-labelledby="personal-work-heading">
+      <div class="split-block">
+        <div>
+          <p class="sl">How to work with me</p>
+          <h2 id="personal-work-heading">Personal work and organisation-level work.</h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            This is my personal site: a home for my writing, research,
+            teaching, mentoring and individual perspective.
+          </p>
+
+          <p>
+            Green Orbit Digital is the separate practice I founded and direct
+            for organisation-level communications, strategy and delivery. If
+            you need a team to deliver a project, start at
+            <a href="https://greenorbit.space">greenorbit.space</a>. If you
+            want my own voice, expertise or time, start at
+            <a href="/work-with-me/">Work with me</a>.
+          </p>
+
+          <div class="cta-row no-print">
+            <a class="bp" href="/work-with-me/">Work with Ryan</a>
+            <a class="bo" href="https://greenorbit.space">
+              Visit Green Orbit Digital
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="block about-routes no-print" aria-labelledby="about-routes-heading">
+      <div class="section-head">
+        <p class="sl">Continue exploring</p>
+        <h2 id="about-routes-heading">Find the detail you need</h2>
+      </div>
+
+      <div class="route-grid">
+        <a class="route-card" href="/about/bio/">
+          <span class="route-kicker">Biography</span>
+          <span class="route-title">The story behind the work</span>
+          <span class="route-copy">
+            A fuller account of the scientific, professional and personal
+            threads that shape my approach.
+          </span>
+          <span class="route-link">Read my biography →</span>
+        </a>
+
+        <a class="route-card" href="/about/experience/">
+          <span class="route-kicker">Experience &amp; CV</span>
+          <span class="route-title">Selected roles and professional evidence</span>
+          <span class="route-copy">
+            A curated view of professional experience, education, recognition
+            and a link to my full CV.
+          </span>
+          <span class="route-link">View experience →</span>
+        </a>
+
+        <a class="route-card" href="/about/press/">
+          <span class="route-kicker">Press &amp; media</span>
+          <span class="route-title">Bios, topics and media resources</span>
+          <span class="route-copy">
+            Information for journalists, event organisers, collaborators and
+            anyone needing a concise introduction.
+          </span>
+          <span class="route-link">Open press resources →</span>
+        </a>
       </div>
     </section>
   </div>
 </Layout>
+
+<style>
+  .page-head {
+    max-width: 56rem;
+    padding-block: clamp(4rem, 10vw, 8rem) clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .page-head h1 {
+    max-width: 17ch;
+    margin: .65rem 0 1.4rem;
+  }
+
+  .lede {
+    max-width: 44rem;
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    line-height: 1.7;
+    color: var(--m);
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-top: 1.75rem;
+  }
+
+  .about-nav {
+    display: flex;
+    gap: .4rem 1.1rem;
+    flex-wrap: wrap;
+    padding: 1rem 0 1.2rem;
+    border-top: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .about-nav a {
+    font-family: var(--D);
+    font-size: .67rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: var(--m);
+    transition: color .2s;
+  }
+
+  .about-nav a:hover,
+  .about-nav a[aria-current="page"] {
+    color: var(--teal);
+  }
+
+  .block {
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .section-head {
+    max-width: 46rem;
+    margin-bottom: 1.7rem;
+  }
+
+  .section-head h2 {
+    margin: .5rem 0 0;
+  }
+
+  .section-intro {
+    max-width: 42rem;
+    margin-top: 1rem;
+    color: var(--m);
+    line-height: 1.7;
+  }
+
+  .practice-grid,
+  .organisation-grid,
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+  }
+
+  .practice-grid :global(.ac) {
+    grid-column: span 3;
+  }
+
+  .organisation-grid :global(.ac) {
+    grid-column: span 4;
+  }
+
+  .split-block {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .split-block h2 {
+    max-width: 15ch;
+    margin: .5rem 0 0;
+  }
+
+  .prose {
+    max-width: 43rem;
+  }
+
+  .prose p {
+    line-height: 1.8;
+  }
+
+  .prose p + p {
+    margin-top: 1rem;
+  }
+
+  .prose a {
+    color: var(--teal);
+  }
+
+  .section-actions {
+    margin-top: 1.25rem;
+  }
+
+  .text-link,
+  .route-link {
+    font-family: var(--D);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    color: var(--teal);
+  }
+
+  .personal-work {
+    padding: clamp(1.5rem, 4vw, 3rem);
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    background: var(--card);
+  }
+
+  .about-routes {
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .route-card {
+    grid-column: span 4;
+    display: flex;
+    min-height: 15rem;
+    padding: 1.5rem;
+    flex-direction: column;
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    background: var(--card);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .route-card:hover {
+    border-color: var(--tb);
+    transform: translateY(-2px);
+  }
+
+  .route-kicker {
+    font-family: var(--D);
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: var(--m);
+  }
+
+  .route-title {
+    margin-top: .75rem;
+    font-family: var(--D);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--w);
+  }
+
+  .route-copy {
+    margin-top: .8rem;
+    font-size: .82rem;
+    line-height: 1.7;
+    color: var(--m);
+  }
+
+  .route-link {
+    margin-top: auto;
+    padding-top: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .practice-grid :global(.ac) {
+      grid-column: span 6;
+    }
+
+    .organisation-grid :global(.ac) {
+      grid-column: span 6;
+    }
+
+    .route-card {
+      grid-column: span 12;
+      min-height: auto;
+    }
+
+    .split-block {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .split-block h2 {
+      max-width: 23ch;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .practice-grid :global(.ac),
+    .organisation-grid :global(.ac) {
+      grid-column: span 12;
+    }
+
+    .about-nav {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .75rem;
+    }
+  }
+</style>

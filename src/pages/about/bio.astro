@@ -1,34 +1,846 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Story from "../../sections/story.section.astro";
-import About from "../../sections/about.section.astro";
+import AboutCard from "../../components/About/AboutCard.astro";
+import milestones from "../../data/milestones.json";
 ---
 
-<Layout schemaType="ProfilePage" title="About" description="About Ryan Laird: from astrophysics to science communication, sustainability and digital strategy, and founder of Green Orbit Digital.">
+<Layout
+  schemaType="ProfilePage"
+  title="Biography"
+  description="Ryan Laird is an astrophysicist, science communicator and strategist whose work spans space, sustainability, digital practice and public engagement."
+>
   <div class="wrap page">
     <header class="page-head">
-      <h1>About</h1>
-      <p class="lead">
-        I trained as an astrophysicist and now work where science, communication and digital systems meet. The common
-        thread is making complex material clear without losing accuracy.
+      <p class="sl">Biography</p>
+
+      <h1>Curiosity, evidence and communication.</h1>
+
+      <p class="lede">
+        I began by studying the universe. Since then, my work has moved through
+        science communication, digital practice, space-sector strategy and
+        initiative building. The common thread is a belief that complex work
+        becomes more valuable when people can understand, question and act on it.
       </p>
-    </header>
-  </div>
-  <Story />
-  <About />
-  <div class="wrap page">
-    <section class="block" style="margin-top:0">
-      <h2>Ryan Laird and Green Orbit Digital</h2>
-      <p class="prose">
-        This site is my personal one: my research, writing, teaching and mentoring. Green Orbit Digital is the separate
-        practice I founded and direct for organisation-level communications and strategy. If you need a team to deliver
-        a project, start at <a href="https://greenorbit.space">greenorbit.space</a>. If you want my own voice, expertise
-        or time, start at <a href="/work-with-me/">Work with me</a>.
-      </p>
+
       <div class="cta-row no-print">
-        <a class="bp" href="/cv/">View my CV</a>
-        <a class="bo" href="/contact/">Get in touch</a>
+        <a class="bp" href="/about/experience/">View selected experience</a>
+        <a class="bo" href={milestones.cvUrl}>{milestones.cvLabel}</a>
+      </div>
+    </header>
+
+    <nav class="about-nav no-print" aria-label="About section navigation">
+      <a href="/about/">Overview</a>
+      <a href="/about/bio/" aria-current="page">Biography</a>
+      <a href="/about/experience/">Experience &amp; CV</a>
+      <a href="/about/organisations/">Organisations &amp; initiatives</a>
+      <a href="/about/press/">Press &amp; media</a>
+    </nav>
+  </div>
+
+  <div class="wrap page">
+    <section class="block" aria-labelledby="starting-point-heading">
+      <div class="split-block">
+        <div>
+          <p class="sl">The starting point</p>
+          <h2 id="starting-point-heading">Learning to work with uncertainty.</h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            Astrophysics gave me more than a subject specialism. It taught me
+            to follow evidence, handle uncertainty carefully and communicate
+            ideas that can be difficult to see, test or explain at first glance.
+            Those habits continue to shape how I approach strategy, writing,
+            teaching and digital work.
+          </p>
+
+          <p>
+            I became interested not only in what science discovers, but in how
+            knowledge travels: between researchers and the public, technical
+            teams and decision-makers, organisations and the communities they
+            aim to serve. That interest led me into science communication,
+            editorial work, public engagement and the space sector.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="science-practice-heading">
+      <div class="split-block">
+        <div>
+          <p class="sl">Science into practice</p>
+          <h2 id="science-practice-heading">Making complex ideas useful.</h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            My work has included editorial, digital and communications roles
+            across science and space. I have worked with technical material,
+            missions, programmes and opportunities that need to be accurate
+            enough for specialists while remaining meaningful to people outside
+            a particular discipline.
+          </p>
+
+          <p>
+            At HE Space, supporting ESA Business Applications and Space
+            Solutions, I worked on strategic communications and digital
+            marketing for space-enabled innovation. That experience reinforced
+            the importance of connecting technical capability with a clear
+            audience, a practical use case and a credible story about impact.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block" aria-labelledby="current-work-heading">
+      <div class="split-block">
+        <div>
+          <p class="sl">Current work</p>
+          <h2 id="current-work-heading">
+            From communication to responsible systems.
+          </h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            I founded Green Orbit Digital to work with space, sustainability
+            and mission-led organisations on clearer communication, stronger
+            digital practice and more responsible growth. The work brings
+            together strategy, content, research, audience understanding and
+            the practical systems that support them.
+          </p>
+
+          <p>
+            Alongside organisation-level work, I write, research, teach and
+            mentor. I am also developing collaborative initiatives through
+            Impact Orbit, including work around space, sustainability,
+            inclusion, public engagement and Leicester's wider space ecosystem.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="block milestones" aria-labelledby="milestones-heading">
+      <div class="milestones-head">
+        <div>
+          <p class="sl">Selected milestones</p>
+          <h2 id="milestones-heading">How the work developed.</h2>
+        </div>
+
+        <div class="prose">
+          <p>
+            These are selected turning points in the development of my work and
+            perspective. They are not a complete employment history.
+          </p>
+
+          <p>
+            For roles, dates, qualifications and a full chronological record,
+            visit <a href={milestones.cvUrl}>{milestones.cvLabel}</a>.
+          </p>
+        </div>
+      </div>
+
+      <ol class="milestones-list">
+        {
+          milestones.items.map((milestone) => (
+            <li
+              class:list={[
+                "milestone",
+                { current: milestone.status === "current" }
+              ]}
+            >
+              <div class="milestone-date">
+                <span>{milestone.date}</span>
+              </div>
+
+              <article class="milestone-content">
+                <div class="milestone-meta">
+                  <p class="milestone-company">{milestone.company}</p>
+
+                  {
+                    milestone.location && (
+                      <p class="milestone-location">{milestone.location}</p>
+                    )
+                  }
+                </div>
+
+                <h3>{milestone.title}</h3>
+
+                <p>{milestone.summary}</p>
+
+                {
+                  milestone.themes?.length > 0 && (
+                    <ul
+                      class="milestone-themes"
+                      aria-label={`Themes: ${milestone.title}`}
+                    >
+                      {milestone.themes.map((theme) => (
+                        <li>{theme}</li>
+                      ))}
+                    </ul>
+                  )
+                }
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    <section class="block principles" aria-labelledby="principles-heading">
+      <div class="section-head">
+        <p class="sl">How I work</p>
+        <h2 id="principles-heading">
+          Principles that carry through the work.
+        </h2>
+      </div>
+
+      <div class="principles-grid">
+        <AboutCard
+          icon="✦"
+          title="Evidence before assertion"
+          description="I start with the available evidence, make uncertainty clear and avoid making a complex subject seem simpler than it is."
+          tags={["Research", "Accuracy", "Judgement"]}
+          variant="teal"
+        />
+
+        <AboutCard
+          icon="◌"
+          title="Clarity without dilution"
+          description="Good communication does not remove the important detail. It creates a route into it for the people who need to understand."
+          tags={["Communication", "Accessibility", "Context"]}
+          variant="violet"
+        />
+
+        <AboutCard
+          icon="◐"
+          title="Responsibility in practice"
+          description="I am interested in how organisations communicate, build and grow in ways that consider wider social and environmental consequences."
+          tags={["Sustainability", "Inclusion", "Public value"]}
+          variant="amber"
+        />
+      </div>
+    </section>
+
+    <section
+      class="block next-steps no-print"
+      aria-labelledby="next-steps-heading"
+    >
+      <div class="section-head">
+        <p class="sl">Continue exploring</p>
+        <h2 id="next-steps-heading">See the work in more detail.</h2>
+      </div>
+
+      <div class="route-grid">
+        <a class="route-card" href="/about/experience/">
+          <span class="route-kicker">Experience &amp; CV</span>
+
+          <span class="route-title">
+            Selected roles, credentials and professional evidence
+          </span>
+
+          <span class="route-copy">
+            Explore the professional experience behind my work, or continue to
+            the full chronological CV.
+          </span>
+
+          <span class="route-link">
+            View experience <span aria-hidden="true">→</span>
+          </span>
+        </a>
+
+        <a class="route-card" href="/about/organisations/">
+          <span class="route-kicker">Organisations &amp; initiatives</span>
+
+          <span class="route-title">
+            Work delivered through organisations and collaborations
+          </span>
+
+          <span class="route-copy">
+            Learn about Green Orbit Digital, Impact Orbit, Leicester Space Week
+            and related initiatives.
+          </span>
+
+          <span class="route-link">
+            Explore organisations <span aria-hidden="true">→</span>
+          </span>
+        </a>
+
+        <a class="route-card" href="/about/press/">
+          <span class="route-kicker">Press &amp; media</span>
+
+          <span class="route-title">
+            Bios, areas of expertise and media resources
+          </span>
+
+          <span class="route-copy">
+            Find concise biography copy, speaking topics and information for
+            journalists, organisers and collaborators.
+          </span>
+
+          <span class="route-link">
+            Open press resources <span aria-hidden="true">→</span>
+          </span>
+        </a>
       </div>
     </section>
   </div>
 </Layout>
+
+<style>
+  .page-head {
+    max-width: 56rem;
+    padding-block: clamp(4rem, 10vw, 8rem) clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .page-head h1 {
+    max-width: 17ch;
+    margin: .65rem 0 1.4rem;
+  }
+
+  .lede {
+    max-width: 46rem;
+    color: var(--m);
+    font-size: clamp(1.05rem, 1.8vw, 1.3rem);
+    line-height: 1.7;
+  }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-top: 1.75rem;
+  }
+
+  .about-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem 1.1rem;
+    padding: 1rem 0 1.2rem;
+    border-top: 1px solid var(--bd);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .about-nav a {
+    color: var(--m);
+    font-family: var(--D);
+    font-size: .67rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: color .2s;
+  }
+
+  .about-nav a:hover,
+  .about-nav a[aria-current="page"] {
+    color: var(--teal);
+  }
+
+  .block {
+    margin-top: clamp(4rem, 8vw, 7rem);
+  }
+
+  .split-block {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  .split-block h2 {
+    max-width: 16ch;
+    margin: .5rem 0 0;
+  }
+
+  .prose {
+    max-width: 43rem;
+  }
+
+  .prose p {
+    line-height: 1.8;
+  }
+
+  .prose p + p {
+    margin-top: 1rem;
+  }
+
+  .prose a {
+    color: var(--teal);
+  }
+
+  /* Selected milestones: signal path */
+
+  .milestones {
+    --timeline-line: color-mix(in srgb, var(--teal) 45%, var(--bd));
+    --timeline-glow: color-mix(in srgb, var(--teal) 20%, transparent);
+
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: clamp(1.5rem, 4vw, 3.25rem);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    background:
+      radial-gradient(
+        circle at 88% 6%,
+        color-mix(in srgb, var(--violet) 12%, transparent),
+        transparent 24rem
+      ),
+      radial-gradient(
+        circle at 0% 84%,
+        color-mix(in srgb, var(--teal) 10%, transparent),
+        transparent 26rem
+      ),
+      var(--card);
+  }
+
+  /* Fine scientific-grid texture */
+  .milestones::before {
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    opacity: .24;
+    background-image:
+      linear-gradient(
+        color-mix(in srgb, var(--bd) 55%, transparent) 1px,
+        transparent 1px
+      ),
+      linear-gradient(
+        90deg,
+        color-mix(in srgb, var(--bd) 55%, transparent) 1px,
+        transparent 1px
+      );
+    background-size: 2.5rem 2.5rem;
+    content: "";
+    pointer-events: none;
+  }
+
+  /* Corner coordinate motif */
+  .milestones::after {
+    position: absolute;
+    z-index: -1;
+    top: 1.1rem;
+    right: 1.25rem;
+    width: 4.8rem;
+    height: 4.8rem;
+    border-top: 1px solid color-mix(in srgb, var(--teal) 50%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--teal) 50%, transparent);
+    border-radius: 0 4px 0 0;
+    content: "";
+    pointer-events: none;
+  }
+
+  .milestones-head {
+    display: grid;
+    grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    padding-bottom: 2.25rem;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .milestones-head h2 {
+    max-width: 14ch;
+    margin: .5rem 0 0;
+  }
+
+  .milestones-list {
+    position: relative;
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Main signal path */
+  .milestones-list::before {
+    position: absolute;
+    top: 2.55rem;
+    bottom: 2.4rem;
+    left: calc(7rem + 1.55rem);
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--timeline-line) 5%,
+      var(--timeline-line) 95%,
+      transparent
+    );
+    box-shadow: 0 0 18px var(--timeline-glow);
+    content: "";
+  }
+
+  .milestone {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(7rem, .4fr) minmax(0, 1.6fr);
+    gap: clamp(2rem, 4vw, 4.5rem);
+    padding: 2.4rem 0;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .milestone:last-child {
+    padding-bottom: .25rem;
+    border-bottom: 0;
+  }
+
+  .milestone-date {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-start;
+    padding-top: .08rem;
+  }
+
+  .milestone-date::after {
+    position: absolute;
+    top: .43rem;
+    right: -1.89rem;
+    width: .85rem;
+    height: .85rem;
+    border: 2px solid var(--teal);
+    border-radius: 50%;
+    background: var(--card);
+    box-shadow: 0 0 0 .28rem var(--card);
+    content: "";
+    transition: transform .25s ease, background .25s ease, box-shadow .25s ease;
+  }
+
+  .milestone-date span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.75rem;
+    padding: .22rem .52rem;
+    border: 1px solid color-mix(in srgb, var(--teal) 42%, var(--bd));
+    border-radius: 3px;
+    color: var(--teal);
+    background: color-mix(in srgb, var(--teal) 8%, transparent);
+    font-family: var(--D);
+    font-size: .66rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .milestone-content {
+    position: relative;
+    padding: .05rem 0 .1rem;
+  }
+
+  /* Small sequence identifier, decorative only */
+  .milestone-content::before {
+    position: absolute;
+    top: .1rem;
+    right: 0;
+    color: color-mix(in srgb, var(--m) 55%, transparent);
+    font-family: var(--D);
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .1em;
+    content: "MILESTONE";
+  }
+
+  .milestone:hover .milestone-date::after {
+    transform: scale(1.25);
+    background: var(--teal);
+    box-shadow:
+      0 0 0 .28rem var(--card),
+      0 0 1.4rem color-mix(in srgb, var(--teal) 58%, transparent);
+  }
+
+  /* Accent rotation */
+  .milestone:nth-child(3n + 2) .milestone-date::after {
+    border-color: var(--violet);
+  }
+
+  .milestone:nth-child(3n + 2) .milestone-date span {
+    border-color: color-mix(in srgb, var(--violet) 42%, var(--bd));
+    color: var(--violet);
+    background: color-mix(in srgb, var(--violet) 8%, transparent);
+  }
+
+  .milestone:nth-child(3n + 2):hover .milestone-date::after {
+    background: var(--violet);
+    box-shadow:
+      0 0 0 .28rem var(--card),
+      0 0 1.4rem color-mix(in srgb, var(--violet) 58%, transparent);
+  }
+
+  .milestone:nth-child(3n) .milestone-date::after {
+    border-color: var(--amber);
+  }
+
+  .milestone:nth-child(3n) .milestone-date span {
+    border-color: color-mix(in srgb, var(--amber) 42%, var(--bd));
+    color: var(--amber);
+    background: color-mix(in srgb, var(--amber) 8%, transparent);
+  }
+
+  .milestone:nth-child(3n):hover .milestone-date::after {
+    background: var(--amber);
+    box-shadow:
+      0 0 0 .28rem var(--card),
+      0 0 1.4rem color-mix(in srgb, var(--amber) 58%, transparent);
+  }
+
+  .milestone.current .milestone-date::after {
+    background: var(--teal);
+    box-shadow:
+      0 0 0 .28rem var(--card),
+      0 0 1.3rem color-mix(in srgb, var(--teal) 70%, transparent);
+  }
+
+  .milestone-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem .8rem;
+    margin-bottom: .55rem;
+    padding-right: 5.5rem;
+  }
+
+  .milestone-company,
+  .milestone-location {
+    margin: 0;
+    color: var(--m);
+    font-family: var(--D);
+    font-size: .63rem;
+    font-weight: 700;
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .milestone-location::before {
+    margin-right: .8rem;
+    color: var(--bm);
+    content: "·";
+  }
+
+  .milestone-content h3 {
+    max-width: 33rem;
+    margin: 0;
+    color: var(--w);
+    font-family: var(--D);
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-weight: 700;
+    line-height: 1.25;
+  }
+
+  .milestone-content > p {
+    max-width: 44rem;
+    margin: .75rem 0 0;
+    color: var(--m);
+    font-size: .9rem;
+    line-height: 1.75;
+  }
+
+  .milestone-themes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .milestone-themes li {
+    padding: .2rem .52rem;
+    border: 1px solid var(--bm);
+    border-radius: 3px;
+    color: var(--m);
+    background: color-mix(in srgb, var(--card) 85%, transparent);
+    font-family: var(--D);
+    font-size: .58rem;
+    font-weight: 600;
+    letter-spacing: .08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .milestones-head {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .milestones-head h2 {
+      max-width: 24ch;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .milestones {
+      padding: 1.25rem;
+    }
+
+    .milestones::after {
+      top: .8rem;
+      right: .8rem;
+      width: 3.25rem;
+      height: 3.25rem;
+    }
+
+    .milestones-list::before,
+    .milestone-date::after {
+      display: none;
+    }
+
+    .milestone {
+      grid-template-columns: 1fr;
+      gap: .75rem;
+      padding: 1.6rem 0;
+    }
+
+    .milestone-content::before {
+      display: none;
+    }
+
+    .milestone-meta {
+      padding-right: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .milestone-date::after {
+      transition: none;
+    }
+
+    .milestone:hover .milestone-date::after {
+      transform: none;
+    }
+  }
+
+
+  .section-head {
+    max-width: 48rem;
+    margin-bottom: 1.7rem;
+  }
+
+  .section-head h2 {
+    margin: .5rem 0 0;
+  }
+
+  .principles-grid,
+  .route-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+  }
+
+  .principles-grid :global(.ac) {
+    grid-column: span 4;
+  }
+
+  .next-steps {
+    padding-bottom: clamp(4rem, 8vw, 7rem);
+  }
+
+  .route-card {
+    grid-column: span 4;
+    display: flex;
+    min-height: 15rem;
+    padding: 1.5rem;
+    flex-direction: column;
+    border: 1px solid var(--bd);
+    border-radius: 6px;
+    background: var(--card);
+    color: inherit;
+    text-decoration: none;
+    transition: border-color .2s, transform .2s;
+  }
+
+  .route-card:hover {
+    border-color: var(--tb);
+    transform: translateY(-2px);
+  }
+
+  .route-kicker {
+    color: var(--m);
+    font-family: var(--D);
+    font-size: .6rem;
+    font-weight: 700;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+  }
+
+  .route-title {
+    margin-top: .75rem;
+    color: var(--w);
+    font-family: var(--D);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .route-copy {
+    margin-top: .8rem;
+    color: var(--m);
+    font-size: .82rem;
+    line-height: 1.7;
+  }
+
+  .route-link {
+    margin-top: auto;
+    padding-top: 1.25rem;
+    color: var(--teal);
+    font-family: var(--D);
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 900px) {
+    .split-block,
+    .milestones-head {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .split-block h2,
+    .milestones-head h2 {
+      max-width: 24ch;
+    }
+
+    .principles-grid :global(.ac) {
+      grid-column: span 6;
+    }
+
+    .route-card {
+      grid-column: span 12;
+      min-height: auto;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .milestones {
+      padding: 1.25rem;
+    }
+
+    .milestones-list::before,
+    .milestone-date::after {
+      display: none;
+    }
+
+    .milestone {
+      grid-template-columns: 1fr;
+      gap: .75rem;
+      padding: 1.5rem 0;
+    }
+  }
+
+  @media (max-width: 580px) {
+    .about-nav {
+      align-items: flex-start;
+      flex-direction: column;
+      gap: .75rem;
+    }
+
+    .principles-grid :global(.ac) {
+      grid-column: span 12;
+    }
+  }
+</style>
+

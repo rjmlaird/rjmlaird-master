@@ -142,6 +142,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"authors">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "blog": Record<string, {
   id: string;
@@ -150,6 +151,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"blog">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "brandAssets": Record<string, {
   id: string;
@@ -158,6 +160,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"brandAssets">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "brandDocs": Record<string, {
   id: string;
@@ -166,6 +169,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"brandDocs">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "brandSites": Record<string, {
   id: string;
@@ -174,6 +178,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"brandSites">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "caseStudies": Record<string, {
   id: string;
@@ -182,6 +187,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"caseStudies">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "events": Record<string, {
   id: string;
@@ -190,6 +196,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"events">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "initiatives": Record<string, {
   id: string;
@@ -198,6 +205,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"initiatives">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "podcasts": Record<string, {
   id: string;
@@ -206,6 +214,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"podcasts">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "projects": Record<string, {
   id: string;
@@ -214,6 +223,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"projects">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 "services": Record<string, {
   id: string;
@@ -222,6 +232,7 @@ declare module 'astro:content' {
   data: InferEntrySchema<"services">;
   rendered?: RenderedContent;
   filePath?: string;
+  digest?: string | number;
 }>;
 
 	};

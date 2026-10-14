@@ -1,0 +1,184 @@
+{
+  "title": "Selected milestones",
+  "description": "A selection of formative moments, turning points and achievements that trace Ryan Laird's path from backyard astronomy to science communication, space-sector strategy and initiative building.",
+  "cvUrl": "https://cv.rjmlaird.co.uk/",
+  "cvLabel": "View the full chronological CV",
+  "items": [
+    {
+      "id": "hale-bopp",
+      "date": "1997",
+      "title": "A comet makes space feel close",
+      "company": "Hale–Bopp",
+      "location": "United Kingdom",
+      "summary": "Seeing Comet Hale–Bopp as a child was an early reminder that the night sky is not an abstract subject: it is visible, changing and capable of provoking lifelong curiosity.",
+      "achievement": "An early spark for an enduring interest in astronomy",
+      "themes": [
+        "Wonder",
+        "Astronomy",
+        "Curiosity"
+      ],
+      "status": "past",
+      "kind": "origin"
+    },
+    {
+      "id": "eclipse-1999",
+      "date": "1999",
+      "title": "The eclipse that made astronomy immediate",
+      "company": "Solar eclipse, 11 August 1999",
+      "location": "United Kingdom",
+      "summary": "The 1999 solar eclipse made an astronomical event a shared national experience. It strengthened an interest in observing the sky and in the way science can bring people together around a moment of wonder.",
+      "achievement": "A formative experience of astronomy as public engagement",
+      "themes": [
+        "Solar astronomy",
+        "Public engagement",
+        "Wonder"
+      ],
+      "status": "past",
+      "kind": "origin"
+    },
+    {
+      "id": "backyard-astronomy",
+      "date": "c. 2000",
+      "title": "Backyard astronomy begins",
+      "company": "Independent observing",
+      "location": "Lincolnshire, United Kingdom",
+      "summary": "Started observing from home at around age thirteen, turning curiosity into a regular practice of learning the sky, following celestial events and asking more ambitious questions.",
+      "achievement": "Moved from interest to sustained self-directed learning",
+      "themes": [
+        "Observing",
+        "Self-directed learning",
+        "Night sky"
+      ],
+      "status": "past",
+      "kind": "origin"
+    },
+    {
+      "id": "school-and-observing",
+      "date": "1998–2005",
+      "title": "School years and a growing astronomy community",
+      "company": "School education and Horncastle Astronomy Weekend",
+      "location": "Lincolnshire, United Kingdom",
+      "summary": "Developed a scientific foundation at school while attending Horncastle Astronomy Weekend from 2003, finding a community around practical astronomy, shared knowledge and enthusiasm for the night sky.",
+      "achievement": "Found the value of astronomy as a shared community practice",
+      "themes": [
+        "Education",
+        "Community",
+        "Amateur astronomy"
+      ],
+      "status": "past",
+      "kind": "origin"
+    },
+    {
+      "id": "transits-and-eclipse",
+      "date": "2003–2004",
+      "title": "Rare events turn curiosity into direction",
+      "company": "Solar eclipse and planetary transits",
+      "location": "United Kingdom",
+      "summary": "Witnessing the 2003 solar eclipse, the 2003 transit of Mercury and the 2004 transit of Venus made orbital mechanics tangible and reinforced a decision to pursue physics and astrophysics.",
+      "achievement": "Astronomy became an academic direction, not only a personal interest",
+      "themes": [
+        "Solar system",
+        "Observation",
+        "Physics"
+      ],
+      "status": "past",
+      "kind": "origin"
+    },
+    {
+      "id": "university",
+      "date": "2005–2009",
+      "title": "Physics and astrophysics",
+      "company": "University of Leicester",
+      "location": "Leicester, United Kingdom",
+      "summary": "Studied Physics with Astrophysics, developing a foundation in mathematics, quantitative research, scientific writing and the careful handling of evidence and uncertainty.",
+      "achievement": "Completed an MPhys (Hons) in Physics with Astrophysics",
+      "themes": [
+        "Astrophysics",
+        "Research",
+        "Evidence"
+      ],
+      "status": "past",
+      "kind": "education"
+    },
+    {
+      "id": "international-year-astronomy",
+      "date": "2009",
+      "title": "Astronomy becomes a public mission",
+      "company": "International Year of Astronomy and Royal Astronomical Society",
+      "location": "United Kingdom",
+      "summary": "Contributed to the International Year of Astronomy as UK Student Representative, connecting astronomy with education, outreach and public participation at a moment of global celebration.",
+      "achievement": "UK Student Representative for International Year of Astronomy 2009",
+      "themes": [
+        "Outreach",
+        "Leadership",
+        "Public engagement"
+      ],
+      "status": "past",
+      "kind": "achievement"
+    },
+    {
+      "id": "phd-and-observing",
+      "date": "2009–2012",
+      "title": "Research, observation and science outreach",
+      "company": "Doctoral studies, astronomy research and outreach",
+      "location": "Leicester, United Kingdom",
+      "summary": "Undertook doctoral studies in astronomy while extending research and outreach experience. This period included observing-time awards as co-investigator with the European Southern Observatory and Palomar Observatory, alongside a Royal Astronomical Society Education and Outreach Small Grant.",
+      "achievement": "Combined research participation with practical science communication",
+      "themes": [
+        "Research",
+        "Observing",
+        "Science communication"
+      ],
+      "status": "past",
+      "kind": "achievement"
+    },
+    {
+      "id": "international-space-studies",
+      "date": "2013",
+      "title": "A global perspective on space",
+      "company": "International Space University",
+      "location": "Strasbourg, France",
+      "summary": "Attended the Space Studies Programme on a UK Space Agency and European Space Agency scholarship. Contributed to AMBIEnT, a project exploring affordable microsatellite-enabled connectivity and environmental monitoring.",
+      "achievement": "UK Space Agency and European Space Agency scholarship recipient",
+      "themes": [
+        "Space applications",
+        "Systems thinking",
+        "Collaboration"
+      ],
+      "status": "past",
+      "kind": "achievement"
+    },
+    {
+      "id": "digital-space-storytelling",
+      "date": "2015–2019",
+      "title": "Communication, innovation and entrepreneurship",
+      "company": "Design & Data, R&R Space and sector initiatives",
+      "location": "Europe and the United Kingdom",
+      "summary": "Developed digital storytelling and event communications for space-sector organisations, then co-founded a space outreach and skills venture. The period brought together content, community building, entrepreneurship and innovation activity.",
+      "achievement": "Award of Excellence, The Communicator Awards; ESA BIC Startup Challenge winner; invited UK Space Conference panellist",
+      "themes": [
+        "Digital storytelling",
+        "Entrepreneurship",
+        "Community building"
+      ],
+      "status": "past",
+      "kind": "achievement"
+    },
+    {
+      "id": "esa-to-green-orbit",
+      "date": "2021–present",
+      "title": "From space innovation to responsible systems",
+      "company": "ESA Business Applications, Green Orbit Digital and Impact Orbit",
+      "location": "Harwell and Leicester, United Kingdom",
+      "summary": "Led communications and digital marketing for ESA Business Applications through HE Space, then founded Green Orbit Digital. Current work combines strategy, science communication, sustainability and collaborative initiatives including Leicester Space Week.",
+      "achievement": "Founder-led work connecting space, sustainability, communication and public value",
+      "themes": [
+        "ESA",
+        "Sustainability",
+        "Strategy"
+      ],
+      "status": "current",
+      "kind": "current"
+    }
+  ]
+}
