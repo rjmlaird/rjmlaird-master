@@ -97,43 +97,43 @@ const pathways = [
   title="Ryan Laird — Science, communication and strategy"
   description="Ryan Laird is an astrophysicist, science communicator and strategist working across space, sustainability and technology through strategic communication, digital systems, teaching, mentoring and public engagement."
 >
-  <main class="home">
-    <section class="home-hero" aria-labelledby="home-title">
-      <div class="wrap home-hero__grid">
-        <div class="home-hero__content">
-          <p class="eyebrow">Ryan Laird · CMktr MInstP</p>
+  <div class="hp-root">
+    <section class="hp-hero" aria-labelledby="home-title">
+      <div class="hp-wrap hp-hero__grid">
+        <div class="hp-hero__content">
+          <p class="hp-eyebrow">Ryan Laird · CMktr MInstP</p>
 
           <h1 id="home-title">
             Science, communication and digital strategy for complex ideas.
           </h1>
 
-          <p class="lead">
+          <p class="hp-lead">
             I am an astrophysicist, science communicator and strategist working
             across space, sustainability and technology.
           </p>
 
-          <p class="support">
+          <p class="hp-support">
             I help organisations, teams and individuals make complex work
             clearer, more accurate and more useful through communication,
             digital practice, teaching and collaboration.
           </p>
 
-          <p class="location">
+          <p class="hp-location">
             Based in Leicester. Working across the UK, Europe and online.
           </p>
 
-          <div class="cta-row" aria-label="Primary links">
-            <a class="button button--primary" href="/services/">
+          <div class="hp-actions">
+            <a class="hp-btn hp-btn--primary" href="/services/">
               Explore services
             </a>
 
-            <a class="button button--secondary" href="/how-i-work/">
+            <a class="hp-btn hp-btn--secondary" href="/how-i-work/">
               How I work
             </a>
           </div>
         </div>
 
-        <figure class="portrait">
+        <figure class="hp-portrait">
           <img
             src="/img/person/ryan-laird.jpg"
             alt="Portrait of Ryan Laird"
@@ -147,8 +147,8 @@ const pathways = [
       </div>
     </section>
 
-    <section class="cred-strip" aria-label="Credentials">
-      <div class="wrap">
+    <section class="hp-creds" aria-label="Credentials">
+      <div class="hp-wrap">
         <ul>
           <li><strong>MPhys</strong> Astrophysics</li>
           <li><strong>CMktr</strong> Chartered Marketer</li>
@@ -159,78 +159,74 @@ const pathways = [
       </div>
     </section>
 
-<section class="section services" aria-labelledby="services-title">
-  <header class="section-header">
-    <div>
-      <p class="eyebrow">How I contribute</p>
-
-      <h2 id="services-title">
-        From complex work to useful progress.
-      </h2>
-    </div>
-
-    <p>
-      My work starts in different places: a difficult message, an underused
-      website, a question someone wants to understand or a conversation worth
-      bringing into the open. The routes below describe what I do when I am
-      asked to help.
-    </p>
-  </header>
-
-  <div class="service-stories">
-    {
-      pathways.map((pathway, index) => (
-        <article class="service-story" data-tone={pathway.tone}>
-          <div class="service-story__number" aria-hidden="true">
-            {String(index + 1).padStart(2, "0")}
+    <section class="hp-block" aria-labelledby="services-title">
+      <div class="hp-wrap">
+        <div class="hp-heading">
+          <div>
+            <p class="hp-eyebrow">How I contribute</p>
+            <h2 id="services-title">From complex work to useful progress.</h2>
           </div>
 
-          <div class="service-story__title">
-            <p class="service-story__action">{pathway.action}</p>
-            <h3>{pathway.title}</h3>
-          </div>
+          <p>
+            My work starts in different places: a difficult message, an
+            underused website, a question someone wants to understand or a
+            conversation worth bringing into the open. The routes below
+            describe what I do when I am asked to help.
+          </p>
+        </div>
 
-          <div class="service-story__content">
-            <p class="service-story__lead">{pathway.story}</p>
+        <div class="hp-stories">
+          {
+            pathways.map((pathway, index) => (
+              <article class="hp-story" data-tone={pathway.tone}>
+                <div class="hp-story__number" aria-hidden="true">
+                  {String(index + 1).padStart(2, "0")}
+                </div>
 
-            <ul class="service-story__outcomes">
-              {
-                pathway.outcomes.map((outcome) => (
-                  <li>{outcome}</li>
-                ))
-              }
-            </ul>
+                <div class="hp-story__title">
+                  <p class="hp-story__action">{pathway.action}</p>
+                  <h3>{pathway.title}</h3>
+                </div>
 
-            <p class="service-story__for">
-              <strong>For:</strong> {pathway.for}
-            </p>
+                <div class="hp-story__content">
+                  <p class="hp-story__lead">{pathway.story}</p>
 
-            <a class="text-link" href={pathway.href}>
-              {pathway.cta}
-              <span aria-hidden="true"> →</span>
-            </a>
-          </div>
-        </article>
-      ))
-    }
-  </div>
+                  <ul class="hp-story__outcomes">
+                    {pathway.outcomes.map((outcome) => (
+                      <li>{outcome}</li>
+                    ))}
+                  </ul>
 
-  <p class="section-action">
-    <a class="button button--secondary" href="/services/">
-      View all services
-    </a>
-  </p>
-</section>
+                  <p class="hp-story__for">
+                    <strong>For:</strong> {pathway.for}
+                  </p>
 
+                  <a class="hp-link" href={pathway.href}>
+                    {pathway.cta}
+                    <span aria-hidden="true">&nbsp;→</span>
+                  </a>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+
+        <p class="hp-actions hp-actions--after">
+          <a class="hp-btn hp-btn--secondary" href="/services/">
+            View all services
+          </a>
+        </p>
+      </div>
+    </section>
 
     <section
-      class="home-block home-block--bordered"
+      class="hp-block hp-block--bordered"
       aria-labelledby="selected-work-title"
     >
-      <div class="wrap">
-        <div class="section-heading">
+      <div class="hp-wrap">
+        <div class="hp-heading">
           <div>
-            <p class="eyebrow">Selected work</p>
+            <p class="hp-eyebrow">Selected work</p>
             <h2 id="selected-work-title">
               Work across science, space and public interest.
             </h2>
@@ -242,7 +238,7 @@ const pathways = [
           </p>
         </div>
 
-        <div class="work-grid">
+        <div class="hp-grid hp-grid--work">
           {
             selectedWork.map(
               ({ entry, sector, year, role, outcome, collection }) => {
@@ -260,30 +256,28 @@ const pathways = [
 
                 return (
                   <a
-                    class="work-card"
+                    class="hp-card hp-card--work"
                     href={`/work/${collection}/${slug}/`}
                   >
-                    {metadata && (
-                      <p class="work-card__meta">{metadata}</p>
-                    )}
+                    {metadata && <p class="hp-card__meta">{metadata}</p>}
 
                     <h3>{entry.data.title}</h3>
 
                     {shortSummary && <p>{shortSummary}</p>}
 
                     {role && (
-                      <p class="work-card__role">
+                      <p class="hp-card__note">
                         <strong>My role:</strong> {role}
                       </p>
                     )}
 
                     {!ready && (
-                      <p class="work-card__status">
+                      <p class="hp-card__note">
                         Expanded case study in preparation.
                       </p>
                     )}
 
-                    <span class="work-card__link">
+                    <span class="hp-card__link">
                       View project <span aria-hidden="true">→</span>
                     </span>
                   </a>
@@ -293,24 +287,27 @@ const pathways = [
           }
         </div>
 
-        <div class="section-actions">
-          <a class="button button--secondary" href="/work/projects/">
+        <p class="hp-actions hp-actions--after">
+          <a class="hp-btn hp-btn--secondary" href="/work/projects/">
             View all projects
           </a>
-        </div>
+        </p>
       </div>
     </section>
 
-    <section class="home-block" aria-labelledby="research-writing-title">
-      <div class="wrap feature-grid">
+    <section
+      class="hp-block hp-block--bordered"
+      aria-labelledby="research-writing-title"
+    >
+      <div class="hp-wrap hp-feature">
         <div>
-          <p class="eyebrow">Research and writing</p>
+          <p class="hp-eyebrow">Research and writing</p>
           <h2 id="research-writing-title">
             Evidence, explanation and informed perspective.
           </h2>
         </div>
 
-        <div class="feature-grid__content">
+        <div class="hp-feature__content">
           <p>
             I write and contribute to research on astrophysics, Earth
             observation, space sustainability, climate and how science reaches
@@ -319,7 +316,7 @@ const pathways = [
 
           {
             latestPost && (
-              <p class="latest-post">
+              <p class="hp-latest">
                 <span>Latest writing</span>
                 <a href={`/blog/${latestPost.data.slug ?? latestPost.id}/`}>
                   {latestPost.data.title}
@@ -328,12 +325,12 @@ const pathways = [
             )
           }
 
-          <div class="cta-row">
-            <a class="button button--secondary" href="/research/">
+          <div class="hp-actions">
+            <a class="hp-btn hp-btn--secondary" href="/research/">
               Explore research
             </a>
 
-            <a class="button button--secondary" href="/work/editorial/">
+            <a class="hp-btn hp-btn--secondary" href="/work/editorial/">
               Read writing and commentary
             </a>
           </div>
@@ -342,13 +339,13 @@ const pathways = [
     </section>
 
     <section
-      class="home-block home-block--bordered"
+      class="hp-block hp-block--bordered"
       aria-labelledby="learning-title"
     >
-      <div class="wrap">
-        <div class="section-heading">
+      <div class="hp-wrap">
+        <div class="hp-heading">
           <div>
-            <p class="eyebrow">Learning and engagement</p>
+            <p class="hp-eyebrow">Learning and engagement</p>
             <h2 id="learning-title">
               Build understanding, confidence and direction.
             </h2>
@@ -361,9 +358,9 @@ const pathways = [
           </p>
         </div>
 
-        <div class="split">
-          <article class="route" data-tone="violet">
-            <p class="card-eyebrow">One-to-one support</p>
+        <div class="hp-grid hp-grid--pair">
+          <article class="hp-card hp-card--route">
+            <p class="hp-eyebrow hp-eyebrow--violet">One-to-one support</p>
 
             <h3>Mentoring</h3>
 
@@ -373,14 +370,14 @@ const pathways = [
               science communication or mission-led digital work.
             </p>
 
-            <a class="go" href="/mentoring/">
+            <a class="hp-link" href="/mentoring/">
               How mentoring works
-              <span aria-hidden="true"> →</span>
+              <span aria-hidden="true">&nbsp;→</span>
             </a>
           </article>
 
-          <article class="route" data-tone="violet">
-            <p class="card-eyebrow">For groups and events</p>
+          <article class="hp-card hp-card--route">
+            <p class="hp-eyebrow hp-eyebrow--violet">For groups and events</p>
 
             <h3>Teaching, workshops and talks</h3>
 
@@ -390,23 +387,23 @@ const pathways = [
               teams and wider communities.
             </p>
 
-            <a class="go" href="/teaching/">
+            <a class="hp-link" href="/teaching/">
               Explore teaching and workshops
-              <span aria-hidden="true"> →</span>
+              <span aria-hidden="true">&nbsp;→</span>
             </a>
           </article>
         </div>
       </div>
     </section>
 
-    <section class="impact-orbit" aria-labelledby="impact-orbit-title">
-      <div class="wrap feature-grid">
+    <section class="hp-orbit" aria-labelledby="impact-orbit-title">
+      <div class="hp-wrap hp-feature">
         <div>
-          <p class="eyebrow">Organisation-level projects</p>
+          <p class="hp-eyebrow">Organisation-level projects</p>
           <h2 id="impact-orbit-title">Impact Orbit Co.</h2>
         </div>
 
-        <div class="feature-grid__content">
+        <div class="hp-feature__content">
           <p>
             Larger organisation-level projects in strategic communication and
             digital strategy and systems are delivered through Impact Orbit Co.
@@ -417,133 +414,155 @@ const pathways = [
             teaching, mentoring, speaking and selected collaborations.
           </p>
 
-          <a
-            class="button button--secondary"
-            href="https://impactorbit.co/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Visit Impact Orbit Co.
-            <span class="sr-only">, opens in a new tab</span>
-          </a>
+          <p class="hp-actions">
+            <a
+              class="hp-btn hp-btn--secondary"
+              href="https://impactorbit.co/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Visit Impact Orbit Co.
+              <span class="sr-only">, opens in a new tab</span>
+            </a>
+          </p>
         </div>
       </div>
     </section>
 
-    <section class="route-cta" aria-labelledby="next-step-title">
-      <div class="wrap">
-        <p class="eyebrow">Not sure where to start?</p>
+    <section class="hp-cta" aria-labelledby="next-step-title">
+      <div class="hp-wrap">
+        <p class="hp-eyebrow">Not sure where to start?</p>
 
         <h2 id="next-step-title">Tell me what you are trying to do.</h2>
 
-        <p class="intro">
+        <p class="hp-cta__intro">
           Choose the closest option and describe what you have in mind. If a
           different route, collaborator or Impact Orbit Co. is a better fit, I
           will say so.
         </p>
 
-        <div class="options">
+        <div class="hp-grid hp-grid--options">
           {
             enquiries.types.map((type) => (
-              <a href={`/contact/#${type.id}`}>
-                <strong>{type.label}</strong>
-                <span>{type.hint}</span>
-                <span aria-hidden="true">→</span>
+              <a class="hp-option" href={`/contact/#${type.id}`}>
+                <strong class="hp-option__title">{type.label}</strong>
+                <span class="hp-option__hint">{type.hint}</span>
+                <span class="hp-option__arrow" aria-hidden="true">→</span>
               </a>
             ))
           }
         </div>
       </div>
     </section>
-  </main>
+  </div>
 </Layout>
 
 <style>
-  .home {
-    overflow: hidden;
+  /* ------------------------------------------------------------------
+     Homepage styles. Every class is prefixed hp- so nothing collides with
+     the shared .route / .split / .work-grid / .go / .home-* rules in
+     pages.css. Mobile-first: base rules are for phones; min-width queries
+     add columns. Spacing comes from ONE gutter source (.hp-wrap).
+     ------------------------------------------------------------------ */
+
+  .hp-root {
+    padding-inline: 0; /* beats :where(main > *) in global.css */
+    overflow-x: clip; /* clip, not hidden: keeps focus rings and sticky intact */
   }
 
-  .home-hero {
-    padding-block: clamp(2rem, 5vw, 4rem) clamp(4.5rem, 10vw, 8rem);
+  .hp-root > section {
+    padding-inline: 0;
   }
 
-  .home-hero__grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1.15fr) minmax(16rem, 0.65fr);
-    gap: clamp(2rem, 8vw, 8rem);
-    align-items: end;
+  .hp-wrap {
+    width: 100%;
+    max-width: 72rem;
+    margin-inline: auto;
+    padding-inline: var(--gutter-min);
   }
 
-  .eyebrow,
-  .card-eyebrow {
+  /* Type ---------------------------------------------------------- */
+  .hp-eyebrow {
     margin: 0;
     color: var(--teal);
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     line-height: 1.3;
     text-transform: uppercase;
   }
 
-  .home h1,
-  .home h2 {
+  .hp-eyebrow--violet {
+    color: var(--violet);
+  }
+
+  .hp-root h1,
+  .hp-root h2 {
     margin: 0.75rem 0 0;
     color: var(--w);
     font-family: var(--font-display);
     font-weight: 400;
-    letter-spacing: -0.06em;
-    line-height: 0.9;
+    letter-spacing: -0.03em;
+    overflow-wrap: break-word;
   }
 
-  .home h1 {
-    max-width: 57rem;
-    font-size: clamp(3.3rem, 7.5vw, 7.5rem);
+  .hp-root h1 {
+    max-width: 22ch;
+    font-size: clamp(2.25rem, 1.2rem + 4.2vw, 5rem);
+    line-height: 1.04;
   }
 
-  .home h2 {
-    max-width: 37rem;
-    font-size: clamp(2.25rem, 4.8vw, 4.6rem);
+  .hp-root h2 {
+    max-width: 22ch;
+    font-size: clamp(1.85rem, 1rem + 3.2vw, 3.75rem);
+    line-height: 1.08;
   }
 
-  .lead {
+  .hp-lead {
     max-width: 43rem;
-    margin: clamp(1.5rem, 3vw, 2.5rem) 0 0;
+    margin: clamp(1.25rem, 3vw, 2.25rem) 0 0;
     color: var(--w);
-    font-size: clamp(1.18rem, 2vw, 1.5rem);
+    font-size: clamp(1.125rem, 1rem + 0.6vw, 1.4rem);
     line-height: 1.55;
   }
 
-  .support,
-  .location {
+  .hp-support,
+  .hp-location {
     max-width: 39rem;
     margin: 1rem 0 0;
     color: var(--mb);
     font-size: 1rem;
-    line-height: 1.75;
+    line-height: 1.7;
   }
 
-  .location {
+  .hp-location {
     color: var(--m);
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
   }
 
-  .cta-row {
+  /* Buttons and links --------------------------------------------- */
+  .hp-actions {
     display: flex;
     flex-wrap: wrap;
     gap: 0.75rem;
-    margin-top: 1.75rem;
+    margin: 1.75rem 0 0;
   }
 
-  .button {
+  .hp-actions--after {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .hp-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-height: 2.9rem;
-    padding: 0.85rem 1.1rem;
+    min-height: 2.75rem; /* 44px */
+    padding: 0.8rem 1.1rem;
     border: 1px solid transparent;
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     font-weight: 700;
-    line-height: 1;
+    line-height: 1.2;
+    text-align: center;
     text-decoration: none;
     transition:
       border-color 0.2s ease,
@@ -551,357 +570,396 @@ const pathways = [
       background 0.2s ease;
   }
 
-  .button--primary {
+  .hp-btn--primary {
     border-color: var(--teal);
-    color: var(--bg);
+    color: var(--on-accent);
     background: var(--teal);
   }
 
-  .button--primary:hover,
-  .button--primary:focus-visible {
+  .hp-btn--primary:hover,
+  .hp-btn--primary:focus-visible {
     border-color: var(--w);
-    color: var(--bg);
+    color: var(--on-accent);
     background: var(--w);
   }
 
-  .button--secondary {
-    border-color: var(--bd);
+  .hp-btn--secondary {
+    border-color: var(--bm);
     color: var(--w);
     background: transparent;
   }
 
-  .button--secondary:hover,
-  .button--secondary:focus-visible {
+  .hp-btn--secondary:hover,
+  .hp-btn--secondary:focus-visible {
     border-color: var(--teal);
     color: var(--teal);
   }
 
-  .portrait {
-    max-width: 25rem;
-    margin: 0 0 0 auto;
-    overflow: hidden;
-    background: var(--lift);
-  }
-
-  .portrait img {
-    display: block;
-    width: 100%;
-    height: auto;
-    aspect-ratio: 4 / 5;
-    object-fit: cover;
-  }
-
-  .cred-strip {
-    border-block: 1px solid var(--bd);
-  }
-
-  .cred-strip ul {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 2rem;
-    padding: 1.1rem 0;
-    margin: 0;
-    list-style: none;
-  }
-
-  .cred-strip li {
-    color: var(--m);
-    font-size: 0.82rem;
-    line-height: 1.5;
-  }
-
-  .cred-strip strong {
-    color: var(--w);
-    font-weight: 700;
-  }
-
-  .home-block,
-  .impact-orbit,
-  .route-cta {
-    padding-block: clamp(4.5rem, 9vw, 8rem);
-  }
-
-  .home-block--bordered,
-  .impact-orbit,
-  .route-cta {
-    border-top: 1px solid var(--bd);
-  }
-
-  .section-heading,
-  .feature-grid {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.58fr);
-    gap: clamp(2rem, 8vw, 8rem);
-    align-items: end;
-  }
-
-  .section-heading {
-    padding-bottom: clamp(2rem, 4vw, 3.5rem);
-  }
-
-  .section-heading > p,
-  .feature-grid__content > p,
-  .intro {
-    max-width: 30rem;
-    margin: 0;
-    color: var(--mb);
-    font-size: 1rem;
-    line-height: 1.75;
-  }
-
-  .pathway-grid,
-  .work-grid,
-  .split {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    border-top: 1px solid var(--bd);
-    border-left: 1px solid var(--bd);
-  }
-
-  .pathway,
-  .work-card,
-  .route {
-    display: flex;
-    flex-direction: column;
-    min-height: 17rem;
-    padding: clamp(1.5rem, 3vw, 2.25rem);
-    border-right: 1px solid var(--bd);
-    border-bottom: 1px solid var(--bd);
-  }
-
-  .pathway[data-tone="teal"] {
-    --accent: var(--teal);
-  }
-
-  .pathway[data-tone="sky"] {
-    --accent: var(--sky, var(--teal));
-  }
-
-  .pathway[data-tone="violet"],
-  .route[data-tone="violet"] {
-    --accent: var(--violet, var(--teal));
-  }
-
-  .pathway[data-tone="amber"] {
-    --accent: var(--amber, var(--teal));
-  }
-
-  .pathway {
-    box-shadow: inset 0 3px 0 transparent;
-    transition:
-      background 0.2s ease,
-      box-shadow 0.2s ease;
-  }
-
-  .pathway:hover {
-    background: var(--lift);
-    box-shadow: inset 0 3px 0 var(--accent);
-  }
-
-  .pathway .card-eyebrow,
-  .route .card-eyebrow {
-    color: var(--accent, var(--teal));
-  }
-
-  .pathway h3,
-  .work-card h3,
-  .route h3 {
-    margin: 0.8rem 0 0;
-    color: var(--w);
-    font-size: clamp(1.2rem, 2vw, 1.55rem);
-    line-height: 1.25;
-  }
-
-  .pathway > p:not(.card-eyebrow),
-  .work-card > p,
-  .route > p:not(.card-eyebrow) {
-    margin: 0.75rem 0 0;
-    color: var(--mb);
-    font-size: 0.96rem;
-    line-height: 1.7;
-  }
-
-  .pathway__for {
-    margin-top: auto !important;
-    padding-top: 1.5rem;
-    color: var(--m) !important;
-    font-size: 0.84rem !important;
-    line-height: 1.6 !important;
-  }
-
-  .pathway__for strong {
-    color: var(--w);
-  }
-
-  .go,
-  .work-card__link {
+  .hp-link,
+  .hp-card__link {
     display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
     width: fit-content;
-    margin-top: 1.25rem;
+    min-height: 2.75rem; /* 44px touch target */
     color: var(--w);
-    font-size: 0.9rem;
+    font-size: 0.9375rem;
     font-weight: 700;
     line-height: 1.4;
+    text-decoration: underline;
     text-decoration-color: var(--teal);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.25em;
   }
 
-  .go:hover,
-  .go:focus-visible,
-  .work-card:hover .work-card__link,
-  .work-card:focus-visible .work-card__link {
+  .hp-link:hover,
+  .hp-link:focus-visible,
+  .hp-card--work:hover .hp-card__link,
+  .hp-card--work:focus-visible .hp-card__link {
     color: var(--teal);
   }
 
-  .section-actions {
-    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  /* Hero ---------------------------------------------------------- */
+  .hp-hero {
+    padding-block: clamp(2rem, 5vw, 4rem) clamp(3rem, 8vw, 7rem);
   }
 
-  .work-card {
-    min-height: 18rem;
-    color: inherit;
-    text-decoration: none;
-    transition: background 0.2s ease;
-  }
-
-  .work-card:hover,
-  .work-card:focus-visible {
-    background: var(--lift);
-  }
-
-  .work-card__meta {
-    margin: 0 !important;
-    color: var(--teal) !important;
-    font-size: 0.76rem !important;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    line-height: 1.4 !important;
-    text-transform: uppercase;
-  }
-
-  .work-card__role,
-  .work-card__status {
-    color: var(--m) !important;
-    font-size: 0.84rem !important;
-  }
-
-  .work-card__role strong {
-    color: var(--w);
-  }
-
-  .work-card__link {
-    margin-top: auto;
-    padding-top: 1.5rem;
-  }
-
-  .feature-grid {
+  .hp-hero__grid {
+    display: grid;
+    gap: 2rem;
     align-items: start;
   }
 
-  .feature-grid__content {
-    max-width: 39rem;
+  .hp-portrait {
+    width: 100%;
+    max-width: 15rem;
+    margin: 0;
+    overflow: hidden;
+    background: var(--lift);
   }
 
-  .feature-grid__content > p + p {
-    margin-top: 1.15rem;
+  .hp-portrait img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: center top;
   }
 
-  .latest-post {
+  /* Credentials --------------------------------------------------- */
+  .hp-creds {
+    border-block: 1px solid var(--bd);
+  }
+
+  .hp-creds ul {
     display: grid;
-    gap: 0.35rem;
-    padding-top: 1.5rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.9rem 1.25rem;
+    padding: 1.1rem 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .hp-creds li {
+    color: var(--m);
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .hp-creds strong {
+    display: block;
+    color: var(--w);
+    font-weight: 700;
+  }
+
+  /* Blocks and headings ------------------------------------------- */
+  .hp-block,
+  .hp-orbit,
+  .hp-cta {
+    padding-block: clamp(3rem, 8vw, 7rem);
+  }
+
+  .hp-block--bordered,
+  .hp-orbit,
+  .hp-cta {
     border-top: 1px solid var(--bd);
   }
 
-  .latest-post span {
+  .hp-orbit {
+    background: var(--lift);
+  }
+
+  .hp-heading,
+  .hp-feature {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .hp-heading {
+    padding-bottom: clamp(1.75rem, 4vw, 3.5rem);
+  }
+
+  .hp-heading > p,
+  .hp-feature__content > p,
+  .hp-cta__intro {
+    max-width: 38rem;
+    margin: 0;
+    color: var(--mb);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .hp-feature__content > p + p {
+    margin-top: 1.1rem;
+  }
+
+  .hp-feature__content {
+    max-width: 39rem;
+  }
+
+  .hp-cta__intro {
+    margin-top: 1.25rem;
+  }
+
+  .hp-latest {
+    display: grid;
+    gap: 0.15rem;
+    padding-top: 1.25rem;
+    margin-top: 1.25rem !important;
+    border-top: 1px solid var(--bd);
+  }
+
+  .hp-latest span {
     color: var(--m);
-    font-size: 0.76rem;
+    font-size: 0.8125rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  .latest-post a {
+  .hp-latest a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
     width: fit-content;
     color: var(--w);
-    font-size: 1.06rem;
+    font-size: 1.0625rem;
     font-weight: 700;
-    line-height: 1.45;
+    line-height: 1.4;
     text-decoration-color: var(--teal);
     text-underline-offset: 0.25em;
   }
 
-  .latest-post a:hover,
-  .latest-post a:focus-visible {
+  .hp-latest a:hover,
+  .hp-latest a:focus-visible {
     color: var(--teal);
   }
 
-  .route {
-    min-height: 15rem;
+  /* Service stories ----------------------------------------------- */
+  .hp-stories {
+    border-top: 1px solid var(--bd);
   }
 
-  .route[data-tone="violet"] {
-    box-shadow: inset 0 3px 0 var(--violet, var(--teal));
-  }
-
-  .route .go {
-    margin-top: auto;
-    padding-top: 1.5rem;
-  }
-
-  .impact-orbit {
-    background: var(--lift);
-  }
-
-  .impact-orbit .button {
-    margin-top: 1.75rem;
-  }
-
-  .route-cta .intro {
-    max-width: 39rem;
-    margin-top: 1.25rem;
-  }
-
-  .options {
+  .hp-story {
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    margin-top: clamp(2rem, 4vw, 3rem);
+    gap: 0.9rem;
+    padding-block: clamp(1.75rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .hp-story[data-tone="teal"] { --accent: var(--teal); }
+  .hp-story[data-tone="sky"] { --accent: var(--sky); }
+  .hp-story[data-tone="violet"] { --accent: var(--violet); }
+  .hp-story[data-tone="amber"] { --accent: var(--amber); }
+
+  .hp-story__number {
+    display: none; /* decorative; shown from 35rem */
+    color: var(--accent);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .hp-story__action {
+    margin: 0;
+    color: var(--accent);
+    font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.75rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .hp-story h3 {
+    margin: 0.35rem 0 0;
+    color: var(--w);
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);
+    font-weight: 400;
+    letter-spacing: -0.03em;
+    line-height: 1.08;
+    overflow-wrap: break-word;
+  }
+
+  .hp-story__content {
+    max-width: 42rem;
+  }
+
+  .hp-story__lead {
+    margin: 0;
+    color: var(--w);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .hp-story__outcomes {
+    display: grid;
+    gap: 0.5rem;
+    padding: 0;
+    margin: 1.1rem 0 0;
+    list-style: none;
+  }
+
+  .hp-story__outcomes li {
+    color: var(--mb);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .hp-story__outcomes li::before {
+    margin-right: 0.65rem;
+    color: var(--accent);
+    content: "—";
+  }
+
+  .hp-story__for {
+    margin: 1.25rem 0 0;
+    color: var(--m);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .hp-story__for strong {
+    color: var(--w);
+  }
+
+  /* Card grids (mobile: one column) ------------------------------- */
+  .hp-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     border-top: 1px solid var(--bd);
     border-left: 1px solid var(--bd);
   }
 
-  .options a {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 0.35rem 1rem;
-    min-height: 8.75rem;
-    padding: 1.35rem;
+  .hp-card,
+  .hp-option {
+    padding: clamp(1.25rem, 3vw, 2.25rem);
     border-right: 1px solid var(--bd);
     border-bottom: 1px solid var(--bd);
+  }
+
+  .hp-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .hp-card h3 {
+    margin: 0.8rem 0 0;
+    color: var(--w);
+    font-size: clamp(1.2rem, 1.05rem + 0.7vw, 1.55rem);
+    line-height: 1.25;
+    overflow-wrap: break-word;
+  }
+
+  .hp-card > p:not(.hp-eyebrow):not(.hp-card__meta) {
+    margin: 0.75rem 0 0;
+    color: var(--mb);
+    font-size: 0.9688rem;
+    line-height: 1.7;
+  }
+
+  .hp-card--route {
+    box-shadow: inset 0 3px 0 var(--violet);
+  }
+
+  .hp-card--route .hp-link {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  .hp-card--work {
+    color: inherit;
+    text-decoration: none;
+    transition: background 0.2s ease;
+  }
+
+  .hp-card--work:hover,
+  .hp-card--work:focus-visible {
+    background: var(--lift);
+  }
+
+  .hp-card__meta {
+    margin: 0;
+    color: var(--teal);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.4;
+    text-transform: uppercase;
+    overflow-wrap: break-word;
+  }
+
+  .hp-card .hp-card__note {
+    color: var(--m);
+    font-size: 0.875rem;
+  }
+
+  .hp-card .hp-card__note strong {
+    color: var(--w);
+  }
+
+  .hp-card__link {
+    margin-top: auto;
+    padding-top: 1rem;
+  }
+
+  /* Enquiry options ----------------------------------------------- */
+  .hp-cta .hp-grid {
+    margin-top: clamp(1.75rem, 4vw, 3rem);
+  }
+
+  .hp-option {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.35rem 1rem;
+    align-content: center;
+    min-height: 6.5rem;
     color: var(--w);
     text-decoration: none;
     transition: background 0.2s ease;
   }
 
-  .options a:hover,
-  .options a:focus-visible {
+  .hp-option:hover,
+  .hp-option:focus-visible {
     background: var(--lift);
   }
 
-  .options strong {
+  .hp-option__title {
+    grid-column: 1;
     font-size: 1rem;
     line-height: 1.4;
   }
 
-  .options span:first-of-type {
+  .hp-option__hint {
     grid-column: 1;
     color: var(--mb);
-    font-size: 0.88rem;
+    font-size: 0.9rem;
     line-height: 1.55;
   }
 
-  .options span:last-child {
+  .hp-option__arrow {
     grid-column: 2;
     grid-row: 1 / span 2;
     align-self: center;
@@ -909,169 +967,101 @@ const pathways = [
     font-size: 1.25rem;
   }
 
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-
-  a:focus-visible {
-    outline: 2px solid var(--teal);
-    outline-offset: 4px;
-  }
-
-  @media (max-width: 850px) {
-    .home-hero__grid,
-    .section-heading,
-    .feature-grid {
-      grid-template-columns: 1fr;
+  /* >= 35rem (560px) ---------------------------------------------- */
+  @media (min-width: 35rem) {
+    .hp-story {
+      grid-template-columns: 2.5rem minmax(0, 1fr);
+      gap: 1rem 1.25rem;
     }
 
-    .portrait {
-      max-width: 22rem;
-      margin: 0;
+    .hp-story__number {
+      display: block;
     }
 
-    .section-heading {
-      gap: 1.5rem;
+    .hp-story__content {
+      grid-column: 2;
     }
   }
 
-.service-stories {
-  border-top: 1px solid var(--bd);
-}
+  /* >= 48rem (768px) ---------------------------------------------- */
+  @media (min-width: 48rem) {
+    .hp-creds ul {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 2rem;
+    }
 
-.service-story {
-  display: grid;
-  grid-template-columns: minmax(3rem, 0.12fr) minmax(13rem, 0.5fr) minmax(
-      18rem,
-      0.75fr
-    );
-  gap: clamp(1.25rem, 4vw, 5rem);
-  padding-block: clamp(2rem, 4vw, 3.5rem);
-  border-bottom: 1px solid var(--bd);
-}
+    .hp-creds strong {
+      display: inline;
+    }
 
-.service-story[data-tone="teal"] {
-  --accent: var(--teal);
-}
+    .hp-grid--work,
+    .hp-grid--pair,
+    .hp-grid--options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 
-.service-story[data-tone="sky"] {
-  --accent: var(--sky, var(--teal));
-}
-
-.service-story[data-tone="violet"] {
-  --accent: var(--violet, var(--teal));
-}
-
-.service-story[data-tone="amber"] {
-  --accent: var(--amber, var(--teal));
-}
-
-.service-story__number {
-  color: var(--accent);
-  font-family: var(--font-mono, inherit);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  line-height: 1.4;
-}
-
-.service-story__action {
-  margin: 0;
-  color: var(--accent);
-  font-size: clamp(1.35rem, 2vw, 1.75rem);
-  font-weight: 700;
-  letter-spacing: -0.03em;
-  line-height: 1.15;
-}
-
-.service-story h3 {
-  margin: 0.35rem 0 0;
-  color: var(--w);
-  font-family: var(--font-display);
-  font-size: clamp(1.55rem, 3vw, 2.6rem);
-  font-weight: 400;
-  letter-spacing: -0.05em;
-  line-height: 0.98;
-}
-
-.service-story__content {
-  max-width: 42rem;
-}
-
-.service-story__lead {
-  margin: 0;
-  color: var(--w);
-  font-size: 1.02rem;
-  line-height: 1.75;
-}
-
-.service-story__outcomes {
-  display: grid;
-  gap: 0.5rem;
-  padding: 0;
-  margin: 1.25rem 0 0;
-  list-style: none;
-}
-
-.service-story__outcomes li {
-  color: var(--mb);
-  font-size: 0.94rem;
-  line-height: 1.55;
-}
-
-.service-story__outcomes li::before {
-  margin-right: 0.65rem;
-  color: var(--accent);
-  content: "—";
-}
-
-.service-story__for {
-  margin: 1.4rem 0 0;
-  color: var(--m);
-  font-size: 0.84rem;
-  line-height: 1.65;
-}
-
-.service-story__for strong {
-  color: var(--w);
-}
-
-.service-story .text-link {
-  margin-top: 1.25rem;
-}
-
-@media (max-width: 850px) {
-  .service-story {
-    grid-template-columns: 3rem minmax(0, 1fr);
-    gap: 1rem 1.5rem;
+    .hp-portrait {
+      max-width: 18rem;
+    }
   }
 
-  .service-story__content {
-    grid-column: 2;
-  }
-}
+  /* >= 56rem (896px) ---------------------------------------------- */
+  @media (min-width: 56rem) {
+    .hp-hero__grid {
+      grid-template-columns: minmax(0, 1.6fr) minmax(14rem, 0.7fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: end;
+    }
 
-@media (max-width: 560px) {
-  .service-story {
-    grid-template-columns: 1fr;
-    gap: 0.8rem;
+    .hp-portrait {
+      max-width: 25rem;
+      margin-left: auto;
+    }
+
+    .hp-portrait img {
+      aspect-ratio: 4 / 5;
+    }
+
+    .hp-heading,
+    .hp-feature {
+      grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.62fr);
+      gap: clamp(2rem, 8vw, 7rem);
+      align-items: end;
+    }
+
+    .hp-feature {
+      align-items: start;
+    }
+
+    .hp-story {
+      grid-template-columns: 3rem minmax(12rem, 0.5fr) minmax(0, 0.9fr);
+      gap: 1rem clamp(1.5rem, 4vw, 4rem);
+    }
+
+    .hp-story__content {
+      grid-column: auto;
+    }
   }
 
-  .service-story__content {
-    grid-column: auto;
+  /* >= 72rem (1152px): six work cards read as 3 x 2 ---------------- */
+  @media (min-width: 72rem) {
+    .hp-grid--work {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
   }
 
-  .service-story__number {
-    margin-bottom: 0.5rem;
+  @media (prefers-reduced-motion: reduce) {
+    .hp-root *,
+    .hp-root *::before,
+    .hp-root *::after {
+      transition: none !important;
+    }
   }
-}
 
+  @media (forced-colors: active) {
+    .hp-btn--primary {
+      border-color: ButtonText;
+    }
+  }
 </style>
