@@ -1,0 +1,17 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapSkills } from '../../lib/schema/mappers';
+import type { SkillsTaxonomy } from '../../lib/schema/types';
+
+interface Props {
+  data: SkillsTaxonomy;
+  /** domain_expertise | technical_skills | practices | leadership_and_collaboration | areas_of_interest */
+  sections?: string[];
+}
+const { data, sections } = Astro.props;
+const g = new SchemaGraph();
+mapSkills(g, data, sections);
+---
+
+<JsonLd data={g.toJSON()} />

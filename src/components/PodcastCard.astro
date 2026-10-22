@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PodcastMeta from "./PodcastMeta.astro";
+import { entryHref } from "../lib/routes";
 
 type PodcastData = CollectionEntry<"podcasts">["data"];
 
@@ -29,7 +30,7 @@ const description =
 
 const image = episode.artwork ?? data.heroImage ?? "";
 const href =
-  episode.shareUrl || episode.audioUrl || `/podcasts/${entry?.id ?? ""}/`;
+  episode.shareUrl || episode.audioUrl || entryHref("podcast", entry?.id ?? "");
 
 const publishedDate =
   episode.publishedDate ??

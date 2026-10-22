@@ -1,0 +1,16 @@
+export { default as JsonLd } from './JsonLd.astro';
+export { default as PersonSchema } from './PersonSchema.astro';
+export { default as CertificationsSchema } from './CertificationsSchema.astro';
+export { default as CredentialsSchema } from './CredentialsSchema.astro';
+export { default as AwardsSchema } from './AwardsSchema.astro';
+export { default as EducationSchema } from './EducationSchema.astro';
+export { default as VolunteeringSchema } from './VolunteeringSchema.astro';
+export { default as MembershipsSchema } from './MembershipsSchema.astro';
+export { default as SkillsSchema } from './SkillsSchema.astro';
+export { default as LanguagesSchema } from './LanguagesSchema.astro';
+export { default as ServicesSchema } from './ServicesSchema.astro';
+export { default as SocialsSchema } from './SocialsSchema.astro';
+export { default as CaseStudiesSchema } from './CaseStudiesSchema.astro';
+export { default as VideosSchema } from './VideosSchema.astro';
+export { default as TalksSchema } from './TalksSchema.astro';
+export { default as PublicationsSchema } from './PublicationsSchema.astro';

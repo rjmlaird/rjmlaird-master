@@ -1,0 +1,19 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapCaseStudies } from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type { CaseStudyItem, MaybeWrapped, Organisation } from '../../lib/schema/types';
+
+interface Props {
+  /** Array, or the wrapper object { caseStudies: [...] }. */
+  data: MaybeWrapped<CaseStudyItem, 'caseStudies'>;
+  /** Optional override, e.g. fetched from your API. Defaults to src/data/organisations.json. */
+  organisations?: Organisation[];
+}
+const { data, organisations } = Astro.props;
+const g = new SchemaGraph(organisations);
+mapCaseStudies(g, unwrap(data, 'caseStudies'));
+---
+
+<JsonLd data={g.toJSON()} />

@@ -1,5 +1,6 @@
 ---
 // src/pages/sectors/index.astro
+import { routes } from "../../../lib/routes";
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { slugify } from "../../../utils/slugify";
@@ -52,7 +53,7 @@ const allSectors = Array.from(sectorMap.entries())
     <ul class="pill-list" aria-label="All sectors">
       {allSectors.map(({ slug, label, count }) => (
         <li>
-          <a href={`/sectors/${slug}/`}>
+          <a href={`${routes.sectors}${slug}/`}>
             <span class="sector-label">{label}</span>
             <span class="pill-count">{count}</span>
           </a>

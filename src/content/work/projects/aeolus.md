@@ -220,7 +220,7 @@ and engineering that enable European space missions.
 
 See also:
 
-- [ESA Material Labs case study](/case-studies/esa-material-labs/)
+- [ESA Material Labs case study](/work/case-studies/esa-material-labs/)
 
 ## Limitations
 

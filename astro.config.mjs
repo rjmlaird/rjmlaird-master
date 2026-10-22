@@ -2,6 +2,9 @@ import { defineConfig } from "astro/config";
 import icon from "astro-icon";
 import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
+import { unified } from "@astrojs/markdown-remark";
+import { rehypeTableAlign } from "./src/lib/rehype-table-align.mjs";
+import { remarkGlossaryLinks } from "./packages/glossary/src/index.js";
 import fs from "node:fs";
 import path from "node:path";
 import matter from "gray-matter";
@@ -32,8 +35,20 @@ const localIconsDir = path.resolve("src/icons");
 const iconConfig = fs.existsSync(localIconsDir) ? {} : { include: {} };
 
 export default defineConfig({
-  vite: { resolve: { alias: { "@brand": path.resolve("./src/brand") } } },
+  vite: {
+    resolve: { alias: { "@brand": path.resolve("./src/brand") } },
+    ssr: { noExternal: ["@rjmlaird/policies"] }, // compile the package's TypeScript
+  },
   site: "https://rjmlaird.co.uk",
+  // [term] and [term|text] in Markdown/MDX link to https://glossary.rjmlaird.co.uk/{slug}/.
+  // Remark plugins need the unified processor (Astro 7 defaults to the Rust one); MDX inherits it.
+  // Unknown references fail the build; set GLOSSARY_STRICT=0 to downgrade them to warnings.
+  markdown: {
+    processor: unified({
+      remarkPlugins: [[remarkGlossaryLinks, { strict: process.env.GLOSSARY_STRICT !== "0" }]],
+      rehypePlugins: [rehypeTableAlign],
+    }),
+  },
   scopedStyleStrategy: "class",
   integrations: [
     icon(iconConfig), 

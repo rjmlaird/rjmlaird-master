@@ -1,0 +1,61 @@
+---
+// Renders the policies from @rjmlaird/policies on the existing LegalNotice layout.
+// A policy that still contains [[TODO]] markers is only built in `astro dev`, so
+// placeholder text can never reach production. Fill in the package's registers
+// (data/site.ts, processors, retention, cookies) and the route appears.
+import LegalNoticeLayout from "../layouts/LegalNotice.astro";
+import type { LegalLinkKey } from "../data/legal";
+import { createMarkdownProcessor } from "@astrojs/markdown-remark";
+import {
+  policyRegister,
+  notices,
+  renderPolicyMarkdown,
+  extractSections,
+  hasTodo,
+} from "@rjmlaird/policies";
+
+export async function getStaticPaths() {
+  const files = import.meta.glob("/node_modules/@rjmlaird/policies/content/*.md", {
+    query: "?raw",
+    import: "default",
+    eager: true,
+  }) as Record<string, string>;
+
+  const paths = [];
+  for (const p of policyRegister) {
+    const raw = Object.entries(files).find(([k]) =>
+      k.endsWith(`/${p.contentFile.split("/").pop()}`),
+    )?.[1];
+    if (!raw) continue;
+    const { markdown } = renderPolicyMarkdown(raw);
+    if (hasTodo(markdown) && !import.meta.env.DEV) {
+      console.warn(`[policies] ${p.route} not built: unresolved TODOs`);
+      continue;
+    }
+    paths.push({
+      params: { policy: p.route.replaceAll("/", "") },
+      props: { slug: p.slug, markdown },
+    });
+  }
+  return paths;
+}
+
+const { slug, markdown } = Astro.props;
+const entry = policyRegister.find((p) => p.slug === slug)!;
+const notice = notices[slug as keyof typeof notices];
+const { code } = await (await createMarkdownProcessor()).render(markdown);
+---
+
+<LegalNoticeLayout
+  title={entry.title}
+  description={notice.description}
+  eyebrow={notice.eyebrow}
+  lead={notice.lead}
+  summary={notice.summary}
+  lastUpdated={entry.lastUpdated}
+  sections={extractSections(markdown)}
+  related={notice.related as LegalLinkKey[]}
+>
+  <Fragment set:html={code} />
+  <p slot="draft-note">{notice.draftNote}</p>
+</LegalNoticeLayout>

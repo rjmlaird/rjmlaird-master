@@ -1,0 +1,232 @@
+{
+  "main": {
+    "id": "d791d6bfe973fdb1",
+    "type": "split",
+    "children": [
+      {
+        "id": "f6f1dae445449656",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3eff24bcf4bac07f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "src/content/work/events/bremen-sanfrancisco.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "bremen-sanfrancisco"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "4e1b90c0cdf00350",
+    "type": "split",
+    "children": [
+      {
+        "id": "39850cbbf57068ad",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "dbfd29fbac1edb91",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "f65ff62b9ce4b937",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "70eb67fd4108fcf1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "e25467b558115da9",
+    "type": "split",
+    "children": [
+      {
+        "id": "d138fa9498748ea6",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "077c8341f537860e",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "src/content/work/events/bremen-sanfrancisco.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "e243d61a332f5506",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "src/content/work/events/bremen-sanfrancisco.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "f4f14e90dd3137d1",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "fb7e04474011d7d1",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "04248b2de153f025",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "src/content/work/events/bremen-sanfrancisco.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "3eff24bcf4bac07f",
+  "lastOpenFiles": [
+    "dist/work/events/phiweekbootcamp2018/index.html",
+    "dist/work/events/phiweekbootcamp2018",
+    "dist/work/events/nssc2015/index.html",
+    "dist/work/events/nssc2015",
+    "dist/work/events/nssc2014/index.html",
+    "dist/work/events/nssc2014",
+    "dist/work/events/nssc2013/index.html",
+    "dist/work/events/nssc2013",
+    "dist/work/events/midlandsspace-online4/index.html",
+    "dist/work/events/midlandsspace-online4",
+    "dist/work/events/midlandsspace-online3/index.html",
+    "node_modules/aria-query/README.md",
+    "node_modules/@cyberalien/svg-utils/README.md",
+    "node_modules/@iconify/tools/README.md",
+    "node_modules/@iconify-json/simple-icons/README.md",
+    "node_modules/@astrojs/language-server/README.md",
+    "node_modules/@yarnpkg/lockfile/README.md",
+    "node_modules/diff/CONTRIBUTING.md",
+    "node_modules/ajv-i18n/localize/README.md",
+    "node_modules/parse-entities/node_modules/@types/unist/README.md",
+    "node_modules/parse-entities/readme.md",
+    "node_modules/@rjmlaird/policies/node_modules/zod/README.md",
+    "node_modules/@rjmlaird/policies/docs/review-checklist.md",
+    "node_modules/@rjmlaird/policies/docs/publishing-checklist.md",
+    "node_modules/@rjmlaird/policies/docs/data-flow.md",
+    "node_modules/@rjmlaird/policies/content/terms.md",
+    "node_modules/@rjmlaird/policies/content/privacy.md",
+    "node_modules/@rjmlaird/policies/content/disclaimer.md",
+    "node_modules/@rjmlaird/policies/content/cookies.md",
+    "node_modules/@rjmlaird/policies/content/accessibility.md",
+    "node_modules/@rjmlaird/policies/README.md",
+    "node_modules/@rjmlaird/policies/CHANGELOG.md",
+    "node_modules/youch/node_modules/cookie/README.md",
+    "node_modules/youch/README.md",
+    "node_modules/youch/LICENSE.md",
+    "node_modules/wrangler/node_modules/miniflare/dist/local-explorer-ui/favicon.svg",
+    "node_modules/wrangler/node_modules/miniflare/README.md",
+    "node_modules/miniflare/dist/local-explorer-ui/favicon.svg"
+  ]
+}

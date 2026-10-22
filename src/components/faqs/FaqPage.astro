@@ -1,0 +1,91 @@
+---
+/**
+ * The central /faq/ page body. Put <h1> and any intro in the page itself.
+ * Topic groups are h2; questions are h3. Includes a topic jump list, optional search,
+ * and a link back to each topic's service page.
+ */
+import FaqList from './FaqList.astro';
+import FaqSearch from './FaqSearch.astro';
+import { getFaqs, groupByTopic, type FaqEntry } from '../../lib/faqs';
+
+export interface Props {
+  /** Entries to show. Default: published FAQs targeting the "faq" page. */
+  entries?: FaqEntry[];
+  /** Page id used to select entries when `entries` is omitted. Default "faq". */
+  page?: string;
+  /** Show the filter box (enhances only when JS runs). Default true. */
+  search?: boolean;
+  /** Collapse answers. Default false: this is a short page, keep answers visible. */
+  collapsible?: boolean;
+  /** Show "Last reviewed" per answer. Default false. */
+  showReviewed?: boolean;
+  /** Accessible name for the topic jump list. Default "FAQ topics". */
+  navLabel?: string;
+}
+
+const {
+  entries,
+  page = 'faq',
+  search = true,
+  collapsible = false,
+  showReviewed = false,
+  navLabel = 'FAQ topics',
+} = Astro.props;
+
+const all = entries ?? (await getFaqs({ page }));
+const groups = groupByTopic(all);
+---
+
+{
+  all.length > 0 && (
+    <div class="faq-page">
+      {search && <FaqSearch />}
+      {groups.length > 1 && (
+        <nav class="faq-page__nav" aria-label={navLabel}>
+          <ul>
+            {groups.map((g) => (
+              <li><a href={`#faq-topic-${g.topic}`}>{g.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      )}
+      <FaqList
+        entries={all}
+        groupBy="topic"
+        headingLevel={2}
+        groupLinks
+        collapsible={collapsible}
+        showReviewed={showReviewed}
+        showViewAll={false}
+      />
+    </div>
+  )
+}
+
+<style>
+  .faq-page { --faq-link: var(--teal); --faq-focus: var(--focus); }
+  .faq-page__nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0 0 2rem;
+    padding: 0;
+    list-style: none;
+  }
+  .faq-page__nav a {
+    display: inline-block;
+    min-block-size: 2.75rem;
+    padding: 0.6rem 0.9rem;
+    box-sizing: border-box;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .faq-page__nav a:hover { text-decoration: underline; }
+  .faq-page__nav a:focus-visible {
+    outline: 3px solid var(--faq-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px Canvas;
+  }
+</style>

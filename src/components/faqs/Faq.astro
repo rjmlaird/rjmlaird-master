@@ -1,0 +1,186 @@
+---
+/**
+ * Renders ONE FAQ.
+ *
+ * Default: <article> with a real heading — best document outline, answer always visible.
+ * collapsible: native <details>/<summary> — works with no JS. Trade-off: the question is a
+ * summary (button role), so it is not in the heading outline. Use it for long lists only.
+ */
+import { render } from 'astro:content';
+import type { FaqEntry } from '../../lib/faqs';
+
+export interface Props {
+  entry: FaqEntry;
+  /** Heading level for the question (ignored when collapsible). Default 3. */
+  headingLevel?: 2 | 3 | 4 | 5 | 6;
+  /** Use <details>/<summary>. Default false. */
+  collapsible?: boolean;
+  /** Start open when collapsible. Default false. */
+  open?: boolean;
+  /** Prefix for the element id; use when the same FAQ renders twice on a page. */
+  idPrefix?: string;
+  /** Show the entry's CTA. Default true. */
+  showCta?: boolean;
+  /** Show the entry's related links. Default true. */
+  showRelated?: boolean;
+  /** Show "Last reviewed <date>". Default false. */
+  showReviewed?: boolean;
+}
+
+const {
+  entry,
+  headingLevel = 3,
+  collapsible = false,
+  open = false,
+  idPrefix = '',
+  showCta = true,
+  showRelated = true,
+  showReviewed = false,
+} = Astro.props;
+
+const { Content } = await render(entry);
+const { question, relatedLinks, cta, lastReviewed, status } = entry.data;
+const id = `${idPrefix}${entry.id}`;
+const Heading = `h${headingLevel}` as 'h2';
+const isDraft = status === 'draft';
+const reviewed = lastReviewed.toISOString().slice(0, 10);
+const reviewedText = new Intl.DateTimeFormat('en-GB', { dateStyle: 'long', timeZone: 'UTC' }).format(lastReviewed);
+---
+
+{
+  collapsible ? (
+    <details class="faq faq--collapsible" id={id} open={open} data-faq-item>
+      <summary class="faq__question">
+        {question}
+        {isDraft && <span class="faq__badge">Draft</span>}
+      </summary>
+      <div class="faq__body">
+        <div class="faq__answer"><Content /></div>
+        {showRelated && relatedLinks.length > 0 && (
+          <ul class="faq__links">
+            {relatedLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+          </ul>
+        )}
+        {showCta && cta && <p class="faq__cta"><a class="faq__button" href={cta.href}>{cta.label}</a></p>}
+        {showReviewed && <p class="faq__meta">Last reviewed <time datetime={reviewed}>{reviewedText}</time></p>}
+      </div>
+    </details>
+  ) : (
+    <article class="faq" id={id} data-faq-item>
+      <Heading class="faq__question">
+        {question}
+        {isDraft && <span class="faq__badge">Draft</span>}
+      </Heading>
+      <div class="faq__answer"><Content /></div>
+      {showRelated && relatedLinks.length > 0 && (
+        <ul class="faq__links">
+          {relatedLinks.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      )}
+      {showCta && cta && <p class="faq__cta"><a class="faq__button" href={cta.href}>{cta.label}</a></p>}
+      {showReviewed && <p class="faq__meta">Last reviewed <time datetime={reviewed}>{reviewedText}</time></p>}
+    </article>
+  )
+}
+
+<script>
+  // Deep links (/faq/#speaking-topics) should open a collapsed answer. Native <details>
+  // does not do this when the hash points at the <details> itself.
+  function openFromHash() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const details = document.getElementById(id)?.closest('details.faq');
+    if (details instanceof HTMLDetailsElement) details.open = true;
+  }
+  openFromHash();
+  addEventListener('hashchange', openFromHash);
+</script>
+
+<style>
+  .faq {
+    --faq-border: color-mix(in srgb, currentColor 25%, transparent);
+    --faq-link: var(--teal);
+    --faq-focus: var(--focus);
+    padding-block: 1rem;
+    border-block-end: 1px solid var(--faq-border);
+  }
+  .faq__question {
+    margin: 0;
+    font-size: 1.125rem;
+    line-height: 1.35;
+    font-weight: 650;
+    text-wrap: balance;
+  }
+  .faq__answer {
+    margin-block-start: 0.5rem;
+    max-inline-size: 70ch;
+  }
+  .faq__answer :global(> :first-child) { margin-block-start: 0; }
+  .faq__answer :global(> :last-child) { margin-block-end: 0; }
+  .faq__answer :global(a), .faq__links a { color: var(--faq-link); text-underline-offset: 0.15em; }
+
+  .faq__links {
+    margin: 0.75rem 0 0;
+    padding-inline-start: 1.25rem;
+    font-size: 0.95rem;
+  }
+  .faq__cta { margin: 0.75rem 0 0; }
+  .faq__button {
+    display: inline-block;
+    min-block-size: 2.75rem; /* WCAG 2.5.8 target size, with room to spare */
+    padding: 0.6rem 1rem;
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    text-decoration: none;
+    color: inherit;
+  }
+  .faq__button:hover { text-decoration: underline; }
+  .faq__meta { margin: 0.75rem 0 0; font-size: 0.85rem; opacity: 0.8; }
+  .faq__badge {
+    margin-inline-start: 0.5rem;
+    padding: 0.1rem 0.4rem;
+    border: 1px solid currentColor;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+
+  /* Collapsible variant */
+  .faq--collapsible { padding-block: 0; }
+  .faq--collapsible > summary {
+    display: flex;
+    gap: 0.75rem;
+    align-items: baseline;
+    justify-content: space-between;
+    min-block-size: 2.75rem;
+    padding-block: 0.9rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .faq--collapsible > summary::-webkit-details-marker { display: none; }
+  .faq--collapsible > summary::after {
+    content: '+';
+    flex: none;
+    font-weight: 400;
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .faq--collapsible[open] > summary::after { content: '\2212'; } /* minus sign */
+  .faq__body { padding-block-end: 1rem; }
+
+  /* Visible focus (WCAG 2.4.7); the Canvas ring keeps it visible on light and dark. */
+  .faq--collapsible > summary:focus-visible,
+  .faq__answer :global(a:focus-visible),
+  .faq__links a:focus-visible,
+  .faq__button:focus-visible {
+    outline: 3px solid var(--faq-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px Canvas;
+  }
+  @media (forced-colors: active) {
+    .faq--collapsible > summary:focus-visible { outline-color: Highlight; }
+  }
+</style>

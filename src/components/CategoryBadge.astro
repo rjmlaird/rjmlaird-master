@@ -1,6 +1,6 @@
 ---
 // src/components/CategoryBadge.astro
-import { slugify } from '../utils/slugify';
+import { categoryHref } from '../lib/routes';
 
 interface Props {
   category: string;
@@ -9,7 +9,7 @@ interface Props {
 
 const { category, as = 'link' } = Astro.props as Props;
 const label = category.replace(/-/g, ' ');
-const href = `/category/${slugify(category)}`;
+const href = categoryHref(category);
 const Tag = as === 'link' ? 'a' : 'span';
 ---
 
@@ -33,6 +33,6 @@ const Tag = as === 'link' ? 'a' : 'span';
   }
   a.category-badge:hover {
     background: var(--color-accent);
-    color: white;
+    color: var(--on-accent);
   }
 </style>

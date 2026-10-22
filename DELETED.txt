@@ -1,0 +1,15 @@
+./components/About/SocialLinks.astro
+./components/DataTable.astro
+./components/Education/TalksTimeline.astro
+./components/Education/TeachingCard.astro
+./components/Hero/Credentials.astro
+./components/Hero/Hero.astro
+./components/Hero/OrbitGraphic.astro
+./components/Initiatives/InitiativeCard.astro
+./components/MetaTags.astro
+./components/Publications/BlogCard.astro
+./components/Publications/BlogList.astro
+./components/Quote.astro
+./components/Socials.astro
+./components/Story/Timeline.astro
+./components/Story/TimelineItem.astro

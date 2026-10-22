@@ -625,3 +625,16 @@ footer a:hover, footer a:focus-visible { color: var(--w); }
   nav, footer, .skip-link, .orb { display: none; }
   body { background: #fff; color: #000; }
 }
+/* Glossary references: [term] in Markdown links to glossary.rjmlaird.co.uk. Dotted underline,
+   so the cue is not colour alone; solid on hover and keyboard focus. */
+a.glossary-link:link,
+a.glossary-link:visited {
+  color: var(--teal);
+  text-decoration: underline dotted;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+a.glossary-link:hover,
+a.glossary-link:focus-visible {
+  text-decoration-style: solid;
+}

@@ -1,0 +1,26 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import FaqPage from "../../components/faqs/FaqPage.astro";
+---
+
+<Layout
+  title="Frequently asked questions"
+  description="Practical answers about contacting, booking and working together."
+>
+  <div class="container faq-page-wrap">
+    <h1>Frequently asked questions</h1>
+    <p>
+      Practical questions that apply to everything I do. For questions about a specific
+      service or project, see the FAQs on that page.
+    </p>
+    <FaqPage />
+  </div>
+</Layout>
+
+<style>
+  .faq-page-wrap {
+    max-width: 52rem;
+    margin-inline: auto;
+    padding: var(--section-y) var(--gutter-min);
+  }
+</style>

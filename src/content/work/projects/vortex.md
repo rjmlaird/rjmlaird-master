@@ -222,7 +222,7 @@ observation.
 
 See also:
 
-- [European State of the Climate 2017 case study](/case-studies/esotc2017/)
+- [European State of the Climate 2017 case study](/work/case-studies/esotc2017/)
 
 ## Limitations
 

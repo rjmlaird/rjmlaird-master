@@ -2,6 +2,7 @@
 // src/layouts/ProjectLayout.astro
 import type { CollectionEntry } from "astro:content";
 import Layout from "./Layout.astro";
+import Breadcrumbs from "../components/Breadcrumbs.astro";
 import ProjectMeta from "../components/ProjectMeta.astro";
 import Figure from "../components/Figure.astro";
 import RelatedProjects from "../components/RelatedPosts.astro";
@@ -112,26 +113,17 @@ const institution =
 
 const slug = Astro.params.slug ?? source.id;
 
-const defaultLabel =
-  kind === "initiative"
-    ? "Initiative"
-    : kind === "caseStudy"
-      ? "Case study"
-      : kind === "event"
-        ? "Event"
-        : "Project";
+const labels: Record<WorkKind, { single: string; plural: string; path: string }> = {
+  project: { single: "Project", plural: "Projects", path: "work/projects" },
+  initiative: { single: "Initiative", plural: "Initiatives", path: "work/initiatives" },
+  caseStudy: { single: "Case study", plural: "Case studies", path: "work/case-studies" },
+  event: { single: "Event", plural: "Events", path: "events" },
+};
+
+const { single: defaultLabel, plural: listLabel, path: basePath } = labels[kind];
 
 const pageTitle = title || slug || defaultLabel;
 const pageDescription = description || `Details and documentation for ${pageTitle}.`;
-
-const basePath =
-  kind === "initiative"
-    ? "work/initiatives"
-    : kind === "caseStudy"
-      ? "work/case-studies"
-      : kind === "event"
-        ? "events"
-        : "work/projects";
 
 const personBaseUrl = (Astro.site?.href ?? "https://rjmlaird.co.uk/").replace(
   /\/$/,
@@ -162,27 +154,13 @@ const mainEntity = {
   noindex={noindex || isStub}
 >
   <article class="project-detail-view fade in">
-    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-      <ol class="breadcrumb-list">
-        <li><a href="/">Home</a></li>
-        <li aria-hidden="true">/</li>
-        <li>
-          <a href={`/${basePath}/`}>
-            {
-              kind === "initiative"
-                ? "Initiatives"
-                : kind === "caseStudy"
-                  ? "Case studies"
-                  : kind === "event"
-                    ? "Events"
-                    : "Projects"
-            }
-          </a>
-        </li>
-        <li aria-hidden="true">/</li>
-        <li aria-current="page">{pageTitle}</li>
-      </ol>
-    </nav>
+    <Breadcrumbs
+      items={[
+        { label: "Home", href: "/" },
+        { label: listLabel, href: `/${basePath}/` },
+        { label: pageTitle },
+      ]}
+    />
 
     <header class="project-header page-head">
       <div class="title-wrap">
@@ -225,7 +203,6 @@ const mainEntity = {
     {
       safeRelatedProjects.length > 0 && (
         <footer class="project-footer">
-          <div class="related-section-divider" />
           <RelatedProjects posts={safeRelatedProjects} />
         </footer>
       )
@@ -235,59 +212,86 @@ const mainEntity = {
 
 <style>
   .project-detail-view {
+    width: 100%;
     max-width: var(--content-max);
     margin-inline: auto;
     padding-bottom: 4rem;
   }
 
-  .breadcrumb-nav {
-    margin-bottom: 1.5rem;
-    font-family: var(--font-display);
-    font-size: 0.8125rem;
-    color: var(--mb);
-  }
-
-  .breadcrumb-list {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    list-style: none;
-    flex-wrap: wrap;
-  }
-
-  .breadcrumb-list a {
-    color: var(--mb);
-    text-decoration: none;
-    transition: color 0.2s;
-  }
-
-  .breadcrumb-list a:hover {
-    color: var(--teal);
-  }
-
-  .breadcrumb-list [aria-current="page"] {
-    color: var(--w);
-    font-weight: 500;
+  .project-header h1 {
+    overflow-wrap: anywhere;
+    text-wrap: balance;
   }
 
   .project-hero-media {
     margin-bottom: 2rem;
+    border: 1px solid var(--bd);
     border-radius: var(--radius);
     overflow: hidden;
-    border: 1px solid var(--bd);
   }
 
   .project-content {
+    min-width: 0;
     margin-top: 2.5rem;
+    overflow-wrap: break-word;
   }
 
+  /* Elements rendered from markdown live outside this component's
+     scope, so they need :global */
+  .project-content :global(:is(h2, h3, h4)[id]) {
+    scroll-margin-top: 6rem;
+  }
+
+  .project-content :global(img),
+  .project-content :global(video),
+  .project-content :global(iframe) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .project-content :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .project-content :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* global.css styles bare `footer` as a flex row, so reset it */
   .project-footer {
+    display: block;
     margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--bd);
   }
 
-  .related-section-divider {
-    height: 1px;
-    background: var(--bd);
-    margin-bottom: 2.5rem;
+  @media (max-width: 40rem) {
+    .project-detail-view {
+      padding-bottom: 3rem;
+    }
+
+    .project-hero-media {
+      margin-bottom: 1.5rem;
+    }
+
+    .project-content {
+      margin-top: 2rem;
+    }
+
+    .project-footer {
+      margin-top: 3rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-detail-view.fade {
+      animation: none;
+      transition: none;
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

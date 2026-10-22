@@ -7,6 +7,7 @@ import {
   docSchema as brandDocSchema,
   siteProfileSchema as brandSiteSchema,
 } from "./brand/lib/schemas";
+import { faqs } from "./lib/faq-collection";
 
 const optionalUrl = z.preprocess(
   (value) => (value === "" || value == null ? undefined : value),
@@ -345,6 +346,7 @@ const researchThemeEnum = z.enum([
 ]);
 
 export const collections = {
+  faqs,
   /**
    * WORK
    * Public routes:

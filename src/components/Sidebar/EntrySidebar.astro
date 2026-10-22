@@ -1,0 +1,195 @@
+---
+// src/components/Sidebar/EntrySidebar.astro
+// The one sidebar renderer for projects, videos and podcasts.
+// Feed it sections (see lib/sidebar.ts); it owns markup, styling and
+// the "opens in new tab" announcement for outbound links.
+import type { SidebarSection } from "../../lib/sidebar";
+import SidebarItems from "./SidebarItems.astro";
+
+interface Props {
+  sections: SidebarSection[];
+  label?: string;
+  /** Use "div" when the parent layout already supplies an <aside>. */
+  as?: "aside" | "div";
+}
+
+const { sections, label = "Sidebar", as: Tag = "aside" } = Astro.props;
+const visible = sections ?? [];
+const slug = (value: string) => value.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+---
+
+{visible.length > 0 && (
+  <Tag class="entry-sidebar" aria-label={Tag === "aside" ? label : undefined}>
+    {visible.map((section) => {
+      const headingId = `sb-${slug(section.title)}`;
+      const variant = section.variant ?? "list";
+
+      return (
+        <section class="sidebar-block" aria-labelledby={headingId}>
+          <h2 id={headingId}>{section.title}</h2>
+
+          {section.image && (
+            <img
+              class="sidebar-image"
+              src={section.image.src}
+              alt={section.image.alt}
+              width={section.image.width}
+              height={section.image.height}
+              loading="lazy"
+            />
+          )}
+
+          {section.text && <p class="sidebar-text">{section.text}</p>}
+
+          {(section.groups ?? []).map((group) => (
+            <>
+              {group.title && <h3 class="sidebar-subheading">{group.title}</h3>}
+              <SidebarItems items={group.items} />
+            </>
+          ))}
+
+          {section.items && <SidebarItems items={section.items} variant={variant} />}
+        </section>
+      );
+    })}
+  </Tag>
+)}
+
+<style>
+  .entry-sidebar {
+    display: grid;
+    gap: 1.5rem;
+    align-content: start;
+    min-width: 0;
+  }
+
+  .sidebar-block {
+    min-width: 0;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .sidebar-block:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .sidebar-block h2 {
+    margin: 0 0 0.75rem;
+    font-family: var(--font-body);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.2;
+    text-transform: uppercase;
+    color: var(--m);
+  }
+
+  .sidebar-subheading {
+    margin: 0.9rem 0 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--w);
+  }
+
+  .sidebar-subheading:first-of-type {
+    margin-top: 0;
+  }
+
+  .sidebar-text {
+    margin: 0;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--mb);
+  }
+
+  .sidebar-image {
+    display: block;
+    width: 100%;
+    max-width: 12.5rem;
+    height: auto;
+    margin: 0 0 0.75rem;
+    border-radius: var(--radius);
+  }
+
+  .entry-sidebar :global(.sidebar-list) {
+    display: grid;
+    gap: 0.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--mb);
+    overflow-wrap: anywhere;
+  }
+
+  .entry-sidebar :global(.sidebar-list) > li {
+    margin: 0;
+  }
+
+  .entry-sidebar :global(.sidebar-list--list) > li {
+    position: relative;
+    padding-left: 1rem;
+  }
+
+  .entry-sidebar :global(.sidebar-list--list) > li::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 0.7em;
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 50%;
+    background: var(--m);
+  }
+
+  .entry-sidebar :global(.sidebar-list--chips) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .entry-sidebar :global(.sidebar-list--chips) > li {
+    padding: 0.15rem 0.6rem;
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    font-size: 0.8rem;
+  }
+
+  .entry-sidebar :global(.sidebar-list--chips) > li > a {
+    padding: 0;
+  }
+
+  .entry-sidebar :global(.sidebar-list--lines) {
+    gap: 0.1rem;
+  }
+
+  .entry-sidebar :global(.sidebar-list) a {
+    display: inline-block;
+    padding-block: 0.2rem;
+    color: var(--w);
+    text-decoration: underline;
+    text-decoration-color: var(--bm);
+    text-underline-offset: 3px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+
+  .entry-sidebar :global(.sidebar-list) a:hover,
+  .entry-sidebar :global(.sidebar-list) a:focus-visible {
+    color: var(--teal);
+    text-decoration-color: currentColor;
+  }
+
+  .entry-sidebar :global(.sidebar-list) a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 0.15rem;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .entry-sidebar :global(.sidebar-list) a {
+      transition: none;
+    }
+  }
+</style>

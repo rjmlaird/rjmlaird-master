@@ -9,10 +9,14 @@
     "brand:tokens": "tsx scripts/brand/build-token-css.ts && tsx scripts/brand/build-token-json.ts",
     "brand:validate": "tsx scripts/brand/validate-tokens.ts",
     "audit:schema": "node scripts/audit-schema.mjs",
-    "audit:a11y": "node scripts/a11y-check.mjs"
+    "audit:a11y": "node scripts/a11y-check.mjs",
+    "glossary:sync": "node scripts/sync-glossary.mjs",
+    "glossary:check": "node scripts/sync-glossary.mjs --check",
+    "test:glossary": "node --test packages/glossary/test/*.test.js"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.1.4",
+    "@astrojs/markdown-remark": "^7.3.3",
     "@astrojs/mdx": "^7.0.3",
     "@iconify-json/academicons": "^1.2.4",
     "@iconify-json/simple-icons": "^1.2.89",

@@ -1,4 +1,9 @@
 ---
+// src/components/PodcastSidebar.astro
+import EntrySidebar from "./Sidebar/EntrySidebar.astro";
+import { compact, entryLink } from "../lib/sidebar";
+import { categoryHref } from "../lib/routes";
+
 export interface Props {
   podcastTitle?: string;
   podcastDescription?: string;
@@ -35,168 +40,41 @@ const {
   relatedPodcasts = [],
 } = Astro.props as Props;
 
-const safeCategories = Array.isArray(podcastCategories) ? podcastCategories : [];
+const external = (label: string, href?: string) => (href ? [{ label, href, external: true }] : []);
 
-const hasPodcastLinks = Boolean(
-  podcastWebsite || podcastFeedUrl || podcastApplePodcasts || podcastSpotify || podcastYouTube
-);
-
-const hasEpisodeLinks = Boolean(shareUrl || audioUrl || transcriptUrl);
+const sections = compact([
+  {
+    title: "Podcast info",
+    text: podcastDescription,
+    image: podcastCoverImage
+      ? { src: podcastCoverImage, alt: podcastTitle || "Podcast cover image", width: 200, height: 200 }
+      : undefined,
+  },
+  {
+    title: "Categories",
+    variant: "chips",
+    items: (Array.isArray(podcastCategories) ? podcastCategories : []).map((c) => ({ label: c, href: categoryHref(c) })),
+  },
+  {
+    title: "Podcast links",
+    variant: "links",
+    items: [
+      ...external("Website", podcastWebsite),
+      ...external("RSS feed", podcastFeedUrl),
+      ...external("Apple Podcasts", podcastApplePodcasts),
+      ...external("Spotify", podcastSpotify),
+      ...external("YouTube", podcastYouTube),
+    ],
+  },
+  {
+    title: "Episode links",
+    variant: "links",
+    items: [...external("Listen", shareUrl), ...external("Audio", audioUrl), ...external("Transcript", transcriptUrl)],
+  },
+  { title: "Related episodes", items: relatedEpisodes.map((i) => entryLink(i, "podcast", "Episode")) },
+  { title: "Related podcasts", items: relatedPodcasts.map((i) => entryLink(i, "podcast", "Podcast")) },
+]);
 ---
 
-<aside class="podcast-sidebar" aria-label="Podcast sidebar">
-  {podcastDescription && (
-    <section class="sidebar-block">
-      <h2>Podcast info</h2>
-      {podcastCoverImage && (
-        <img
-          src={podcastCoverImage}
-          alt={podcastTitle || "Podcast cover image"}
-          loading="lazy"
-          width="200"
-          height="200"
-        />
-      )}
-
-      <p>{podcastDescription}</p>
-    </section>
-  )}
-
-  {safeCategories.length > 0 && (
-    <section class="sidebar-block">
-      <h2>Categories</h2>
-      <ul class="chip-list">
-        {safeCategories.map((category: string) => {
-          const slug = category
-            .toLowerCase()
-            .replace(/[^a-z0-9]+/g, "-")
-            .replace(/^-|-$/g, "");
-
-          return (
-            <li>
-              <a href={`/categories/${slug}`} style="border: none; padding: 0; background: none;">
-                {category}
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
-
-  {hasPodcastLinks && (
-    <section class="sidebar-block">
-      <h2>Podcast links</h2>
-      <ul class="link-list">
-        {podcastWebsite && (
-          <li>
-            <a href={podcastWebsite} target="_blank" rel="noopener noreferrer">
-              Website<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {podcastFeedUrl && (
-          <li>
-            <a href={podcastFeedUrl} target="_blank" rel="noopener noreferrer">
-              RSS Feed<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {podcastApplePodcasts && (
-          <li>
-            <a href={podcastApplePodcasts} target="_blank" rel="noopener noreferrer">
-              Apple Podcasts<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {podcastSpotify && (
-          <li>
-            <a href={podcastSpotify} target="_blank" rel="noopener noreferrer">
-              Spotify<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {podcastYouTube && (
-          <li>
-            <a href={podcastYouTube} target="_blank" rel="noopener noreferrer">
-              YouTube<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-      </ul>
-    </section>
-  )}
-
-  {hasEpisodeLinks && (
-    <section class="sidebar-block">
-      <h2>Episode links</h2>
-      <ul class="link-list">
-        {shareUrl && (
-          <li>
-            <a href={shareUrl} target="_blank" rel="noopener noreferrer">
-              Listen<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {audioUrl && (
-          <li>
-            <a href={audioUrl} target="_blank" rel="noopener noreferrer">
-              Audio<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-        {transcriptUrl && (
-          <li>
-            <a href={transcriptUrl} target="_blank" rel="noopener noreferrer">
-              Transcript<span class="sr-only"> (opens in new tab)</span>
-            </a>
-          </li>
-        )}
-      </ul>
-    </section>
-  )}
-
-  {relatedEpisodes.length > 0 && (
-    <section class="sidebar-block">
-      <h2>Related episodes</h2>
-      <ul class="bullet-list">
-        {relatedEpisodes.map((item: any) => {
-          const label = item.title ?? item.data?.title ?? "Episode";
-          const href = item.slug
-            ? `/podcasts/${item.slug}`
-            : item.id
-              ? `/podcasts/${item.id}`
-              : item.url ?? item.href ?? "#";
-
-          return (
-            <li>
-              <a href={href}>{label}</a>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
-
-  {relatedPodcasts.length > 0 && (
-    <section class="sidebar-block">
-      <h2>Related podcasts</h2>
-      <ul class="bullet-list">
-        {relatedPodcasts.map((item: any) => {
-          const label = item.title ?? item.data?.title ?? "Podcast";
-          const href = item.slug
-            ? `/podcasts/${item.slug}`
-            : item.id
-              ? `/podcasts/${item.id}`
-              : item.url ?? item.href ?? "#";
-
-          return (
-            <li>
-              <a href={href}>{label}</a>
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  )}
-</aside>
+<!-- PodcastLayout already wraps this in an <aside>, so render a div (no nested landmark) -->
+<EntrySidebar sections={sections} as="div" />

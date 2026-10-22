@@ -76,7 +76,7 @@ const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize
           const rawId = video.youtubeId || "";
           const cleanId = rawId.replace(/^v=/, "");
           const videoSlug = video.slug || cleanId || video.title?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-          const videoUrl = videoSlug ? `/videos/${videoSlug}/` : (video.url || "");
+          const videoUrl = videoSlug ? `/work/videos/${videoSlug}/` : (video.url || "");
 
           return (
             <div

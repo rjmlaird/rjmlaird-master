@@ -1,0 +1,106 @@
+---
+/**
+ * Renders a set of FAQs: flat or grouped by topic, optionally capped, optionally with a
+ * "View all" link. Pass `entries` you already selected, or a `filter` (or `page` shorthand).
+ */
+import Faq from './Faq.astro';
+import { getFaqs, groupByTopic, limitFaqs, type FaqEntry, type FaqFilter } from '../../lib/faqs';
+
+export interface Props {
+  /** Pre-selected entries. Wins over `filter`/`page`. */
+  entries?: FaqEntry[];
+  /** Selection criteria, see FaqFilter. */
+  filter?: FaqFilter;
+  /** Shorthand for filter.page. */
+  page?: string;
+  /** Show at most this many (after priority sort). Default: no limit. */
+  limit?: number;
+  /** "none" = one flat list; "topic" = a headed group per topic. Default "none". */
+  groupBy?: 'none' | 'topic';
+  /**
+   * Level of the list's top heading. Grouped: group headings use this level and questions
+   * use level + 1. Flat: questions use this level. Default 3.
+   */
+  headingLevel?: 2 | 3 | 4 | 5;
+  /** Collapse answers with <details>. Default false. */
+  collapsible?: boolean;
+  /** "auto" shows the link only when `limit` hid something. Default "auto". */
+  showViewAll?: boolean | 'auto';
+  /** Default "/faq/". */
+  viewAllHref?: string;
+  /** Default "View all frequently asked questions". */
+  viewAllLabel?: string;
+  /** Under each group heading, link to that topic's service page. Default false. */
+  groupLinks?: boolean;
+  /** Show "Last reviewed" under each answer. Default false. */
+  showReviewed?: boolean;
+  /** Prefix item ids (when the same FAQ appears twice on a page). Default "". */
+  idPrefix?: string;
+}
+
+const {
+  entries,
+  filter,
+  page,
+  limit,
+  groupBy = 'none',
+  headingLevel = 3,
+  collapsible = false,
+  showViewAll = 'auto',
+  viewAllHref = '/faq/',
+  viewAllLabel = 'View all frequently asked questions',
+  groupLinks = false,
+  showReviewed = false,
+  idPrefix = '',
+} = Astro.props;
+
+const all = entries ?? (await getFaqs({ ...filter, ...(page ? { page } : {}) }));
+const shown = limitFaqs(all, limit);
+const truncated = shown.length < all.length;
+const viewAll = showViewAll === 'auto' ? truncated : showViewAll;
+
+const grouped = groupBy === 'topic';
+const groups = grouped ? groupByTopic(shown) : [];
+const GroupHeading = `h${headingLevel}` as 'h3';
+const questionLevel = (grouped ? Math.min(headingLevel + 1, 6) : headingLevel) as 2 | 3 | 4 | 5 | 6;
+const itemProps = { headingLevel: questionLevel, collapsible, showReviewed, idPrefix };
+---
+
+{
+  shown.length > 0 && (
+    <div class="faq-list">
+      {grouped ? (
+        groups.map((g) => (
+          <div class="faq-group" id={`${idPrefix}faq-topic-${g.topic}`} data-faq-group>
+            <GroupHeading class="faq-group__title">{g.label}</GroupHeading>
+            {groupLinks && g.href && (
+              <p class="faq-group__link"><a href={g.href}>{g.linkLabel ?? g.label}</a></p>
+            )}
+            {g.entries.map((entry) => <Faq entry={entry} {...itemProps} />)}
+          </div>
+        ))
+      ) : (
+        shown.map((entry) => <Faq entry={entry} {...itemProps} />)
+      )}
+      {viewAll && (
+        <p class="faq-list__all"><a href={viewAllHref}>{viewAllLabel}</a></p>
+      )}
+    </div>
+  )
+}
+
+<style>
+  .faq-list { --faq-link: var(--teal); --faq-focus: var(--focus); }
+  .faq-list > :global(.faq:first-child) { border-block-start: 1px solid color-mix(in srgb, currentColor 25%, transparent); }
+  .faq-group { margin-block-end: 2.5rem; scroll-margin-block-start: 1rem; }
+  .faq-group__title { margin: 0 0 0.25rem; font-size: 1.5rem; line-height: 1.25; }
+  .faq-group__link { margin: 0 0 0.75rem; }
+  .faq-group :global(.faq:first-of-type) { border-block-start: 1px solid color-mix(in srgb, currentColor 25%, transparent); }
+  .faq-list__all { margin-block: 1.25rem 0; font-weight: 600; }
+  .faq-group__link a, .faq-list__all a { color: var(--faq-link); text-underline-offset: 0.15em; }
+  .faq-group__link a:focus-visible, .faq-list__all a:focus-visible {
+    outline: 3px solid var(--faq-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px Canvas;
+  }
+</style>

@@ -1,0 +1,17 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapMemberships } from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type { MembershipGroup, MaybeWrapped, Organisation } from '../../lib/schema/types';
+
+interface Props {
+  data: MaybeWrapped<MembershipGroup, 'memberships'>;
+  organisations?: Organisation[];
+}
+const { data, organisations } = Astro.props;
+const g = new SchemaGraph(organisations);
+mapMemberships(g, unwrap(data, 'memberships'));
+---
+
+<JsonLd data={g.toJSON()} />

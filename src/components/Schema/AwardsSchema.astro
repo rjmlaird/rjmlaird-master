@@ -1,0 +1,19 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapAwards } from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type { AwardItem, MaybeWrapped, Organisation } from '../../lib/schema/types';
+
+interface Props {
+  /** Array, or the wrapper object { awards: [...] }. */
+  data: MaybeWrapped<AwardItem, 'awards'>;
+  /** Optional override, e.g. fetched from your API. Defaults to src/data/organisations.json. */
+  organisations?: Organisation[];
+}
+const { data, organisations } = Astro.props;
+const g = new SchemaGraph(organisations);
+mapAwards(g, unwrap(data, 'awards'));
+---
+
+<JsonLd data={g.toJSON()} />

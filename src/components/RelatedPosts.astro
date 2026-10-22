@@ -1,5 +1,6 @@
 ---
 import type { CollectionEntry } from 'astro:content';
+import { entryHref } from '../lib/routes';
 
 type RelatedItem = CollectionEntry<'blog'> | CollectionEntry<'projects'>;
 
@@ -22,10 +23,7 @@ const safePosts = Array.isArray(posts) ? posts : [];
         const imageSrc = heroImage;
         const imageAlt = heroAlt || title || 'Related item image';
 
-        const href =
-          post.collection === 'blog'
-            ? `/blog/${post.id}`
-            : `/projects/${post.id}`;
+        const href = entryHref(post.collection === 'blog' ? 'blog' : 'project', post.id);
 
         return (
           <a href={href} class="card">

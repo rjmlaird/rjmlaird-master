@@ -1,0 +1,56 @@
+---
+/**
+ * One complete Person @graph. Pass whichever datasets you have; omitted ones are skipped.
+ * Use on the home/about page. Use the single-purpose components on sub-pages.
+ */
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import {
+  mapAwards, mapCaseStudies, mapCredentials, mapEducation, mapLanguages, mapMemberships, mapProfile,
+  mapPublications, mapServices, mapSkills, mapSocials, mapTalks, mapVideos, mapVolunteering,
+} from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type {
+  AwardItem, BibEntry, CaseStudyItem, CredentialItem, EducationItem, LanguageItem, MaybeWrapped,
+  MembershipGroup, Organisation, ServiceItem, SkillsTaxonomy, SocialItem, TalkItem, VideoItem, VolunteeringItem,
+} from '../../lib/schema/types';
+
+interface Props {
+  certifications?: MaybeWrapped<CredentialItem, 'certifications'>;
+  credentials?: MaybeWrapped<CredentialItem, 'credentials'>;
+  awards?: MaybeWrapped<AwardItem, 'awards'>;
+  education?: EducationItem[];
+  volunteering?: VolunteeringItem[];
+  memberships?: MaybeWrapped<MembershipGroup, 'memberships'>;
+  skills?: SkillsTaxonomy;
+  skillSections?: string[];
+  languages?: readonly LanguageItem[];
+  services?: ServiceItem[];
+  socials?: SocialItem[];
+  caseStudies?: CaseStudyItem[];
+  videos?: VideoItem[];
+  talks?: MaybeWrapped<TalkItem, 'talk_series'>;
+  publications?: string | BibEntry[];
+  organisations?: Organisation[];
+}
+const p = Astro.props;
+const g = new SchemaGraph(p.organisations);
+
+mapProfile(g);
+if (p.certifications) mapCredentials(g, unwrap(p.certifications, 'certifications'));
+if (p.credentials) mapCredentials(g, unwrap(p.credentials, 'credentials'));
+if (p.awards) mapAwards(g, unwrap(p.awards, 'awards'));
+if (p.education) mapEducation(g, p.education);
+if (p.volunteering) mapVolunteering(g, p.volunteering);
+if (p.memberships) mapMemberships(g, unwrap(p.memberships, 'memberships'));
+if (p.skills) mapSkills(g, p.skills, p.skillSections);
+if (p.languages) mapLanguages(g, p.languages);
+if (p.services) mapServices(g, p.services);
+if (p.socials) mapSocials(g, p.socials);
+if (p.caseStudies) mapCaseStudies(g, p.caseStudies);
+if (p.videos) mapVideos(g, p.videos);
+if (p.talks) mapTalks(g, unwrap(p.talks, 'talk_series'));
+if (p.publications) mapPublications(g, p.publications);
+---
+
+<JsonLd data={g.toJSON()} />

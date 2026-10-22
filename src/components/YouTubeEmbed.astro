@@ -1,4 +1,6 @@
 ---
+import { getYouTubeId, youTubeEmbedUrl } from "../utils/youtube";
+
 export interface Props {
   id?: string;
   url?: string;
@@ -7,22 +9,17 @@ export interface Props {
 
 const { id, url, title = "YouTube video player" } = Astro.props;
 
-function getYouTubeId(input?: string): string | null {
-  if (!input) return null;
-  if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
-  const match = input.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
-  return match ? match[1] : null;
-}
-
 const videoId = getYouTubeId(id || url);
 ---
 
 {videoId && (
   <div class="video-embed-wrapper">
     <iframe
-      src={`https://www.youtube-nocookie.com/embed/${videoId}`}
+      src={youTubeEmbedUrl(videoId)}
       title={title}
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      loading="lazy"
+      referrerpolicy="strict-origin-when-cross-origin"
       allowfullscreen
     ></iframe>
   </div>
@@ -35,9 +32,9 @@ const videoId = getYouTubeId(id || url);
     height: 0;
     overflow: hidden;
     margin: 1.5rem 0;
-    border-radius: 8px;
-    background: var(--bg-panel, #0f1626);
-    border: 1px solid var(--border, rgba(255, 255, 255, 0.09));
+    border-radius: var(--radius);
+    background: var(--card);
+    border: 1px solid var(--bd);
   }
   .video-embed-wrapper iframe {
     position: absolute;

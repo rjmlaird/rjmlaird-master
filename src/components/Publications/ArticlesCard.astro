@@ -1,4 +1,6 @@
 ---
+import { getYouTubeId, youTubeEmbedUrl, youTubeThumbnail } from "../../utils/youtube";
+
 interface Article {
   id?: number;
   title?: string;
@@ -31,24 +33,10 @@ const topics = data.topics ?? (topic ? [topic] : []);
 const imageCredit = data.imageCredit ?? "";
 const link = data.url || "#";
 
-const getYouTubeId = (url: string) => {
-  try {
-    const u = new URL(url);
-    if (u.pathname.startsWith("/embed/")) return u.pathname.split("/embed/")[1]?.split("?")[0] ?? "";
-    if (u.hostname.includes("youtu.be")) return u.pathname.replace("/", "").split("?")[0];
-    const v = u.searchParams.get("v");
-    if (v) return v;
-    const shorts = u.pathname.match(/\/shorts\/([^/]+)/);
-    return shorts?.[1] ?? "";
-  } catch {
-    return "";
-  }
-};
-
 const videoUrl = data.video ?? data.url ?? "";
-const videoId = videoUrl ? getYouTubeId(videoUrl) : "";
-const embedUrl = videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : "";
-const fallbackThumb = data.image || (videoId ? `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg` : "");
+const videoId = getYouTubeId(videoUrl);
+const embedUrl = videoId ? youTubeEmbedUrl(videoId) : "";
+const fallbackThumb = data.image || (videoId ? youTubeThumbnail(videoId) : "");
 ---
 
 <article class="pr pub">

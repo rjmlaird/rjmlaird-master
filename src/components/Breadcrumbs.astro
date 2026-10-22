@@ -1,0 +1,116 @@
+---
+// src/components/Breadcrumbs.astro
+interface Crumb {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: Crumb[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+  <ol>
+    {
+      items.map((item, index) => {
+        const isCurrent = index === items.length - 1;
+
+        return (
+          <li>
+            {isCurrent || !item.href ? (
+              <span aria-current={isCurrent ? "page" : undefined}>
+                {item.label}
+              </span>
+            ) : (
+              <a href={item.href}>{item.label}</a>
+            )}
+          </li>
+        );
+      })
+    }
+  </ol>
+</nav>
+
+<style>
+  /* global.css styles every bare `nav` as the sticky top bar, so reset it */
+  .breadcrumbs {
+    position: static;
+    z-index: auto;
+    display: block;
+    min-height: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    margin-bottom: 1.5rem;
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--mb);
+  }
+
+  ol {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.25rem 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 0;
+    min-width: 0;
+  }
+
+  /* Decorative separator. The second declaration gives it an empty
+     alt text so screen readers skip it; browsers without support
+     fall back to the first. */
+  li + li::before {
+    content: "/";
+    content: "/" / "";
+    color: var(--m);
+  }
+
+  a {
+    display: inline-block;
+    padding-block: 0.25rem;
+    color: var(--mb);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 3px;
+    transition: color 0.2s, text-decoration-color 0.2s;
+  }
+
+  a:hover,
+  a:focus-visible {
+    color: var(--teal);
+    text-decoration-color: currentColor;
+  }
+
+  a:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 0.15rem;
+  }
+
+  [aria-current="page"] {
+    color: var(--w);
+    font-weight: 500;
+    overflow-wrap: anywhere;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    a {
+      transition: none;
+    }
+  }
+</style>

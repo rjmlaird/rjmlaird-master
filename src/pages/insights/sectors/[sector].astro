@@ -1,4 +1,5 @@
 ---
+import { entryHref } from "../../../lib/routes";
 import { cleanText } from "../../../lib/content-quality.mjs";
 // src/pages/sectors/[sector].astro
 import Layout from '../../../layouts/Layout.astro';
@@ -99,7 +100,7 @@ const totalCount =
             const data = entry.data as { title?: string; description?: string };
             return (
               <li>
-                <a href={`/projects/${entry.id}/`}>
+                <a href={entryHref("project", entry.id)}>
                   <span class="item-title">{data.title}</span>
                   {cleanText(data.description) && (
                     <span class="item-desc">{cleanText(data.description)}</span>
@@ -120,7 +121,7 @@ const totalCount =
             const data = entry.data as { title?: string; description?: string };
             return (
               <li>
-                <a href={`/case-studies/${entry.id}/`}>
+                <a href={entryHref("caseStudy", entry.id)}>
                   <span class="item-title">{data.title}</span>
                   {cleanText(data.description) && (
                     <span class="item-desc">{cleanText(data.description)}</span>
@@ -141,7 +142,7 @@ const totalCount =
             const data = entry.data as { title?: string; description?: string };
             return (
               <li>
-                <a href={`/initiatives/${entry.id}/`}>
+                <a href={entryHref("initiative", entry.id)}>
                   <span class="item-title">{data.title}</span>
                   {cleanText(data.description) && (
                     <span class="item-desc">{cleanText(data.description)}</span>

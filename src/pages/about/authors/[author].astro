@@ -1,6 +1,7 @@
 ---
 // src/pages/authors/[author].astro
 
+import { entryHref } from "../../../lib/routes";
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection, render, type CollectionEntry } from "astro:content";
 
@@ -78,7 +79,7 @@ const avatarAlt = (author.data as Record<string, unknown>).avatarAlt as string ?
         <ul class="post-list">
           {posts.map((post) => (
             <li>
-              <a href={`/blog/${post.id}`}>{post.data.title ?? post.id}</a>
+              <a href={entryHref("blog", post.id)}>{post.data.title ?? post.id}</a>
               {post.data.description ? <p>{post.data.description}</p> : null}
             </li>
           ))}

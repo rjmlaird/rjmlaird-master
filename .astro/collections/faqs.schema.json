@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "question": {
+      "type": "string",
+      "minLength": 10,
+      "maxLength": 140
+    },
+    "shortAnswer": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 240
+    },
+    "audience": {
+      "default": [
+        "general"
+      ],
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "client",
+          "school",
+          "researcher",
+          "publisher",
+          "general"
+        ]
+      }
+    },
+    "topic": {
+      "type": "string",
+      "enum": [
+        "speaking",
+        "coaching",
+        "communication",
+        "writing",
+        "research",
+        "projects",
+        "contact",
+        "general"
+      ]
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+      }
+    },
+    "pageTargets": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "priority": {
+      "default": 50,
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 100
+    },
+    "status": {
+      "default": "draft",
+      "type": "string",
+      "enum": [
+        "draft",
+        "published",
+        "archived"
+      ]
+    },
+    "lastReviewed": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "relatedLinks": {
+      "default": [],
+      "maxItems": 3,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "minLength": 6,
+            "maxLength": 80
+          },
+          "href": {
+            "type": "string",
+            "pattern": "^\\/(?!\\/)"
+          }
+        },
+        "required": [
+          "label",
+          "href"
+        ]
+      }
+    },
+    "cta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 6,
+          "maxLength": 80
+        },
+        "href": {
+          "type": "string",
+          "pattern": "^(\\/(?!\\/)|mailto:|https:\\/\\/)"
+        }
+      },
+      "required": [
+        "label",
+        "href"
+      ]
+    },
+    "schema": {
+      "default": false,
+      "type": "boolean"
+    },
+    "schemaPage": {
+      "type": "string"
+    },
+    "supersededBy": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$"
+    },
+    "archivedReason": {
+      "type": "string",
+      "minLength": 5
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "question",
+    "topic",
+    "lastReviewed"
+  ]
+}

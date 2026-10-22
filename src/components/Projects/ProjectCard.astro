@@ -5,6 +5,8 @@ import CategoryBadge from "../CategoryBadge.astro";
 import TagList from "../TagList.astro";
 import Figure from "../Figure.astro";
 import { cleanText } from "../../lib/content-quality.mjs";
+import { entryHref, type EntryKind } from "../../lib/routes";
+import { formatDate, formatDateRange, isoDate } from "../../utils/date";
 
 interface Props {
   project?: CollectionEntry<"projects">;
@@ -17,7 +19,7 @@ interface Props {
 const { project, initiative, caseStudy, event, featured = false } = Astro.props as Props;
 
 const source = project ?? initiative ?? caseStudy ?? event;
-const kind = project
+const kind: EntryKind = project
   ? "project"
   : initiative
     ? "initiative"
@@ -46,68 +48,9 @@ const heroAlt = (data?.heroAlt ?? title) || "Hero image";
 const safeTags = Array.isArray(tags) ? tags : [];
 const primaryType = type || status || client || organisation || institution || "";
 
-const toDate = (value: Date | string | undefined) => {
-  if (!value) return null;
-  const d = value instanceof Date ? value : new Date(value);
-  return Number.isNaN(d.getTime()) ? null : d;
-};
+const dateText = kind === "event" ? formatDateRange(startDate, endDate) : formatDate(startDate, "short");
 
-const formatDate = (value: Date | string | undefined) => {
-  const d = toDate(value);
-  if (!d) return "";
-  return d.toLocaleDateString("en-GB", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-};
-
-const formatEventDates = (start?: Date | string, end?: Date | string) => {
-  const s = toDate(start);
-  const e = toDate(end);
-
-  if (!s) return "";
-  if (!e) return formatDate(s);
-
-  if (
-    s.getFullYear() === e.getFullYear() &&
-    s.getMonth() === e.getMonth() &&
-    s.getDate() === e.getDate()
-  ) {
-    return s.toLocaleDateString("en-GB", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-  }
-
-  if (s.getFullYear() === e.getFullYear() && s.getMonth() === e.getMonth()) {
-    const dayStart = s.getDate();
-    const dayEnd = e.getDate();
-    const monthYear = s.toLocaleDateString("en-GB", {
-      month: "short",
-      year: "numeric",
-    });
-    return `${dayStart}–${dayEnd} ${monthYear}`;
-  }
-
-  return `${formatDate(s)} – ${formatDate(e)}`;
-};
-
-const eventDateString = formatEventDates(startDate, endDate);
-const singleDate = startDate ? formatDate(startDate) : "";
-
-const slug = source?.id ?? "";
-const basePath =
-  kind === "initiative"
-    ? "initiatives"
-    : kind === "caseStudy"
-      ? "case-studies"
-      : kind === "event"
-        ? "events"
-        : "projects";
-
-const href = `/work/${basePath}/${slug}/`;
+const href = entryHref(kind as EntryKind, source?.id ?? "");
 ---
 
 <article class:list={["project-card", { featured }]}>
@@ -132,17 +75,11 @@ const href = `/work/${basePath}/${slug}/`;
       </div>
     )}
 
-    <div class="footer">
-      {eventDateString && kind === "event" ? (
-        <time datetime={toDate(startDate)?.toISOString() ?? ""}>
-          {eventDateString}
-        </time>
-      ) : singleDate ? (
-        <time datetime={toDate(startDate)?.toISOString() ?? ""}>
-          {singleDate}
-        </time>
-      ) : null}
-    </div>
+    {dateText && (
+      <div class="footer">
+        <time datetime={isoDate(startDate)}>{dateText}</time>
+      </div>
+    )}
   </div>
 </article>
 

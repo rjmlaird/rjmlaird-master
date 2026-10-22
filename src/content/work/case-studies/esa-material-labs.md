@@ -1,23 +1,24 @@
 ---
 slug: esa-material-labs
-title: "ESA Material Labs"
-description: "A short summary of the project."
-excerpt: "A slightly longer excerpt for cards and previews."
+title: ESA Material Labs
+description: A short summary of the project.
+excerpt: A slightly longer excerpt for cards and previews.
 date: 2026-07-07
 featured: true
 tags:
-  - Space
-  - Science policy
+  - science-policy
+  - space
+  - caseStudy
 draft: false
 author: ryan-laird
-image: "/images/blog/my-first-post.jpg"
-imageCredit: "Cover image for ESO Ultra HD"
-status: "completed"
+image: /images/blog/my-first-post.jpg
+imageCredit: Cover image for ESO Ultra HD
+status: completed
 links:
   web: https://example.com
 impact:
-  outcome: "Improved discoverability and storytelling"
-  engagement: "High"
+  outcome: Improved discoverability and storytelling
+  engagement: High
 relatedProjects:
   - aeolus
   - gaia

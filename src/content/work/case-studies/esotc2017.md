@@ -10,16 +10,25 @@ tags:
   - esotc
   - climate
   - copernicus
+  - caseStudy
 youtubeId: P-76uk-PbAQ
 links:
   web: https://climate.copernicus.eu/CopernicusESC
 impact: {}
 client: ECMWF
-relatedExperience: ["exp-design-and-data"]
-relatedProjects: ["breezometer","discovair","vortex","windy"]
-sectors: ["energy","climate","health"]
+relatedExperience:
+  - exp-design-and-data
+relatedProjects:
+  - breezometer
+  - discovair
+  - vortex
+  - windy
+sectors:
+  - energy
+  - climate
+  - health
 heroImage: https://img.youtube.com/vi/kbaoIb3s29s/maxresdefault.jpg
-heroAlt: "PhiWeek Bootcamp 2019 Thumbnail"
+heroAlt: PhiWeek Bootcamp 2019 Thumbnail
 imageCredit: ESA/Design & Data
 ---
 # 

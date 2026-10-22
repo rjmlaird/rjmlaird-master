@@ -9,16 +9,21 @@ tags:
   - oceanstatereport
   - climate
   - copernicus
+  - ocean
 youtubeId: xlKmSGvqaFo
 links:
   web: https://climate.copernicus.eu/CopernicusESC
   youtube: https://youtu.be/xlKmSGvqaFo?si=EfmvAENYYSJK20xI
 impact: {}
 client: Mercator Ocean
-relatedExperience: ["exp-design-and-data"]
-sectors: ["marine","climate","fisheries"]
+relatedExperience:
+  - exp-design-and-data
+sectors:
+  - marine
+  - climate
+  - fisheries
 heroImage: https://img.youtube.com/vi/xlKmSGvqaFo/maxresdefault.jpg
-heroAlt: "Ocean State Report 4 Thumbnail"
+heroAlt: Ocean State Report 4 Thumbnail
 imageCredit: Mercator Ocean/Design & Data
 ---
 # 

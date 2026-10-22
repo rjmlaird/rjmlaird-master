@@ -1,0 +1,19 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapVideos } from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type { VideoItem, MaybeWrapped, Organisation } from '../../lib/schema/types';
+
+interface Props {
+  /** Array, or the wrapper object { videos: [...] }. */
+  data: MaybeWrapped<VideoItem, 'videos'>;
+  /** Optional override, e.g. fetched from your API. Defaults to src/data/organisations.json. */
+  organisations?: Organisation[];
+}
+const { data, organisations } = Astro.props;
+const g = new SchemaGraph(organisations);
+mapVideos(g, unwrap(data, 'videos'));
+---
+
+<JsonLd data={g.toJSON()} />

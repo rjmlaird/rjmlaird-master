@@ -1,5 +1,5 @@
 ---
-import { slugify } from '../utils/slugify';
+import { tagHref } from '../lib/routes';
 
 interface Props {
   tags: string[];
@@ -16,7 +16,7 @@ const overflow = limit && safeTags.length > limit ? safeTags.length - limit : 0;
   <ul class="tag-list" aria-label="Tags">
     {visible.map((tag) => (
       <li>
-        <a href={`/tags/${slugify(tag)}/`} class="tag">#{tag}</a>
+        <a href={tagHref(tag)} class="tag">#{tag}</a>
       </li>
     ))}
     {overflow > 0 && <li class="overflow" aria-label={`and ${overflow} more tags`}>+{overflow}</li>}

@@ -1,0 +1,15 @@
+---
+/**
+ * Renders a JSON-LD <script>. Escapes characters that could break out of the tag.
+ */
+interface Props {
+  data: object;
+}
+const { data } = Astro.props;
+const json = JSON.stringify(data, null, import.meta.env.DEV ? 2 : 0)
+  .replace(/</g, '\\u003c')
+  .replace(/\u2028/g, '\\u2028')
+  .replace(/\u2029/g, '\\u2029');
+---
+
+<script is:inline type="application/ld+json" set:html={json} />

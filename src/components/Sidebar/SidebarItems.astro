@@ -1,0 +1,34 @@
+---
+// src/components/Sidebar/SidebarItems.astro
+// A list of plain-text or linked items; outbound links open in a new tab
+// and announce it to screen readers.
+import type { SidebarLink } from "../../lib/sidebar";
+
+interface Props {
+  items: SidebarLink[];
+  variant?: "list" | "chips" | "links" | "lines";
+}
+
+const { items, variant = "list" } = Astro.props;
+---
+
+{items.length > 0 && (
+  <ul class:list={["sidebar-list", `sidebar-list--${variant}`]}>
+    {items.map((item) => (
+      <li>
+        {item.href ? (
+          <a
+            href={item.href}
+            target={item.external ? "_blank" : undefined}
+            rel={item.external ? "noopener noreferrer" : undefined}
+          >
+            {item.label}
+            {item.external && <span class="sr-only"> (opens in new tab)</span>}
+          </a>
+        ) : (
+          item.label
+        )}
+      </li>
+    ))}
+  </ul>
+)}

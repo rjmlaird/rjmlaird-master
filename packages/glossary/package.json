@@ -1,0 +1,18 @@
+{
+  "name": "@rjmlaird/glossary",
+  "version": "0.1.0",
+  "description": "Term manifest, resolver and Markdown plugin that link [term] references to glossary.rjmlaird.co.uk",
+  "type": "module",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "./src/index.js",
+  "types": "./src/index.d.ts",
+  "exports": {
+    ".": { "types": "./src/index.d.ts", "default": "./src/index.js" },
+    "./terms.json": "./data/terms.json"
+  },
+  "files": ["src", "data"],
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

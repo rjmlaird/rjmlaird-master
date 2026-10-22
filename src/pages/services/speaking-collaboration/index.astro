@@ -1,5 +1,6 @@
 ---
 import Layout from "../../../layouts/Layout.astro";
+import FaqSection from "../../../components/faqs/FaqSection.astro";
 ---
 
 <Layout
@@ -237,6 +238,9 @@ import Layout from "../../../layouts/Layout.astro";
           </article>
         </div>
       </section>
+
+      <FaqSection page="services/speaking-collaboration" limit={6} />
+
 
       <section class="service-cta" id="enquire" aria-labelledby="enquire-heading">
         <p class="eyebrow">Next step</p>

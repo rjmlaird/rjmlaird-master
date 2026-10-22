@@ -6,6 +6,8 @@ import CategoryBadge from './CategoryBadge.astro';
 import AuthorCard from './AuthorCard.astro';
 import TagList from './TagList.astro';
 import { getReadingTime } from '../utils/readingTime';
+import { entryHref } from '../lib/routes';
+import { formatDate, isoDate } from '../utils/date';
 
 interface Props {
   post: CollectionEntry<'blog'>;
@@ -19,6 +21,7 @@ const safeCategory = Array.isArray(category) ? category[0] || '' : category;
 const safeTags = Array.isArray(tags) ? tags : [];
 
 const imageSrc = heroImage;
+const href = entryHref('blog', post.id);
 
 let authorEntry = null;
 if (authorRef && typeof authorRef === 'string') {
@@ -45,7 +48,7 @@ const authorAvatar =
 
 <article class:list={['post-card', { featured }]}>
   {imageSrc && (
-    <a href={`/insights/blog/${post.id}`} class="post-card-image-link" tabindex="-1" aria-hidden="true">
+    <a href={href} class="post-card-image-link" tabindex="-1" aria-hidden="true">
       <img
         src={imageSrc}
         alt=""
@@ -60,7 +63,7 @@ const authorAvatar =
     {safeCategory && <CategoryBadge category={safeCategory} as="span" />}
 
     <h2>
-      <a href={`/insights/blog/${post.id}`} class="title-link">{title}</a>
+      <a href={href} class="title-link">{title}</a>
     </h2>
 
     {description && <p class="description">{description}</p>}
@@ -81,9 +84,7 @@ const authorAvatar =
     )}
 
     <div class="footer">
-      <time datetime={pubDate.toISOString()}>
-        {pubDate.toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: 'numeric' })}
-      </time>
+      <time datetime={isoDate(pubDate)}>{formatDate(pubDate, 'short')}</time>
       {readingTime && <span>· {readingTime}</span>}
     </div>
   </div>

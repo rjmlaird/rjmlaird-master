@@ -2,6 +2,7 @@
 // src/layouts/BlogLayout.astro
 import Layout from './Layout.astro';
 import { getEntry, type CollectionEntry } from 'astro:content';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
 import PostMeta from '../components/PostMeta.astro';
 import TableOfContents from '../components/TableOfContents.astro';
 import RelatedPosts from '../components/RelatedPosts.astro';
@@ -74,20 +75,30 @@ const parsedPubDate = rawPubDate instanceof Date ? rawPubDate : new Date(rawPubD
 
 const rawUpdatedDate = Astro.props.updatedDate ?? updatedDate;
 const parsedUpdatedDate = rawUpdatedDate ? (rawUpdatedDate instanceof Date ? rawUpdatedDate : new Date(rawUpdatedDate)) : undefined;
-const PERSON_ID = `${(Astro.site?.href ?? 'https://rjmlaird.co.uk/').replace(/\/$/, '')}/#person`;
+
+const siteBase = (Astro.site?.href ?? 'https://rjmlaird.co.uk/').replace(/\/$/, '');
+const PERSON_ID = `${siteBase}/#person`;
+
+// Structured data should carry an absolute image URL
+const heroUrl =
+  typeof resolvedHeroSrc === 'string' ? new URL(resolvedHeroSrc, `${siteBase}/`).href : undefined;
+
 const blogPosting = post
   ? {
-    '@type': 'BlogPosting',
-        headline: title,
-        description,
-        image: resolvedHeroSrc ? [resolvedHeroSrc] : undefined,
-        datePublished: parsedPubDate?.toISOString?.(),
-        dateModified: (parsedUpdatedDate ?? parsedPubDate)?.toISOString?.(),
-        author: { '@id': PERSON_ID },
-        publisher: { '@id': PERSON_ID },
-        keywords: Array.isArray(safeTags) ? safeTags.join(', ') : undefined,
-      }
+      '@type': 'BlogPosting',
+      headline: title,
+      description,
+      image: heroUrl ? [heroUrl] : undefined,
+      datePublished: parsedPubDate?.toISOString?.(),
+      dateModified: (parsedUpdatedDate ?? parsedPubDate)?.toISOString?.(),
+      author: { '@id': PERSON_ID },
+      publisher: { '@id': PERSON_ID },
+      keywords: Array.isArray(safeTags) ? safeTags.join(', ') : undefined,
+    }
   : undefined;
+
+// Only show the contents panel when it will actually help
+const hasToc = safeHeadings.length > 1;
 ---
 
 <Layout
@@ -101,13 +112,13 @@ const blogPosting = post
   noindex={noindex}
 >
   <article class="post">
-    <nav class="breadcrumb" aria-label="Breadcrumb">
-      <ol>
-        <li><a href="/">Home</a></li>
-        <li><a href="/blog/">Blog</a></li>
-        <li aria-current="page">{title}</li>
-      </ol>
-    </nav>
+    <Breadcrumbs
+      items={[
+        { label: 'Home', href: '/' },
+        { label: 'Blog', href: '/blog/' },
+        { label: title },
+      ]}
+    />
 
     <header class="post-header">
       <div class="title-wrap">
@@ -117,7 +128,15 @@ const blogPosting = post
 
     {resolvedHeroSrc && (
       <figure class="hero">
-        <img src={resolvedHeroSrc} alt={resolvedHeroAlt} width="1400" height="700" />
+        <img
+          src={resolvedHeroSrc}
+          alt={resolvedHeroAlt}
+          width="1400"
+          height="700"
+          loading="eager"
+          decoding="async"
+          fetchpriority="high"
+        />
         {resolvedHeroCredit && <figcaption>{resolvedHeroCredit}</figcaption>}
       </figure>
     )}
@@ -131,10 +150,15 @@ const blogPosting = post
       tags={safeTags}
     />
 
-    <div class="post-grid">
-      <aside class="sidebar">
-        <TableOfContents headings={safeHeadings} />
-      </aside>
+    <div class:list={['post-grid', { 'post-grid--toc': hasToc }]}>
+      {hasToc && (
+        <aside class="sidebar" aria-label="In this article">
+          <details class="toc-disclosure" open data-toc>
+            <summary>Contents</summary>
+            <TableOfContents headings={safeHeadings} />
+          </details>
+        </aside>
+      )}
 
       <div class="prose">
         <slot />
@@ -147,3 +171,161 @@ const blogPosting = post
     </footer>
   </article>
 </Layout>
+
+<script>
+  // Contents panel: open on wide screens, collapsed on small ones.
+  // Without JS it stays open, so nothing is ever hidden.
+  const toc = document.querySelector<HTMLDetailsElement>('[data-toc]');
+
+  if (toc) {
+    const wide = window.matchMedia('(min-width: 64rem)');
+    const sync = () => {
+      toc.open = wide.matches;
+    };
+    sync();
+    wide.addEventListener('change', sync);
+  }
+</script>
+
+<style>
+  .post {
+    width: 100%;
+    max-width: var(--content-max);
+    margin-inline: auto;
+    padding-bottom: 4rem;
+  }
+
+  .post-header h1 {
+    overflow-wrap: anywhere;
+    text-wrap: balance;
+  }
+
+  /* Hero */
+  .hero {
+    margin: 0 0 2rem;
+  }
+
+  .hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+    object-fit: cover;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+  }
+
+  .hero figcaption {
+    margin-top: 0.5rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--m);
+  }
+
+  /* Body: single column by default; contents panel comes first in the
+     DOM so keyboard and screen-reader order matches what you see. */
+  .post-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .sidebar {
+    min-width: 0;
+  }
+
+  .toc-disclosure {
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    padding: 0 1rem;
+  }
+
+  .toc-disclosure > summary {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--w);
+  }
+
+  .toc-disclosure[open] > summary {
+    margin-bottom: 0.5rem;
+  }
+
+  .toc-disclosure > summary:focus-visible {
+    outline: 2px solid var(--teal);
+    outline-offset: 2px;
+    border-radius: 0.15rem;
+  }
+
+  .toc-disclosure > :global(:last-child) {
+    padding-bottom: 1rem;
+  }
+
+  .prose {
+    min-width: 0;
+    max-width: 70ch;
+    overflow-wrap: break-word;
+  }
+
+  /* Elements rendered from markdown live outside this component's
+     scope, so they need :global */
+  .prose :global(:is(h2, h3, h4)[id]) {
+    scroll-margin-top: 6rem;
+  }
+
+  .prose :global(img),
+  .prose :global(video),
+  .prose :global(iframe) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .prose :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .prose :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  /* Footer: global.css styles bare `footer` as a flex row, so reset it */
+  .post-footer {
+    display: grid;
+    gap: 3rem;
+    margin-top: 4rem;
+    padding-top: 2.5rem;
+    border-top: 1px solid var(--bd);
+  }
+
+  @media (min-width: 64rem) {
+    .post-grid--toc {
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 4rem);
+      align-items: start;
+    }
+
+    .post-grid--toc .sidebar {
+      position: sticky;
+      top: var(--nav-h, 6rem);
+      max-height: calc(100vh - var(--nav-h, 6rem) - 2rem);
+      overflow-y: auto;
+    }
+
+    /* Panel is always open on wide screens, so drop the toggle chrome */
+    .toc-disclosure {
+      border: 0;
+      padding: 0;
+    }
+
+    .toc-disclosure > summary {
+      display: none;
+    }
+  }
+</style>

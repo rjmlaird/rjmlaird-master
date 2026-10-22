@@ -1,0 +1,212 @@
+---
+// src/components/EntryMeta.astro
+// The one metadata strip for blog posts, projects, videos and podcasts.
+// PostMeta / ProjectMeta / VideoMeta / PodcastMeta only map their own
+// props onto this; layout, separators and responsive behaviour live here.
+import AuthorCard from "./AuthorCard.astro";
+import MetaList from "./MetaList.astro";
+import CategoryBadge from "./CategoryBadge.astro";
+import TagList from "./TagList.astro";
+import { toDate, formatDate, formatDateTime, type DateInput } from "../utils/date";
+
+interface DateItem {
+  label: string;
+  value: DateInput;
+  /** Include the time of day when the value has one. */
+  time?: boolean;
+}
+
+interface Props {
+  author?: { name?: string; role?: string; avatar?: unknown };
+  /** Labelled facts shown as a definition list (Type, Status, Client...). */
+  items?: { label: string; value: string }[];
+  itemsLabel?: string;
+  /** Dates in display order; the first is shown as "Label date". */
+  dates?: DateItem[];
+  /** Reading time or duration. */
+  note?: string;
+  description?: string;
+  categories?: string[];
+  tags?: string[];
+  links?: { label: string; href: string }[];
+  linksLabel?: string;
+  dateStyle?: "long" | "short";
+}
+
+const {
+  author,
+  items = [],
+  itemsLabel,
+  dates = [],
+  note = "",
+  description = "",
+  categories = [],
+  tags = [],
+  links = [],
+  linksLabel = "Links",
+  dateStyle = "long",
+} = Astro.props as Props;
+
+const avatar =
+  typeof author?.avatar === "string" ? author.avatar : (author?.avatar as { src?: string } | undefined)?.src || "";
+
+const facts = [
+  ...dates
+    .map((d) => ({ ...d, date: toDate(d.value) }))
+    .filter((d) => d.date)
+    .map((d) => ({
+      label: d.label,
+      date: d.date as Date,
+      text: d.time ? formatDateTime(d.date) : formatDate(d.date, dateStyle),
+    })),
+];
+
+const safeCategories = categories.filter(Boolean);
+const safeTags = Array.isArray(tags) ? tags : [];
+const hasLeft = Boolean(author?.name) || items.some((i) => i.value);
+const hasRight =
+  facts.length > 0 || Boolean(note) || Boolean(description) || safeCategories.length > 0 || safeTags.length > 0 || links.length > 0;
+---
+
+{(hasLeft || hasRight) && (
+  <div class:list={["entry-meta", { "entry-meta--single": !(hasLeft && hasRight) }]}>
+    {hasLeft && (
+      <div class="entry-meta__lead">
+        {author?.name && (
+          <AuthorCard name={author.name} role={author.role ?? ""} avatar={avatar} compact />
+        )}
+        <MetaList items={items} ariaLabel={itemsLabel} />
+      </div>
+    )}
+
+    {hasRight && (
+      <div class="entry-meta__detail">
+        {(facts.length > 0 || note) && (
+          <p class="entry-meta__facts">
+            {facts.map((fact) => (
+              <span>
+                {fact.label}{" "}
+                <time datetime={fact.date.toISOString()}>{fact.text}</time>
+              </span>
+            ))}
+            {note && <span>{note}</span>}
+          </p>
+        )}
+
+        {description && <p class="entry-meta__description">{description}</p>}
+
+        {(safeCategories.length > 0 || safeTags.length > 0) && (
+          <div class="entry-meta__taxonomy">
+            {safeCategories.map((category) => <CategoryBadge category={category} />)}
+            <TagList tags={safeTags} />
+          </div>
+        )}
+
+        {links.length > 0 && (
+          <ul class="entry-meta__links" aria-label={linksLabel}>
+            {links.map((link) => (
+              <li>
+                <a href={link.href} target="_blank" rel="noopener noreferrer">
+                  {link.label}
+                  <span class="sr-only"> (opens in new tab)</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    )}
+  </div>
+)}
+
+<style>
+  .entry-meta {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+    width: 100%;
+    padding-block: 1.25rem 1.5rem;
+  }
+
+  .entry-meta__lead,
+  .entry-meta__detail {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    min-width: 0;
+  }
+
+  /* Facts: dot separators come from CSS so they are never read aloud */
+  .entry-meta__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0;
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+  }
+
+  .entry-meta__facts > span + span::before {
+    content: "·";
+    content: "·" / "";
+    margin-inline: 0.6rem;
+    color: var(--m);
+  }
+
+  .entry-meta__description {
+    margin: 0;
+    max-width: 60ch;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+  }
+
+  .entry-meta__taxonomy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .entry-meta__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .entry-meta__links a {
+    display: inline-block;
+    padding-block: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text);
+    text-underline-offset: 3px;
+  }
+
+  .entry-meta__links a:hover,
+  .entry-meta__links a:focus-visible {
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 48rem) {
+    .entry-meta:not(.entry-meta--single) {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 1.5rem;
+    }
+
+    .entry-meta:not(.entry-meta--single) .entry-meta__detail {
+      align-items: flex-end;
+      text-align: right;
+    }
+
+    .entry-meta:not(.entry-meta--single) .entry-meta__facts,
+    .entry-meta:not(.entry-meta--single) .entry-meta__taxonomy,
+    .entry-meta:not(.entry-meta--single) .entry-meta__links {
+      justify-content: flex-end;
+    }
+  }
+</style>

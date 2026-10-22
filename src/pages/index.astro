@@ -1,4 +1,5 @@
 ---
+import { entryHref } from "../lib/routes";
 import Layout from "../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import { isEvidenceReady, cleanText } from "../lib/content-quality.mjs";
@@ -318,7 +319,7 @@ const pathways = [
             latestPost && (
               <p class="hp-latest">
                 <span>Latest writing</span>
-                <a href={`/blog/${latestPost.data.slug ?? latestPost.id}/`}>
+                <a href={entryHref("blog", latestPost.id)}>
                   {latestPost.data.title}
                 </a>
               </p>

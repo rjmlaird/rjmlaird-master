@@ -205,7 +205,7 @@ communications, digital experiences and public engagement.
 
 See also:
 
-- [Rosetta Philae case study](/case-studies/rosetta-philae/)
+- [Rosetta Philae case study](/work/case-studies/rosetta-philae/)
 
 ## Keywords
 

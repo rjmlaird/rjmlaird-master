@@ -1,0 +1,14 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapLanguages } from '../../lib/schema/mappers';
+import type { LanguageItem } from '../../lib/schema/types';
+
+interface Props {
+  data: readonly LanguageItem[];
+}
+const g = new SchemaGraph();
+mapLanguages(g, Astro.props.data);
+---
+
+<JsonLd data={g.toJSON()} />

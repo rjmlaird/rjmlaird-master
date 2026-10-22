@@ -250,7 +250,7 @@ testing and engineering practices that support reliable spacecraft.
 
 See also:
 
-- [ESA Material Labs case study](/case-studies/esa-material-labs/)
+- [ESA Material Labs case study](/work/case-studies/esa-material-labs/)
 
 ## Limitations
 
@@ -281,5 +281,5 @@ Sources
 [6] Gaia data release 3: exploring our multi-dimensional Milky Way - ESA https://www.esa.int/ESA_Multimedia/Videos/2022/06/Gaia_data_release_3_exploring_our_multi-dimensional_Milky_Way
 [7] The Gaia mission - ADS - Astrophysics Data System http://ui.adsabs.harvard.edu/abs/2016A&A...595A...1G/abstract
 [8] ESA Gaia على X: "Names of all contributors are now being written to ... https://x.com/ESAGaia/status/1905177931682349193
-[9] [PDF] Gaia ESA Archive (GEA) tutorial https://indico.strw.leidenuniv.nl/event/2/sessions/5/attachments/7/6/GaiaArchiveTutorial-DeBruijne.pdf
+[9] \[PDF\] Gaia ESA Archive (GEA) tutorial https://indico.strw.leidenuniv.nl/event/2/sessions/5/attachments/7/6/GaiaArchiveTutorial-DeBruijne.pdf
 [10] Esa Gaia Mission News: Latest News, Photos, Videos & Live Updates | ABP Live English https://news.abplive.com/topic/esa-gaia-mission/amp

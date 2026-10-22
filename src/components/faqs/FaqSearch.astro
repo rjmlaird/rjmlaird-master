@@ -1,0 +1,86 @@
+---
+/**
+ * Optional filter box. Progressive enhancement: the markup is `hidden` until the script
+ * runs, so without JavaScript there is no dead control and every answer stays visible.
+ * It filters elements marked [data-faq-item] and hides [data-faq-group] sections that end up empty.
+ */
+export interface Props {
+  /** Visible label. Default "Search these questions". */
+  label?: string;
+  /** Unique id for the input. Default "faq-search". */
+  id?: string;
+}
+const { label = 'Search these questions', id = 'faq-search' } = Astro.props;
+---
+
+<search class="faq-search" data-faq-search hidden>
+  <label for={id}>{label}</label>
+  <input id={id} type="search" autocomplete="off" spellcheck="false" />
+  <p class="faq-search__status" role="status" data-faq-status></p>
+</search>
+
+<script>
+  const root = document.querySelector<HTMLElement>('search[data-faq-search]');
+  const input = root?.querySelector<HTMLInputElement>('input');
+  const status = root?.querySelector<HTMLElement>('[data-faq-status]');
+
+  if (root && input && status) {
+    const items = [...document.querySelectorAll<HTMLElement>('[data-faq-item]')];
+    const groups = [...document.querySelectorAll<HTMLElement>('[data-faq-group]')];
+    const index = items.map((el) => (el.textContent ?? '').toLowerCase());
+    root.hidden = false;
+
+    const apply = () => {
+      const terms = input.value.toLowerCase().split(/\s+/).filter(Boolean);
+      let visible = 0;
+      items.forEach((el, i) => {
+        const match = terms.every((t) => index[i].includes(t));
+        el.hidden = !match;
+        if (match) visible++;
+      });
+      groups.forEach((g) => {
+        g.hidden = !g.querySelector('[data-faq-item]:not([hidden])');
+      });
+      // Announce only when the user is searching, and keep it short.
+      status.textContent = terms.length
+        ? visible === 0
+          ? 'No questions match your search.'
+          : `${visible} of ${items.length} questions shown.`
+        : '';
+    };
+
+    input.addEventListener('input', apply);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && input.value) {
+        input.value = '';
+        apply();
+      }
+    });
+  }
+</script>
+
+<style>
+  .faq-search { display: grid; gap: 0.35rem; margin-block: 1rem 1.5rem; max-inline-size: 32rem; --faq-focus: var(--focus); }
+  .faq-search[hidden] { display: none; } /* author display rules would otherwise defeat [hidden] */
+  .faq-search label { font-weight: 600; }
+  .faq-search input {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-block-size: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    font: inherit;
+    color: inherit;
+    background: transparent;
+    border: 2px solid currentColor;
+    border-radius: 0.375rem;
+  }
+  .faq-search input:focus-visible {
+    outline: 3px solid var(--faq-focus);
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px Canvas;
+  }
+  .faq-search__status { margin: 0; min-block-size: 1.25rem; font-size: 0.9rem; }
+
+  /* Beats display rules on .faq / .faq-group so [hidden] always hides. */
+  :global([data-faq-item][hidden], [data-faq-group][hidden]) { display: none !important; }
+</style>

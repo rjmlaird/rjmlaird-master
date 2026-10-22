@@ -1,0 +1,18 @@
+---
+import JsonLd from './JsonLd.astro';
+import { SchemaGraph } from '../../lib/schema/graph';
+import { mapTalks } from '../../lib/schema/mappers';
+import { unwrap } from '../../lib/schema/helpers';
+import type { TalkItem, MaybeWrapped } from '../../lib/schema/types';
+
+interface Props {
+  data: MaybeWrapped<TalkItem, 'talk_series'>;
+  /** Statuses to publish. Default: ready, delivered, scheduled (drafts/planned talks stay out). */
+  statuses?: string[];
+}
+const { data, statuses } = Astro.props;
+const g = new SchemaGraph();
+mapTalks(g, unwrap(data, 'talk_series'), statuses ? new Set(statuses) : undefined);
+---
+
+<JsonLd data={g.toJSON()} />
