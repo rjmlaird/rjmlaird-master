@@ -4,6 +4,7 @@ import sitemap from "@astrojs/sitemap";
 import mdx from "@astrojs/mdx";
 import { unified } from "@astrojs/markdown-remark";
 import { rehypeTableAlign } from "./src/lib/rehype-table-align.mjs";
+import { rehypeNormaliseHeadings } from "./src/lib/rehype-normalise-headings.mjs";
 import { remarkGlossaryLinks } from "./packages/glossary/src/index.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -25,7 +26,7 @@ for (const [dir, route] of Object.entries(sections)) {
 
 // /cv/ stays out of the sitemap until src/data/cv.json is marked complete.
 // Draft or pre-launch sections stay out of the sitemap (their pages are also noindex).
-const unindexed = /^https:\/\/rjmlaird\.co\.uk\/(mentoring\/.+|coaching\/.*|tutoring\/.*|brand\/.*|research\/(lab|projects|methods|notebooks|notes|themes|outputs|data|data-policy|changelog|policy|accessibility)\/.*)$/;
+const unindexed = /^https:\/\/rjmlaird\.co\.uk\/(insights\/resources\/.*|mentoring\/.+|coaching\/.*|tutoring\/.*|brand\/.*|research\/(lab|projects|methods|notebooks|notes|themes|outputs|data|data-policy|changelog|policy|accessibility)\/.*)$/;
 
 const cv = JSON.parse(fs.readFileSync(path.resolve("src/data/cv.json"), "utf8"));
 if (!cv.complete) stubUrls.add("https://rjmlaird.co.uk/cv/");
@@ -46,7 +47,7 @@ export default defineConfig({
   markdown: {
     processor: unified({
       remarkPlugins: [[remarkGlossaryLinks, { strict: process.env.GLOSSARY_STRICT !== "0" }]],
-      rehypePlugins: [rehypeTableAlign],
+      rehypePlugins: [rehypeTableAlign, rehypeNormaliseHeadings],
     }),
   },
   scopedStyleStrategy: "class",

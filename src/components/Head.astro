@@ -4,7 +4,7 @@
 // Twitter, icons, fonts and the JSON-LD graph. Layout.astro just forwards props.
 import type { CollectionEntry } from "astro:content";
 import JsonLd from "./JsonLd.astro";
-import nav from "../data/nav.json";
+import { primaryNav, utilityNav } from "../lib/routes";
 import { loadSchemaSource } from "../lib/schema-org/source";
 import { buildPageGraph, type Crumb, type PageType } from "../lib/schema-org/graph";
 
@@ -116,7 +116,7 @@ const modifiedIso = toIso(dateModified ?? postData?.updatedDate ?? postData?.upd
 // ---------------------------------------------------------------------------
 // JSON-LD graph
 // ---------------------------------------------------------------------------
-const knownSections = [...(nav.primary ?? []), ...(nav.utility ?? [])]
+const knownSections = [...primaryNav, ...utilityNav]
   .map((n: { href: string }) => n.href)
   .filter((h: string) => h.startsWith("/"))
   .map((h: string) => h.split("/").filter(Boolean)[0])

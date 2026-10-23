@@ -7,6 +7,7 @@ import ProjectMeta from "../components/ProjectMeta.astro";
 import Figure from "../components/Figure.astro";
 import RelatedProjects from "../components/RelatedPosts.astro";
 import { getReadingTime } from "../utils/readingTime";
+import { listHref } from "../lib/routes";
 import { cleanText, isEvidenceReady } from "../lib/content-quality.mjs";
 
 type WorkEntry =
@@ -117,10 +118,10 @@ const labels: Record<WorkKind, { single: string; plural: string; path: string }>
   project: { single: "Project", plural: "Projects", path: "work/projects" },
   initiative: { single: "Initiative", plural: "Initiatives", path: "work/initiatives" },
   caseStudy: { single: "Case study", plural: "Case studies", path: "work/case-studies" },
-  event: { single: "Event", plural: "Events", path: "events" },
+  event: { single: "Event", plural: "Events", path: "work/events" },
 };
 
-const { single: defaultLabel, plural: listLabel, path: basePath } = labels[kind];
+const { single: defaultLabel, plural: listLabel } = labels[kind];
 
 const pageTitle = title || slug || defaultLabel;
 const pageDescription = description || `Details and documentation for ${pageTitle}.`;
@@ -131,6 +132,18 @@ const personBaseUrl = (Astro.site?.href ?? "https://rjmlaird.co.uk/").replace(
 );
 const personId = `${personBaseUrl}/#person`;
 
+// Only assert you as organiser where the entry's own `organiser` field names you; otherwise
+// name the organiser it records, and say nothing if it records none.
+const organiserName =
+  kind === "event" && typeof (data as Record<string, unknown>).organiser === "string"
+    ? ((data as Record<string, unknown>).organiser as string).trim()
+    : "";
+const eventOrganizer = !organiserName
+  ? undefined
+  : /^ryan\s+(j\.?\s*m\.?\s+)?laird$/i.test(organiserName)
+    ? { "@id": personId }
+    : { "@type": "Organization", name: organiserName };
+
 const mainEntity = {
   "@type": kind === "event" ? "Event" : "CreativeWork",
   name: pageTitle,
@@ -138,7 +151,7 @@ const mainEntity = {
   description: pageDescription,
   image: heroImage ? [new URL(heroImage, personBaseUrl).href] : undefined,
   author: kind === "event" ? undefined : { "@id": personId },
-  organizer: kind === "event" ? { "@id": personId } : undefined,
+  organizer: kind === "event" ? eventOrganizer : undefined,
   dateCreated: startDate?.toISOString(),
   dateModified: (updatedDate ?? startDate)?.toISOString(),
   keywords: safeTags.length > 0 ? safeTags.join(", ") : undefined,
@@ -157,7 +170,7 @@ const mainEntity = {
     <Breadcrumbs
       items={[
         { label: "Home", href: "/" },
-        { label: listLabel, href: `/${basePath}/` },
+        { label: listLabel, href: listHref(kind) },
         { label: pageTitle },
       ]}
     />

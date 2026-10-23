@@ -1,33 +1,25 @@
 ---
-import nav from "../data/nav.json";
+import { primaryNav, utilityNav, ctaNav, type NavLink } from "../lib/routes";
 
-type NavChild = {
-  label: string;
-  href: string;
-  external?: boolean;
-};
+type NavChild = NavLink;
 
-type NavLink = {
-  label: string;
-  href: string;
-  external?: boolean;
-  children?: NavChild[];
-};
+const primary = primaryNav;
+const utility = utilityNav;
+const cta = ctaNav;
 
-type NavData = {
-  primary: NavLink[];
-  utility?: NavLink[];
-  cta?: NavLink;
-};
+const withSlash = (p: string) => (p.endsWith("/") ? p : `${p}/`);
+const here = withSlash(Astro.url.pathname);
 
-const { primary, utility = [], cta } = nav as NavData;
-const path = Astro.url.pathname;
+// aria-current="page" is for the exact page only; ancestors get a visual "is-active" state.
+const isCurrent = (link: { href: string; external?: boolean }) =>
+  !link.external && link.href.startsWith("/") && withSlash(link.href) === here;
 
-const isCurrent = (href: string) =>
-  href === "/" ? path === "/" : path === href || path.startsWith(href);
+const inSection = (link: { href: string; external?: boolean }) =>
+  !link.external &&
+  link.href.startsWith("/") &&
+  (link.href === "/" ? here === "/" : here.startsWith(withSlash(link.href)));
 
-const hasCurrentChild = (children: NavChild[] = []) =>
-  children.some((child) => isCurrent(child.href));
+const hasCurrentChild = (children: NavChild[] = []) => children.some(inSection);
 
 const linkAttrs = (link: { href: string; external?: boolean }) =>
   link.external
@@ -46,7 +38,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
         <a
           href={link.href}
           class="nsub"
-          aria-current={isCurrent(link.href) ? "page" : undefined}
+          aria-current={isCurrent(link) ? "page" : undefined}
           {...linkAttrs(link)}
         >
           {link.label}
@@ -77,7 +69,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
       {primary.map((link, index) => {
         const hasChildren = Boolean(link.children?.length);
         const submenuId = `nav-submenu-${index}`;
-        const isActive = isCurrent(link.href) || hasCurrentChild(link.children);
+        const isActive = inSection(link) || hasCurrentChild(link.children);
 
         return (
           <li class:list={["nitem", { "has-children": hasChildren, "is-active": isActive }]}>
@@ -85,7 +77,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
               <a
                 class="nav-link"
                 href={link.href}
-                aria-current={isCurrent(link.href) ? "page" : undefined}
+                aria-current={isCurrent(link) ? "page" : undefined}
                 {...linkAttrs(link)}
               >
                 {link.label}
@@ -110,7 +102,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
                   <li>
                     <a
                       href={child.href}
-                      aria-current={isCurrent(child.href) ? "page" : undefined}
+                      aria-current={isCurrent(child) ? "page" : undefined}
                       {...linkAttrs(child)}
                     >
                       {child.label}
@@ -284,7 +276,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 }
 
 .logo {
-  font-family: var(--D);
+  font-family: var(--font-display);
   font-size: 0.93rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -317,7 +309,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 }
 
 .nav-link {
-  font-family: var(--D);
+  font-family: var(--font-display);
   font-size: 0.75rem;
   font-weight: 500;
   color: var(--m);
@@ -404,7 +396,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 
 .dropdown li a {
   display: block;
-  font-family: var(--D);
+  font-family: var(--font-display);
   font-size: 0.72rem;
   font-weight: 500;
   color: var(--m);
@@ -421,7 +413,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 }
 
 .nsub {
-  font-family: var(--D);
+  font-family: var(--font-display);
   font-size: 0.7rem;
   font-weight: 500;
   color: var(--m);
@@ -432,7 +424,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 }
 
 .ncta {
-  font-family: var(--D);
+  font-family: var(--font-display);
   font-size: 0.76rem;
   font-weight: 600;
   color: var(--ink);

@@ -1,0 +1,1145 @@
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/brand/components/layout/Breadcrumbs.astro src/brand/components/layout/Breadcrumbs.astro
+--- a/src/brand/components/layout/Breadcrumbs.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/brand/components/layout/Breadcrumbs.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -1,12 +1,12 @@
+ ---
+ import { sectionMeta } from '../../data/navigation';
+ import type { Section } from '../../lib/schemas';
+-import { url } from '../../lib/urls';
++import { url, brandHome } from '../../lib/urls';
+ interface Props { section: Section; title?: string }
+ const { section, title } = Astro.props;
+ ---
+ <nav class="crumbs" aria-label="Breadcrumb">
+-  <a href="/brand/">Brand</a>
++  <a href={brandHome}>Brand</a>
+   <span aria-hidden="true">/</span>
+   {title ? <a href={url(section)}>{sectionMeta[section].title}</a> : <span aria-current="page">{sectionMeta[section].title}</span>}
+   {title && <><span aria-hidden="true">/</span><span aria-current="page">{title}</span></>}
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/brand/layouts/BaseLayout.astro src/brand/layouts/BaseLayout.astro
+--- a/src/brand/layouts/BaseLayout.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/brand/layouts/BaseLayout.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -6,7 +6,7 @@
+ import '../styles/brand.css';
+ import { sections } from '../lib/schemas';
+ import { sectionMeta } from '../data/navigation';
+-import { url } from '../lib/urls';
++import { url, brandHome } from '../lib/urls';
+ import { defaultDescription } from '../lib/seo';
+ 
+ interface Props { title?: string; description?: string; site?: string; }
+@@ -16,7 +16,7 @@
+ <Layout title={title ? `${title} · Brand system` : 'Brand system'} description={description} noindex={true}>
+   <div class="wrap page">
+     <nav class="bd-subnav" aria-label="Brand sections">
+-      <a class="bd-subnav-home" href="/brand/" aria-current={path === '/brand/' ? 'page' : undefined}>Brand system</a>
++      <a class="bd-subnav-home" href={brandHome} aria-current={path === brandHome ? 'page' : undefined}>Brand system</a>
+       <ul>{sections.map((s) => <li><a href={url(s)} aria-current={path.startsWith(url(s)) ? 'page' : undefined}>{sectionMeta[s].title}</a></li>)}</ul>
+       <button class="bd-theme" type="button" data-theme-toggle>Theme</button>
+     </nav>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/brand/lib/urls.ts src/brand/lib/urls.ts
+--- a/src/brand/lib/urls.ts	2026-10-22 16:56:36.000000000 +0000
++++ b/src/brand/lib/urls.ts	2026-10-23 20:06:07.376192784 +0000
+@@ -1,4 +1,6 @@
+ /** Internal page URL with leading and trailing slash. */
+-export const url = (path: string) => '/brand/' + path.replace(/^\/+|\/+$/g, '') + '/';
++/** The brand section is mounted at /about/brand/ on this site. */
++export const brandHome = '/about/brand/';
++export const url = (path: string) => brandHome + path.replace(/^\/+|\/+$/g, '') + '/';
+ 
+ export const siteUrl = (host: string) => `https://${host}`;
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/components/About/AboutCard.astro src/components/About/AboutCard.astro
+--- a/src/components/About/AboutCard.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/components/About/AboutCard.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -83,7 +83,7 @@
+   }
+ 
+   .ac-subtitle {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .6rem;
+     font-weight: 700;
+     letter-spacing: .16em;
+@@ -92,7 +92,7 @@
+   }
+ 
+   .ac-title {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: 1.05rem;
+     font-weight: 700;
+     letter-spacing: -0.01em;
+@@ -114,7 +114,7 @@
+   }
+ 
+   .ac-tag {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .6rem;
+     font-weight: 600;
+     letter-spacing: .08em;
+@@ -133,7 +133,7 @@
+   }
+ 
+   .ac-link {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .7rem;
+     font-weight: 600;
+     letter-spacing: .08em;
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/components/Footer.astro src/components/Footer.astro
+--- a/src/components/Footer.astro	2026-10-22 22:13:37.000000000 +0000
++++ b/src/components/Footer.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -2,17 +2,7 @@
+ import socials from "../data/socials.json";
+ import { Icon } from "astro-icon/components";
+ import { resolveIcon, HIDDEN_SOCIALS } from "../lib/icons";
+-
+-type FooterLink = {
+-  label: string;
+-  href: string;
+-  external?: boolean;
+-};
+-
+-type FooterGroup = {
+-  title: string;
+-  links: FooterLink[];
+-};
++import { footerNav, legalNav } from "../lib/routes";
+ 
+ const footerYear = new Date().getFullYear();
+ 
+@@ -20,67 +10,8 @@
+   (item) => item.type === "social" && !HIDDEN_SOCIALS.has(item.key),
+ );
+ 
+-const footerNavigation: FooterGroup[] = [
+-  {
+-    title: "Explore",
+-    links: [
+-      { label: "Portfolio", href: "/work/" },
+-      { label: "Research", href: "/research/" },
+-      { label: "Projects", href: "/work/projects/" },
+-      { label: "Insights", href: "/insights/" },
+-    ],
+-  },
+-  {
+-    title: "Services",
+-    links: [
+-      {
+-        label: "Strategic communication",
+-        href: "/services/strategic-communication/",
+-      },
+-      {
+-        label: "Digital strategy & systems",
+-        href: "/services/digital-strategy-systems/",
+-      },
+-      {
+-        label: "Teaching & mentoring",
+-        href: "/services/teaching-mentoring/",
+-      },
+-      {
+-        label: "Speaking & collaboration",
+-        href: "/services/speaking-collaboration/",
+-      },
+-    ],
+-  },
+-  {
+-    title: "Platforms",
+-    links: [
+-      { label: "Docs", href: "https://docs.rjmlaird.co.uk" },
+-      { label: "Tools", href: "https://tools.rjmlaird.co.uk" },
+-      { label: "Apps", href: "https://apps.rjmlaird.co.uk" },
+-      { label: "Labs", href: "https://labs.rjmlaird.co.uk" },
+-    ],
+-  },
+-  {
+-    title: "Work with me",
+-    links: [
+-      { label: "Contact", href: "/contact/" },
+-      {
+-        label: "Booking Portal",
+-        href: "https://booking.rjmlaird.co.uk",
+-      },
+-      {
+-        label: "Impact Orbit Co.",
+-        href: "https://impactorbit.co",
+-        external: true,
+-      },
+-      {
+-        label: "Space for Neurodiversity",
+-        href: "https://spaceforneurodiversity.org",
+-        external: true,
+-      },
+-    ],
+-  },
+-];
++const footerNavigation = footerNav;
++
+ ---
+ 
+ <footer class="footer">
+@@ -157,10 +88,9 @@
+     <p>© {footerYear} Ryan Laird. All rights reserved.</p>
+ 
+     <nav class="footer__meta" aria-label="Legal information">
+-      <a href="/privacy/">Privacy policy</a>
+-      <a href="/terms-of-use/">Terms of use</a>
+-      <a href="/disclaimer/">Disclaimer</a>
+-      <a href="https://api.rjmlaird.co.uk">API</a>
++      {legalNav.map((link) => (
++        <a href={link.href}>{link.label}</a>
++      ))}
+     </nav>
+   </div>
+ </footer>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/components/Head.astro src/components/Head.astro
+--- a/src/components/Head.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/components/Head.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -4,7 +4,7 @@
+ // Twitter, icons, fonts and the JSON-LD graph. Layout.astro just forwards props.
+ import type { CollectionEntry } from "astro:content";
+ import JsonLd from "./JsonLd.astro";
+-import nav from "../data/nav.json";
++import { primaryNav, utilityNav } from "../lib/routes";
+ import { loadSchemaSource } from "../lib/schema-org/source";
+ import { buildPageGraph, type Crumb, type PageType } from "../lib/schema-org/graph";
+ 
+@@ -116,7 +116,7 @@
+ // ---------------------------------------------------------------------------
+ // JSON-LD graph
+ // ---------------------------------------------------------------------------
+-const knownSections = [...(nav.primary ?? []), ...(nav.utility ?? [])]
++const knownSections = [...primaryNav, ...utilityNav]
+   .map((n: { href: string }) => n.href)
+   .filter((h: string) => h.startsWith("/"))
+   .map((h: string) => h.split("/").filter(Boolean)[0])
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/components/Nav.astro src/components/Nav.astro
+--- a/src/components/Nav.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/components/Nav.astro	2026-10-23 20:06:07.376192784 +0000
+@@ -1,33 +1,25 @@
+ ---
+-import nav from "../data/nav.json";
++import { primaryNav, utilityNav, ctaNav, type NavLink } from "../lib/routes";
+ 
+-type NavChild = {
+-  label: string;
+-  href: string;
+-  external?: boolean;
+-};
+-
+-type NavLink = {
+-  label: string;
+-  href: string;
+-  external?: boolean;
+-  children?: NavChild[];
+-};
+-
+-type NavData = {
+-  primary: NavLink[];
+-  utility?: NavLink[];
+-  cta?: NavLink;
+-};
++type NavChild = NavLink;
+ 
+-const { primary, utility = [], cta } = nav as NavData;
+-const path = Astro.url.pathname;
++const primary = primaryNav;
++const utility = utilityNav;
++const cta = ctaNav;
+ 
+-const isCurrent = (href: string) =>
+-  href === "/" ? path === "/" : path === href || path.startsWith(href);
++const withSlash = (p: string) => (p.endsWith("/") ? p : `${p}/`);
++const here = withSlash(Astro.url.pathname);
+ 
+-const hasCurrentChild = (children: NavChild[] = []) =>
+-  children.some((child) => isCurrent(child.href));
++// aria-current="page" is for the exact page only; ancestors get a visual "is-active" state.
++const isCurrent = (link: { href: string; external?: boolean }) =>
++  !link.external && link.href.startsWith("/") && withSlash(link.href) === here;
++
++const inSection = (link: { href: string; external?: boolean }) =>
++  !link.external &&
++  link.href.startsWith("/") &&
++  (link.href === "/" ? here === "/" : here.startsWith(withSlash(link.href)));
++
++const hasCurrentChild = (children: NavChild[] = []) => children.some(inSection);
+ 
+ const linkAttrs = (link: { href: string; external?: boolean }) =>
+   link.external
+@@ -46,7 +38,7 @@
+         <a
+           href={link.href}
+           class="nsub"
+-          aria-current={isCurrent(link.href) ? "page" : undefined}
++          aria-current={isCurrent(link) ? "page" : undefined}
+           {...linkAttrs(link)}
+         >
+           {link.label}
+@@ -77,7 +69,7 @@
+       {primary.map((link, index) => {
+         const hasChildren = Boolean(link.children?.length);
+         const submenuId = `nav-submenu-${index}`;
+-        const isActive = isCurrent(link.href) || hasCurrentChild(link.children);
++        const isActive = inSection(link) || hasCurrentChild(link.children);
+ 
+         return (
+           <li class:list={["nitem", { "has-children": hasChildren, "is-active": isActive }]}>
+@@ -85,7 +77,7 @@
+               <a
+                 class="nav-link"
+                 href={link.href}
+-                aria-current={isCurrent(link.href) ? "page" : undefined}
++                aria-current={isCurrent(link) ? "page" : undefined}
+                 {...linkAttrs(link)}
+               >
+                 {link.label}
+@@ -110,7 +102,7 @@
+                   <li>
+                     <a
+                       href={child.href}
+-                      aria-current={isCurrent(child.href) ? "page" : undefined}
++                      aria-current={isCurrent(child) ? "page" : undefined}
+                       {...linkAttrs(child)}
+                     >
+                       {child.label}
+@@ -284,7 +276,7 @@
+ }
+ 
+ .logo {
+-  font-family: var(--D);
++  font-family: var(--font-display);
+   font-size: 0.93rem;
+   font-weight: 700;
+   letter-spacing: 0.04em;
+@@ -317,7 +309,7 @@
+ }
+ 
+ .nav-link {
+-  font-family: var(--D);
++  font-family: var(--font-display);
+   font-size: 0.75rem;
+   font-weight: 500;
+   color: var(--m);
+@@ -404,7 +396,7 @@
+ 
+ .dropdown li a {
+   display: block;
+-  font-family: var(--D);
++  font-family: var(--font-display);
+   font-size: 0.72rem;
+   font-weight: 500;
+   color: var(--m);
+@@ -421,7 +413,7 @@
+ }
+ 
+ .nsub {
+-  font-family: var(--D);
++  font-family: var(--font-display);
+   font-size: 0.7rem;
+   font-weight: 500;
+   color: var(--m);
+@@ -432,7 +424,7 @@
+ }
+ 
+ .ncta {
+-  font-family: var(--D);
++  font-family: var(--font-display);
+   font-size: 0.76rem;
+   font-weight: 600;
+   color: var(--ink);
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/layouts/BlogLayout.astro src/layouts/BlogLayout.astro
+--- a/src/layouts/BlogLayout.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/layouts/BlogLayout.astro	2026-10-23 20:06:07.380192784 +0000
+@@ -15,6 +15,8 @@
+   description?: string;
+   headings?: { depth: number; slug: string; text: string }[];
+   relatedPosts?: CollectionEntry<'blog'>[];
++  /** Overrides the entry's own canonical (used where one post is served at two URLs). */
++  canonical?: string;
+   body?: string;
+   pubDate?: Date;
+   updatedDate?: Date;
+@@ -108,7 +110,7 @@
+   datePublished={parsedPubDate}
+   dateModified={parsedUpdatedDate ?? parsedPubDate}
+   image={typeof resolvedHeroSrc === 'string' ? resolvedHeroSrc : undefined}
+-  canonical={canonical}
++  canonical={Astro.props.canonical ?? canonical}
+   noindex={noindex}
+ >
+   <article class="post">
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/layouts/LegalNotice.astro src/layouts/LegalNotice.astro
+--- a/src/layouts/LegalNotice.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/layouts/LegalNotice.astro	2026-10-23 20:06:07.380192784 +0000
+@@ -54,7 +54,7 @@
+ ---
+ 
+ <Layout title={title} description={description}>
+-  <main class="legal-page">
++  <div class="nested-main legal-page">
+     <div class="wrap legal-page__wrap">
+       <nav class="crumbs" aria-label="Breadcrumb">
+         <ol>
+@@ -157,7 +157,7 @@
+         )
+       }
+     </div>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/layouts/ProjectLayout.astro src/layouts/ProjectLayout.astro
+--- a/src/layouts/ProjectLayout.astro	2026-10-22 22:13:37.000000000 +0000
++++ b/src/layouts/ProjectLayout.astro	2026-10-23 20:06:07.380192784 +0000
+@@ -7,6 +7,7 @@
+ import Figure from "../components/Figure.astro";
+ import RelatedProjects from "../components/RelatedPosts.astro";
+ import { getReadingTime } from "../utils/readingTime";
++import { listHref } from "../lib/routes";
+ import { cleanText, isEvidenceReady } from "../lib/content-quality.mjs";
+ 
+ type WorkEntry =
+@@ -117,10 +118,10 @@
+   project: { single: "Project", plural: "Projects", path: "work/projects" },
+   initiative: { single: "Initiative", plural: "Initiatives", path: "work/initiatives" },
+   caseStudy: { single: "Case study", plural: "Case studies", path: "work/case-studies" },
+-  event: { single: "Event", plural: "Events", path: "events" },
++  event: { single: "Event", plural: "Events", path: "work/events" },
+ };
+ 
+-const { single: defaultLabel, plural: listLabel, path: basePath } = labels[kind];
++const { single: defaultLabel, plural: listLabel } = labels[kind];
+ 
+ const pageTitle = title || slug || defaultLabel;
+ const pageDescription = description || `Details and documentation for ${pageTitle}.`;
+@@ -131,6 +132,18 @@
+ );
+ const personId = `${personBaseUrl}/#person`;
+ 
++// Only assert you as organiser where the entry's own `organiser` field names you; otherwise
++// name the organiser it records, and say nothing if it records none.
++const organiserName =
++  kind === "event" && typeof (data as Record<string, unknown>).organiser === "string"
++    ? ((data as Record<string, unknown>).organiser as string).trim()
++    : "";
++const eventOrganizer = !organiserName
++  ? undefined
++  : /^ryan\s+(j\.?\s*m\.?\s+)?laird$/i.test(organiserName)
++    ? { "@id": personId }
++    : { "@type": "Organization", name: organiserName };
++
+ const mainEntity = {
+   "@type": kind === "event" ? "Event" : "CreativeWork",
+   name: pageTitle,
+@@ -138,7 +151,7 @@
+   description: pageDescription,
+   image: heroImage ? [new URL(heroImage, personBaseUrl).href] : undefined,
+   author: kind === "event" ? undefined : { "@id": personId },
+-  organizer: kind === "event" ? { "@id": personId } : undefined,
++  organizer: kind === "event" ? eventOrganizer : undefined,
+   dateCreated: startDate?.toISOString(),
+   dateModified: (updatedDate ?? startDate)?.toISOString(),
+   keywords: safeTags.length > 0 ? safeTags.join(", ") : undefined,
+@@ -157,7 +170,7 @@
+     <Breadcrumbs
+       items={[
+         { label: "Home", href: "/" },
+-        { label: listLabel, href: `/${basePath}/` },
++        { label: listLabel, href: listHref(kind) },
+         { label: pageTitle },
+       ]}
+     />
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/lib/rehype-normalise-headings.mjs src/lib/rehype-normalise-headings.mjs
+--- a/src/lib/rehype-normalise-headings.mjs	1970-01-01 00:00:00.000000000 +0000
++++ b/src/lib/rehype-normalise-headings.mjs	2026-10-23 20:02:56.025296165 +0000
+@@ -0,0 +1,27 @@
++// Keeps rendered Markdown/MDX from competing with the page template's own <h1>.
++//   1. Empty headings (a bare "# " line) are dropped: they are announced as "heading, empty".
++//   2. A body-level h1 becomes an h2, so each page keeps exactly one h1 (the template's title).
++// Only the rendered output changes; the Markdown source is untouched.
++const HEADING = /^h[1-6]$/;
++
++const hasContent = (node) => {
++  if (node.type === 'text') return node.value.trim() !== '';
++  if (node.type === 'element' && (node.tagName === 'img' || node.tagName === 'svg')) return true;
++  return (node.children ?? []).some(hasContent);
++};
++
++export function rehypeNormaliseHeadings() {
++  return (tree) => {
++    const walk = (node) => {
++      if (!node.children) return;
++      node.children = node.children.filter(
++        (child) => !(child.type === 'element' && HEADING.test(child.tagName) && !hasContent(child)),
++      );
++      for (const child of node.children) {
++        if (child.type === 'element' && child.tagName === 'h1') child.tagName = 'h2';
++        walk(child);
++      }
++    };
++    walk(tree);
++  };
++}
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/lib/routes.ts src/lib/routes.ts
+--- a/src/lib/routes.ts	2026-10-22 16:56:36.000000000 +0000
++++ b/src/lib/routes.ts	2026-10-23 20:06:07.380192784 +0000
+@@ -1,6 +1,13 @@
+ // src/lib/routes.ts
+-// Single source of truth for internal URLs. Components must build hrefs
++// Single source of truth for internal URLs and site navigation. Components must build hrefs
+ // here rather than hard-coding paths, so a moved route is a one-line fix.
++//
++// Three kinds of destination live here:
++//   1. internal section routes   -> `routes`
++//   2. dynamic detail routes     -> `entryHref(kind, id)` and friends (collection names and
++//                                   public URLs are NOT assumed to match)
++//   3. external sites/apps       -> `external`
++// The future curated showcase is kept apart in `showcase` and is never linked until `live` is true.
+ import { slugify } from "../utils/slugify";
+ 
+ export type EntryKind =
+@@ -11,22 +18,79 @@
+   | "initiative"
+   | "caseStudy"
+   | "event"
+-  | "video";
++  | "video"
++  | "build";
+ 
+ export const routes = {
+   home: "/",
++
++  // Work (portfolio)
++  work: "/work/",
++  projects: "/work/projects/",
++  initiatives: "/work/initiatives/",
++  caseStudies: "/work/case-studies/",
++  events: "/work/events/",
++  videos: "/work/videos/",
++  editorial: "/work/editorial/",
++  research: "/research/",
++  publications: "/research/publications/",
++  dev: "/dev/",
++  builds: "/builds/",
++
++  // Insights
++  insights: "/insights/",
+   blog: "/insights/blog/",
+   resources: "/insights/resources/",
+   podcasts: "/insights/podcasts/",
+   sectors: "/insights/sectors/",
++  substack: "/insights/substack/",
++
++  // Browse
+   tags: "/tags/",
+   categories: "/category/",
+-  projects: "/work/projects/",
+-  initiatives: "/work/initiatives/",
+-  caseStudies: "/work/case-studies/",
+-  events: "/work/events/",
+-  videos: "/work/videos/",
++
++  // Services, about, contact
++  services: "/services/",
++  howIWork: "/how-i-work/",
++  about: "/about/",
++  bio: "/about/bio/",
++  organisations: "/about/organisations/",
++  press: "/about/press/",
++  brand: "/about/brand/",
++  contact: "/contact/",
++  faq: "/faq/",
++
++  // Legal
++  privacy: "/privacy/",
++  terms: "/terms-of-use/",
++  disclaimer: "/disclaimer/",
++  accessibility: "/accessibility/",
++
++  cv: "https://cv.rjmlaird.co.uk/",
++} as const;
++
++/** External websites and applications that belong to this site's ecosystem. */
++export const external = {
+   cv: "https://cv.rjmlaird.co.uk/",
++  docs: "https://docs.rjmlaird.co.uk",
++  tools: "https://tools.rjmlaird.co.uk",
++  apps: "https://apps.rjmlaird.co.uk",
++  labs: "https://labs.rjmlaird.co.uk",
++  booking: "https://booking.rjmlaird.co.uk",
++  substack: "https://rjmlaird.substack.com/",
++  api: "https://api.rjmlaird.co.uk",
++  impactOrbit: "https://impactorbit.co",
++  spaceForNeurodiversity: "https://spaceforneurodiversity.org",
++} as const;
++
++/**
++ * The separate, curated showcase. Not built yet: nothing may link to it unless `live` is true.
++ * Flip `live` when portfolio.rjmlaird.co.uk is deployed.
++ */
++export const showcase = {
++  live: false,
++  label: "Selected showcase",
++  href: "https://portfolio.rjmlaird.co.uk/",
+ } as const;
+ 
+ const base: Record<EntryKind, string> = {
+@@ -38,6 +102,7 @@
+   caseStudy: routes.caseStudies,
+   event: routes.events,
+   video: routes.videos,
++  build: routes.builds,
+ };
+ 
+ export const listHref = (kind: EntryKind) => base[kind];
+@@ -46,3 +111,112 @@
+ export const categoryHref = (category: string) => `${routes.categories}${slugify(category)}/`;
+ export const sectorHref = (sector: string) => `${routes.sectors}${slugify(sector)}/`;
+ export const cvHref = (id?: string) => (id ? `${routes.cv}#${id}` : routes.cv);
++export const brandHref = (path = "") =>
++  path ? `${routes.brand}${path.replace(/^\/+|\/+$/g, "")}/` : routes.brand;
++
++/* ---------------------------------------------------------------------------
++   Navigation. Primary nav, footer and breadcrumb section lookups all read from here.
++   --------------------------------------------------------------------------- */
++
++export type NavLink = {
++  label: string;
++  href: string;
++  external?: boolean;
++  children?: NavLink[];
++};
++
++export const primaryNav: NavLink[] = [
++  {
++    label: "Work",
++    href: routes.work,
++    children: [
++      { label: "Case studies", href: routes.caseStudies },
++      { label: "Projects", href: routes.projects },
++      { label: "Initiatives", href: routes.initiatives },
++      { label: "Research", href: routes.research },
++      { label: "Events", href: routes.events },
++      { label: "Podcasts", href: routes.podcasts },
++      { label: "Videos", href: routes.videos },
++      { label: "Editorial", href: routes.editorial },
++      { label: "Development & systems", href: routes.dev },
++      { label: "Builds", href: routes.builds },
++    ],
++  },
++  {
++    label: "Services",
++    href: routes.services,
++    children: [
++      { label: "Strategic communication", href: `${routes.services}strategic-communication/` },
++      { label: "Digital strategy & systems", href: `${routes.services}digital-strategy-systems/` },
++      { label: "Teaching & mentoring", href: `${routes.services}teaching-mentoring/` },
++      { label: "Speaking & collaboration", href: `${routes.services}speaking-collaboration/` },
++      { label: "How I work", href: routes.howIWork },
++    ],
++  },
++  {
++    label: "Insights",
++    href: routes.insights,
++    children: [
++      { label: "Blog", href: routes.blog },
++      { label: "Signal & Noise newsletter", href: routes.substack },
++      { label: "Sectors", href: routes.sectors },
++    ],
++  },
++  {
++    label: "About",
++    href: routes.about,
++    children: [
++      { label: "Biography", href: routes.bio },
++      { label: "Organisations & initiatives", href: routes.organisations },
++      { label: "Press & media", href: routes.press },
++    ],
++  },
++];
++
++export const utilityNav: NavLink[] = [{ label: "CV", href: external.cv, external: true }];
++
++export const ctaNav: NavLink = { label: "Start a conversation", href: routes.contact };
++
++export type FooterGroup = { title: string; links: NavLink[] };
++
++export const footerNav: FooterGroup[] = [
++  {
++    title: "Explore",
++    links: [
++      { label: "Work", href: routes.work },
++      { label: "Research", href: routes.research },
++      { label: "Builds", href: routes.builds },
++      { label: "Insights", href: routes.insights },
++      ...(showcase.live ? [{ label: showcase.label, href: showcase.href, external: true }] : []),
++    ],
++  },
++  {
++    title: "Services",
++    links: primaryNav.find((l) => l.label === "Services")?.children ?? [],
++  },
++  {
++    title: "Platforms",
++    links: [
++      { label: "Docs", href: external.docs },
++      { label: "Tools", href: external.tools },
++      { label: "Apps", href: external.apps },
++      { label: "Labs", href: external.labs },
++    ],
++  },
++  {
++    title: "Work with me",
++    links: [
++      { label: "Contact", href: routes.contact },
++      { label: "Booking Portal", href: external.booking },
++      { label: "Impact Orbit Co.", href: external.impactOrbit, external: true },
++      { label: "Space for Neurodiversity", href: external.spaceForNeurodiversity, external: true },
++    ],
++  },
++];
++
++export const legalNav: NavLink[] = [
++  { label: "Privacy policy", href: routes.privacy },
++  { label: "Terms of use", href: routes.terms },
++  { label: "Disclaimer", href: routes.disclaimer },
++  { label: "API", href: external.api, external: true },
++];
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/about/bio.astro src/pages/about/bio.astro
+--- a/src/pages/about/bio.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/about/bio.astro	2026-10-23 20:06:07.380192784 +0000
+@@ -323,7 +323,7 @@
+ 
+   .about-nav a {
+     color: var(--m);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .67rem;
+     font-weight: 700;
+     letter-spacing: .08em;
+@@ -517,7 +517,7 @@
+     border-radius: 3px;
+     color: var(--teal);
+     background: color-mix(in srgb, var(--teal) 8%, transparent);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .66rem;
+     font-weight: 700;
+     letter-spacing: .1em;
+@@ -536,7 +536,7 @@
+     top: .1rem;
+     right: 0;
+     color: color-mix(in srgb, var(--m) 55%, transparent);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .62rem;
+     font-weight: 700;
+     letter-spacing: .1em;
+@@ -605,7 +605,7 @@
+   .milestone-location {
+     margin: 0;
+     color: var(--m);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .63rem;
+     font-weight: 700;
+     letter-spacing: .09em;
+@@ -622,7 +622,7 @@
+     max-width: 33rem;
+     margin: 0;
+     color: var(--w);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: clamp(1.1rem, 2vw, 1.35rem);
+     font-weight: 700;
+     line-height: 1.25;
+@@ -651,7 +651,7 @@
+     border-radius: 3px;
+     color: var(--m);
+     background: color-mix(in srgb, var(--card) 85%, transparent);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .58rem;
+     font-weight: 600;
+     letter-spacing: .08em;
+@@ -758,7 +758,7 @@
+ 
+   .route-kicker {
+     color: var(--m);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .6rem;
+     font-weight: 700;
+     letter-spacing: .16em;
+@@ -768,7 +768,7 @@
+   .route-title {
+     margin-top: .75rem;
+     color: var(--w);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: 1.05rem;
+     font-weight: 700;
+     line-height: 1.3;
+@@ -785,7 +785,7 @@
+     margin-top: auto;
+     padding-top: 1.25rem;
+     color: var(--teal);
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .7rem;
+     font-weight: 700;
+     letter-spacing: .08em;
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/about/index.astro src/pages/about/index.astro
+--- a/src/pages/about/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/about/index.astro	2026-10-23 20:06:07.380192784 +0000
+@@ -293,7 +293,7 @@
+   }
+ 
+   .about-nav a {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .67rem;
+     font-weight: 700;
+     letter-spacing: .08em;
+@@ -379,7 +379,7 @@
+ 
+   .text-link,
+   .route-link {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .7rem;
+     font-weight: 700;
+     letter-spacing: .08em;
+@@ -419,7 +419,7 @@
+   }
+ 
+   .route-kicker {
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: .6rem;
+     font-weight: 700;
+     letter-spacing: .16em;
+@@ -429,7 +429,7 @@
+ 
+   .route-title {
+     margin-top: .75rem;
+-    font-family: var(--D);
++    font-family: var(--font-display);
+     font-size: 1.05rem;
+     font-weight: 700;
+     line-height: 1.3;
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/contact.astro src/pages/contact.astro
+--- a/src/pages/contact.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/contact.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -56,7 +56,7 @@
+   title="Contact Ryan Laird"
+   description="Get in touch with Ryan Laird about strategic communication, digital strategy, teaching, mentoring, speaking, research and editorial collaboration."
+ >
+-  <main class="contact-page">
++  <div class="nested-main contact-page">
+     <section class="contact-hero" aria-labelledby="contact-title">
+       <div class="wrap contact-hero__grid">
+         <div>
+@@ -655,7 +655,7 @@
+         </div>
+       </div>
+     </section>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <script>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/dev/projects.astro src/pages/dev/projects.astro
+--- a/src/pages/dev/projects.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/dev/projects.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -267,6 +267,7 @@
+         </div>
+       </header>
+ 
++      <h2 class="sr-only">Projects</h2>
+       <div class="pg-grid" id="projectGrid">
+         {cards.map((project, index) => (
+           <div
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/how-i-work.astro src/pages/how-i-work.astro
+--- a/src/pages/how-i-work.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/how-i-work.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -119,7 +119,7 @@
+   title="How I work"
+   description="How Ryan Laird approaches strategy, writing, teaching, mentoring and collaboration across space, sustainability and technology."
+ >
+-  <main>
++  <div class="nested-main">
+     <section class="hero">
+       <div class="wrap hero__inner">
+         <p class="eyebrow">How I work</p>
+@@ -352,7 +352,7 @@
+         </div>
+       </div>
+     </section>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/insights/podcasts/index.astro src/pages/insights/podcasts/index.astro
+--- a/src/pages/insights/podcasts/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/insights/podcasts/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -11,7 +11,7 @@
+     <div class="container pg-shell">
+       <header class="pg-head">
+         <p class="eyebrow">Podcast archive</p>
+-        <h2>Podcasts</h2>
++        <h1>Podcasts</h1>
+         <div class="pg-intro">
+           <p class="pg-lead">
+             Browse the podcast collection and open each show’s dedicated page for episodes, metadata, and links.
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/insights/resources/[slug].astro src/pages/insights/resources/[slug].astro
+--- a/src/pages/insights/resources/[slug].astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/insights/resources/[slug].astro	2026-10-23 20:06:07.384192784 +0000
+@@ -3,6 +3,7 @@
+ 
+ import { getCollection, render, type CollectionEntry } from 'astro:content';
+ import BlogLayout from '../../../layouts/BlogLayout.astro';
++import { entryHref } from '../../../lib/routes';
+ 
+ import FactBox from '../../../components/FactBox.astro';
+ import Callout from '../../../components/Callout.astro';
+@@ -59,6 +60,10 @@
+ };
+ ---
+ 
+-<BlogLayout {...{ post, headings, relatedPosts }}>
++{/* Same post is served at /insights/blog/{id}/: that is the canonical URL. */}
++<BlogLayout
++  {...{ post, headings, relatedPosts }}
++  canonical={new URL(entryHref('blog', post.id), Astro.site).href}
++>
+   <Content components={components} />
+ </BlogLayout>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/insights/resources/index.astro src/pages/insights/resources/index.astro
+--- a/src/pages/insights/resources/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/insights/resources/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -2,6 +2,7 @@
+ import Layout from '../../../layouts/Layout.astro';
+ import PostCard from '../../../components/PostCard.astro';
+ import { getCollection } from 'astro:content';
++import { routes } from '../../../lib/routes';
+ 
+ const allPosts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+@@ -22,7 +23,11 @@
+ const safeCategories = Array.isArray(CATEGORIES) ? CATEGORIES : [];
+ ---
+ 
+-<Layout title="Blog" description="Writing on space, science communication, and building things.">
++<Layout
++  title="Blog"
++  description="Writing on space, science communication, and building things."
++  canonical={new URL(routes.blog, Astro.site).href}
++>
+   <section class="blog-index">
+     <header class="index-header">
+       <h1>Blog</h1>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/services/digital-strategy-systems/index.astro src/pages/services/digital-strategy-systems/index.astro
+--- a/src/pages/services/digital-strategy-systems/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/services/digital-strategy-systems/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -7,7 +7,7 @@
+   title="Digital strategy & systems"
+   description="Digital strategy, websites, content systems, analytics and practical automation for mission-led organisations."
+ >
+-  <main class="service-page service-page--digital">
++  <div class="nested-main service-page service-page--digital">
+     <div class="wrap">
+       <nav class="crumbs" aria-label="Breadcrumb">
+         <ol>
+@@ -216,7 +216,7 @@
+         </div>
+       </section>
+     </div>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/services/speaking-collaboration/index.astro src/pages/services/speaking-collaboration/index.astro
+--- a/src/pages/services/speaking-collaboration/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/services/speaking-collaboration/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -7,7 +7,7 @@
+   title="Speaking & collaboration"
+   description="Talks, panels, podcasts, media contributions and collaborations on science, space, sustainability and complex communication."
+ >
+-  <main class="service-page service-page--speaking">
++  <div class="nested-main service-page service-page--speaking">
+     <div class="wrap">
+       <nav class="crumbs" aria-label="Breadcrumb">
+         <ol>
+@@ -263,7 +263,7 @@
+         </div>
+       </section>
+     </div>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/services/strategic-communication/index.astro src/pages/services/strategic-communication/index.astro
+--- a/src/pages/services/strategic-communication/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/services/strategic-communication/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -7,7 +7,7 @@
+   title="Strategic communication"
+   description="Strategic communication for organisations working in science, technology, space, Earth observation, climate and sustainability."
+ >
+-  <main class="service-page">
++  <div class="nested-main service-page">
+     <div class="wrap">
+       <nav class="crumbs" aria-label="Breadcrumb">
+         <ol>
+@@ -191,7 +191,7 @@
+         </div>
+       </section>
+     </div>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/services/teaching-mentoring/index.astro src/pages/services/teaching-mentoring/index.astro
+--- a/src/pages/services/teaching-mentoring/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/services/teaching-mentoring/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -7,7 +7,7 @@
+   title="Teaching & mentoring"
+   description="Physics and astronomy tuition, guest teaching, workshops and career mentoring for students, professionals and teams."
+ >
+-  <main class="service-page">
++  <div class="nested-main service-page">
+     <div class="wrap">
+       <nav class="crumbs" aria-label="Breadcrumb">
+         <ol>
+@@ -258,7 +258,7 @@
+         </div>
+       </section>
+     </div>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/thank-you.astro src/pages/thank-you.astro
+--- a/src/pages/thank-you.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/thank-you.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -6,7 +6,7 @@
+   title="Thank you"
+   description="Your enquiry has been sent."
+ >
+-  <main class="thanks">
++  <div class="nested-main thanks">
+     <section>
+       <div class="wrap">
+         <p class="eyebrow">Enquiry sent</p>
+@@ -24,7 +24,7 @@
+         </a>
+       </div>
+     </section>
+-  </main>
++  </div>
+ </Layout>
+ 
+ <style>
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/work/articles.astro src/pages/work/articles.astro
+--- a/src/pages/work/articles.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/work/articles.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -80,6 +80,7 @@
+         </div>
+       </header>
+ 
++      <h2 class="sr-only">Articles</h2>
+       <div class="pg-grid" id="publicationGrid">
+         {sortedArticles.map((article, index) => {
+           const topics = Array.isArray(article.topics) && article.topics.length
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/work/talks.astro src/pages/work/talks.astro
+--- a/src/pages/work/talks.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/work/talks.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -80,6 +80,7 @@
+         </div>
+       </header>
+ 
++      <h2 class="sr-only">Articles</h2>
+       <div class="pg-grid" id="publicationGrid">
+         {sortedArticles.map((article, index) => {
+           const topics = Array.isArray(article.topics) && article.topics.length
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/pages/work/videos/index.astro src/pages/work/videos/index.astro
+--- a/src/pages/work/videos/index.astro	2026-10-22 16:56:36.000000000 +0000
++++ b/src/pages/work/videos/index.astro	2026-10-23 20:06:07.384192784 +0000
+@@ -37,7 +37,7 @@
+     <div class="container vg-shell">
+       <header class="vg-head">
+         <p class="eyebrow">Selected video work</p>
+-        <h2>Video Gallery</h2>
++        <h1>Video Gallery</h1>
+ 
+         <div class="vg-intro">
+           <p class="vg-lead">
+@@ -71,6 +71,7 @@
+         </div>
+       </header>
+ 
++      <h2 class="sr-only">Videos</h2>
+       <div class="vg-grid" id="videoGrid">
+         {sortedVideos.map((video, index) => {
+           const rawId = video.youtubeId || "";
+@@ -168,7 +169,7 @@
+     opacity: 0.72;
+   }
+ 
+-  .vg-head h2 {
++  .vg-head h1 {
+     margin: 0;
+     font-size: clamp(2rem, 4vw, 3.5rem);
+     line-height: 1.05;
+diff -ruN -x .DS_Store /tmp/orig/rjmlaird-master/src/styles/global.css src/styles/global.css
+--- a/src/styles/global.css	2026-10-22 22:13:37.000000000 +0000
++++ b/src/styles/global.css	2026-10-23 20:06:07.384192784 +0000
+@@ -114,6 +114,12 @@
+ :where(main > *) { padding-inline: var(--gutter); }
+ :where(main > section) { padding-block: var(--section-y); }
+ 
++/* Page wrappers that sit inside Layout's single <main> and need the same box rules
++   (previously a nested <main>, which produced two landmarks). Zero specificity, like the rules above. */
++:where(.nested-main) { flex: 1 0 auto; width: 100%; }
++:where(.nested-main > *) { padding-inline: var(--gutter); }
++:where(.nested-main > section) { padding-block: var(--section-y); }
++
+ /* 3. ACCESSIBILITY ======================================================= */
+ :focus-visible {
+   outline: 3px solid var(--focus);
+--- a/astro.config.mjs	2026-10-22 16:56:36.000000000 +0000
++++ b/astro.config.mjs	2026-10-23 20:06:07.212192774 +0000
+@@ -4,6 +4,7 @@
+ import mdx from "@astrojs/mdx";
+ import { unified } from "@astrojs/markdown-remark";
+ import { rehypeTableAlign } from "./src/lib/rehype-table-align.mjs";
++import { rehypeNormaliseHeadings } from "./src/lib/rehype-normalise-headings.mjs";
+ import { remarkGlossaryLinks } from "./packages/glossary/src/index.js";
+ import fs from "node:fs";
+ import path from "node:path";
+@@ -25,7 +26,7 @@
+ 
+ // /cv/ stays out of the sitemap until src/data/cv.json is marked complete.
+ // Draft or pre-launch sections stay out of the sitemap (their pages are also noindex).
+-const unindexed = /^https:\/\/rjmlaird\.co\.uk\/(mentoring\/.+|coaching\/.*|tutoring\/.*|brand\/.*|research\/(lab|projects|methods|notebooks|notes|themes|outputs|data|data-policy|changelog|policy|accessibility)\/.*)$/;
++const unindexed = /^https:\/\/rjmlaird\.co\.uk\/(insights\/resources\/.*|mentoring\/.+|coaching\/.*|tutoring\/.*|brand\/.*|research\/(lab|projects|methods|notebooks|notes|themes|outputs|data|data-policy|changelog|policy|accessibility)\/.*)$/;
+ 
+ const cv = JSON.parse(fs.readFileSync(path.resolve("src/data/cv.json"), "utf8"));
+ if (!cv.complete) stubUrls.add("https://rjmlaird.co.uk/cv/");
+@@ -46,7 +47,7 @@
+   markdown: {
+     processor: unified({
+       remarkPlugins: [[remarkGlossaryLinks, { strict: process.env.GLOSSARY_STRICT !== "0" }]],
+-      rehypePlugins: [rehypeTableAlign],
++      rehypePlugins: [rehypeTableAlign, rehypeNormaliseHeadings],
+     }),
+   },
+   scopedStyleStrategy: "class",

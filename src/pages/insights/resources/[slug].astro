@@ -3,6 +3,7 @@
 
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 import BlogLayout from '../../../layouts/BlogLayout.astro';
+import { entryHref } from '../../../lib/routes';
 
 import FactBox from '../../../components/FactBox.astro';
 import Callout from '../../../components/Callout.astro';
@@ -59,6 +60,10 @@ const components = {
 };
 ---
 
-<BlogLayout {...{ post, headings, relatedPosts }}>
+{/* Same post is served at /insights/blog/{id}/: that is the canonical URL. */}
+<BlogLayout
+  {...{ post, headings, relatedPosts }}
+  canonical={new URL(entryHref('blog', post.id), Astro.site).href}
+>
   <Content components={components} />
 </BlogLayout>

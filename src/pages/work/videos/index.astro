@@ -37,7 +37,7 @@ const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize
     <div class="container vg-shell">
       <header class="vg-head">
         <p class="eyebrow">Selected video work</p>
-        <h2>Video Gallery</h2>
+        <h1>Video Gallery</h1>
 
         <div class="vg-intro">
           <p class="vg-lead">
@@ -71,6 +71,7 @@ const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize
         </div>
       </header>
 
+      <h2 class="sr-only">Videos</h2>
       <div class="vg-grid" id="videoGrid">
         {sortedVideos.map((video, index) => {
           const rawId = video.youtubeId || "";
@@ -168,7 +169,7 @@ const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize
     opacity: 0.72;
   }
 
-  .vg-head h2 {
+  .vg-head h1 {
     margin: 0;
     font-size: clamp(2rem, 4vw, 3.5rem);
     line-height: 1.05;

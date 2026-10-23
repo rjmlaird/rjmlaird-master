@@ -80,6 +80,7 @@ const topicList = [
         </div>
       </header>
 
+      <h2 class="sr-only">Articles</h2>
       <div class="pg-grid" id="publicationGrid">
         {sortedArticles.map((article, index) => {
           const topics = Array.isArray(article.topics) && article.topics.length

@@ -6,7 +6,7 @@ import '../styles/tokens.css';
 import '../styles/brand.css';
 import { sections } from '../lib/schemas';
 import { sectionMeta } from '../data/navigation';
-import { url } from '../lib/urls';
+import { url, brandHome } from '../lib/urls';
 import { defaultDescription } from '../lib/seo';
 
 interface Props { title?: string; description?: string; site?: string; }
@@ -16,7 +16,7 @@ const path = Astro.url.pathname;
 <Layout title={title ? `${title} · Brand system` : 'Brand system'} description={description} noindex={true}>
   <div class="wrap page">
     <nav class="bd-subnav" aria-label="Brand sections">
-      <a class="bd-subnav-home" href="/brand/" aria-current={path === '/brand/' ? 'page' : undefined}>Brand system</a>
+      <a class="bd-subnav-home" href={brandHome} aria-current={path === brandHome ? 'page' : undefined}>Brand system</a>
       <ul>{sections.map((s) => <li><a href={url(s)} aria-current={path.startsWith(url(s)) ? 'page' : undefined}>{sectionMeta[s].title}</a></li>)}</ul>
       <button class="bd-theme" type="button" data-theme-toggle>Theme</button>
     </nav>

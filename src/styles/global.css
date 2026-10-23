@@ -114,6 +114,12 @@ main:focus { outline: none; }
 :where(main > *) { padding-inline: var(--gutter); }
 :where(main > section) { padding-block: var(--section-y); }
 
+/* Page wrappers that sit inside Layout's single <main> and need the same box rules
+   (previously a nested <main>, which produced two landmarks). Zero specificity, like the rules above. */
+:where(.nested-main) { flex: 1 0 auto; width: 100%; }
+:where(.nested-main > *) { padding-inline: var(--gutter); }
+:where(.nested-main > section) { padding-block: var(--section-y); }
+
 /* 3. ACCESSIBILITY ======================================================= */
 :focus-visible {
   outline: 3px solid var(--focus);

@@ -2,17 +2,7 @@
 import socials from "../data/socials.json";
 import { Icon } from "astro-icon/components";
 import { resolveIcon, HIDDEN_SOCIALS } from "../lib/icons";
-
-type FooterLink = {
-  label: string;
-  href: string;
-  external?: boolean;
-};
-
-type FooterGroup = {
-  title: string;
-  links: FooterLink[];
-};
+import { footerNav, legalNav } from "../lib/routes";
 
 const footerYear = new Date().getFullYear();
 
@@ -20,67 +10,8 @@ const selectedSocials = socials.filter(
   (item) => item.type === "social" && !HIDDEN_SOCIALS.has(item.key),
 );
 
-const footerNavigation: FooterGroup[] = [
-  {
-    title: "Explore",
-    links: [
-      { label: "Portfolio", href: "/work/" },
-      { label: "Research", href: "/research/" },
-      { label: "Projects", href: "/work/projects/" },
-      { label: "Insights", href: "/insights/" },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      {
-        label: "Strategic communication",
-        href: "/services/strategic-communication/",
-      },
-      {
-        label: "Digital strategy & systems",
-        href: "/services/digital-strategy-systems/",
-      },
-      {
-        label: "Teaching & mentoring",
-        href: "/services/teaching-mentoring/",
-      },
-      {
-        label: "Speaking & collaboration",
-        href: "/services/speaking-collaboration/",
-      },
-    ],
-  },
-  {
-    title: "Platforms",
-    links: [
-      { label: "Docs", href: "https://docs.rjmlaird.co.uk" },
-      { label: "Tools", href: "https://tools.rjmlaird.co.uk" },
-      { label: "Apps", href: "https://apps.rjmlaird.co.uk" },
-      { label: "Labs", href: "https://labs.rjmlaird.co.uk" },
-    ],
-  },
-  {
-    title: "Work with me",
-    links: [
-      { label: "Contact", href: "/contact/" },
-      {
-        label: "Booking Portal",
-        href: "https://booking.rjmlaird.co.uk",
-      },
-      {
-        label: "Impact Orbit Co.",
-        href: "https://impactorbit.co",
-        external: true,
-      },
-      {
-        label: "Space for Neurodiversity",
-        href: "https://spaceforneurodiversity.org",
-        external: true,
-      },
-    ],
-  },
-];
+const footerNavigation = footerNav;
+
 ---
 
 <footer class="footer">
@@ -157,10 +88,9 @@ const footerNavigation: FooterGroup[] = [
     <p>© {footerYear} Ryan Laird. All rights reserved.</p>
 
     <nav class="footer__meta" aria-label="Legal information">
-      <a href="/privacy/">Privacy policy</a>
-      <a href="/terms-of-use/">Terms of use</a>
-      <a href="/disclaimer/">Disclaimer</a>
-      <a href="https://api.rjmlaird.co.uk">API</a>
+      {legalNav.map((link) => (
+        <a href={link.href}>{link.label}</a>
+      ))}
     </nav>
   </div>
 </footer>
