@@ -1,18 +1,25 @@
 ---
-id: 46
+id: 26
 slug: vega
 title: Getting Vega's Launch Tower Moving
 type: video-scripting
 status: completed
+draft: false
 description: >
-  Script development for an ESA documentary explaining the engineering challenge
-  of moving Vega's mobile launch tower at Europe’s Spaceport. The film explores
-  the materials science, structural engineering and operational requirements
-  behind moving the 1,000-tonne service structure away from the rocket before
-  launch.
+  Script development for an ESA documentary explaining the engineering
+  challenge of moving Vega's mobile launch tower at Europe’s Spaceport. The
+  film explores the materials science, structural engineering and operational
+  requirements behind moving the 1,000-tonne service structure away from the
+  rocket before launch.
 startDate: 2015-07-01
 endDate: 2016-06-24
 updatedDate: 2016-06-24
+client: European Space Agency
+organisation: Design & Data GmbH
+role: Scriptwriter
+category:
+  - work
+  - editorial
 tags:
   - esa
   - vega
@@ -23,9 +30,6 @@ tags:
   - science-communication
   - design-and-data
   - europe-spaceport
-category:
-  - work
-  - editorial
 tools_tech:
   - Video scripting
   - Science communication
@@ -33,10 +37,10 @@ tools_tech:
   - Documentary storytelling
   - Editorial development
   - European Space Agency multimedia
-youtubeId: dO6a3EtuF3U
 links:
   web: https://www.esa.int/ESA_Multimedia/Videos/2016/06/Getting_Vega_s_launch_tower_moving
   youtube: https://youtu.be/dO6a3EtuF3U?is=1lUkQiCHpXe-Cp-t
+youtubeId: dO6a3EtuF3U
 impact:
   summary: >
     Contributed script development for an ESA technical documentary that made
@@ -48,18 +52,15 @@ impact:
     - Translated engineering and materials-science concepts for a general audience
     - Supported a 2016 ESA multimedia release
     - Communicated the operational process that clears the launcher for liftoff
-client: European Space Agency
-organisation: Design & Data GmbH
-role: Scriptwriter
+heroImage: https://img.youtube.com/vi/dO6a3EtuF3U/maxresdefault.jpg
+heroAlt: >
+  Vega launch vehicle at Europe’s Spaceport beside the mobile launch tower
+  used during assembly and pre-launch operations.
+imageCredit: ESA / Design & Data
 relatedExperience:
   - exp-design-and-data
 relatedCaseStudies:
   - esa-material-labs
-heroImage: https://img.youtube.com/vi/dO6a3EtuF3U/maxresdefault.jpg
-heroAlt: >
-  Vega launch vehicle at Europe’s Spaceport beside the mobile launch tower used
-  during assembly and pre-launch operations.
-imageCredit: ESA / Design & Data
 ---
 
 ## Overview
@@ -85,7 +86,7 @@ personnel, equipment and the launch vehicle during preparation.
 
 Before launch, the entire structure moves away from the rocket, leaving the
 vehicle exposed and ready for liftoff. ESA describes the mobile building as
-approximately 50 metres tall and weighing more than 1,000 tonnes. [web:209]
+approximately 50 metres tall and weighing more than 1,000 tonnes.
 
 The film focuses on the practical question behind this operation:
 
@@ -130,3 +131,24 @@ The script was built around a simple physical contrast:
 
 A large, heavy structure must move with controlled precision
 to make spaceflight possible.
+
+## Outcomes
+
+The completed documentary was released by ESA in June 2016 as part of its multimedia output on the Agency's materials and engineering work.
+
+## Limitations
+
+This project concerned science communication and documentary scripting. It did not involve designing the mobile launch tower, operating the launch site or managing Vega launch campaigns.
+
+## Related media
+
+- [Watch on ESA](https://www.esa.int/ESA_Multimedia/Videos/2016/06/Getting_Vega_s_launch_tower_moving)
+- [Watch on YouTube](https://youtu.be/dO6a3EtuF3U?is=1lUkQiCHpXe-Cp-t)
+
+## Related work
+
+This project is part of wider ESA communication work on the science, materials and engineering that enable European space missions.
+
+See also:
+
+- [ESA Material Labs case study](/work/case-studies/esa-material-labs/)

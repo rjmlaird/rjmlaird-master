@@ -113,6 +113,21 @@ const pageDescription = initiative.description || initiative.excerpt || `Project
 >
   <section class="section publications-gallery">
     <div class="project-layout">
+
+      <div class="project-main">
+        <div class="project-body prose">
+          <div class="pg-intro">
+            {cleanText(initiative.description) && <p class="pg-lead">{cleanText(initiative.description)}</p>}
+          </div>
+
+          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
+
+          <Content />
+        </div>
+
+        <ImpactStats impact={initiative.impact} outputs={(initiative as any).outputs} />
+      </div>
+
       <ProjectSidebar
         sectors={sectors}
         tools={tools}
@@ -127,25 +142,6 @@ const pageDescription = initiative.description || initiative.excerpt || `Project
         relatedVideosRich={relatedVideosRich}
         links={links}
       />
-
-      <article class="project-content">
-        <div class="project-body">
-          <div class="pg-intro">
-            {cleanText(initiative.description) && <p class="pg-lead">{cleanText(initiative.description)}</p>}
-          </div>
-
-          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
-
-          <Content />
-        </div>
-
-        {initiative.impact && Object.keys(initiative.impact).length > 0 && (
-          <section class="sidebar-block">
-            <h2>Impact</h2>
-            <ImpactStats impact={initiative.impact} />
-          </section>
-        )}
-      </article>
     </div>
   </section>
 </ProjectLayout>

@@ -1,36 +1,46 @@
 ---
-id: 41
+id: 39
 slug: copernicus-hackathon-leics
 title: Food Security and Resilience Copernicus Hackathon
 type: featured
 status: completed
-description: A 48-hour collaborative hackathon at the University of Leicester bringing together coders, researchers, scientists, designers and problem-solvers to develop solutions for food security and resilience using Copernicus Earth observation data.
+draft: false
+description: >
+  A 48-hour collaborative hackathon at the University of Leicester bringing
+  together coders, researchers, scientists, designers and problem-solvers to
+  develop solutions for food security and resilience using Copernicus Earth
+  observation data.
 startDate: 2019-09-19
 endDate: 2019-09-20
+client: University of Leicester
+role: Mentor
+category:
+  - work
+  - events
 tags:
-  - Copernicus
-  - Earth Observation
+  - copernicus
+  - earth-observation
   - hackathon
-  - food security
+  - food-security
   - resilience
-  - satellite data
-  - Leicester
+  - satellite-data
+  - leicester
   - innovation
   - space
 links:
   web: https://copernicus-hackathon.le.ac.uk
-  impact: {}
-  client: "University of Leicester"
+impact:
+  summary: >
+    Supported teams as a mentor during a 48-hour hackathon applying Copernicus
+    Earth observation data to food security and resilience challenges.
+heroImage: /images/projects/cophack.jpg
+heroAlt: Attendees from Aegean (Greece) attending the Copernicus Hackathon in Leicester.
+imageCredit: Aegean
 relatedExperience:
   - exp-freelance
-heroImage: /images/projects/cophack.jpg
-heroAlt: "Attendees from Aegean (Greece) attending the Copernicus Hackathon in Leicester."
-imageCredit: "Aegean"
 ---
 
-# Food Security and Resilience Copernicus Hackathon
-
-## Feed the World, Invent the Future
+## Overview
 
 The **Food Security and Resilience Copernicus Hackathon** was a two-day collaborative innovation event held at the **University of Leicester on 19–20 September 2019**.
 
@@ -38,7 +48,7 @@ Bringing together coders, researchers, scientists, designers, storytellers, entr
 
 Over an intensive **48 hours**, multidisciplinary teams developed prototypes, explored new applications for satellite data and investigated opportunities for collaboration between academia, industry and the wider community.
 
-## About the Hackathon
+## About the hackathon
 
 The event was built around a simple challenge:
 
@@ -54,11 +64,11 @@ The hackathon provided a practical environment in which participants could explo
 
 The hackathon was designed around several interconnected objectives.
 
-### Developing Solutions
+### Developing solutions
 
 Develop new solutions addressing local and global food and water security challenges, with a particular emphasis on resilience and sustainability.
 
-### Raising Awareness
+### Raising awareness
 
 Increase awareness of the University of Leicester's work supporting:
 
@@ -69,11 +79,11 @@ Increase awareness of the University of Leicester's work supporting:
 - Food and drink industries
 - Space-enabled innovation
 
-### Connecting Students and Industry
+### Connecting students and industry
 
 Give students and early-career participants the opportunity to work on real-world challenges while connecting them with businesses, researchers and wider professional networks.
 
-### Building Collaboration
+### Building collaboration
 
 Use the Copernicus Hackathon as a mechanism for creating new collaborations between:
 
@@ -86,7 +96,7 @@ Use the Copernicus Hackathon as a mechanism for creating new collaborations betw
 - Technology developers
 - End users
 
-## Copernicus and Earth Observation
+## Copernicus and Earth observation
 
 The hackathon centred on the **Copernicus programme**, the European Union's Earth observation programme.
 
@@ -111,37 +121,37 @@ Potential applications included:
 
 The emphasis was not simply on analysing satellite data, but on turning Earth observation into practical solutions.
 
-## Challenge Themes
+## Challenge themes
 
 Participants could select their own challenge within the broad theme of food and water security and resilience.
 
 Suggested areas included:
 
-### Smart Agriculture
+### Smart agriculture
 
 Using Earth observation and other technologies to improve agricultural decision-making, productivity and resilience.
 
-### Logistics and Supply Chains
+### Logistics and supply chains
 
 Exploring how satellite data, logistics technologies and emerging digital infrastructure could improve food supply chains.
 
-### Blockchain and Food Security
+### Blockchain and food security
 
 Investigating potential applications of distributed technologies in food and water supply chains, provenance and resilience.
 
-### Smart Insurance
+### Smart insurance
 
 Developing new services that could use Earth observation data to understand environmental risks and support innovative insurance products.
 
-### Resource Mapping
+### Resource mapping
 
 Using satellite observations to map, monitor and understand environmental and agricultural resources.
 
-### Societal and Technical Challenges
+### Societal and technical challenges
 
 Participants were also encouraged to identify their own challenges relevant to food security, water security and resilience.
 
-## The 48-Hour Challenge
+## The 48-hour challenge
 
 The core hackathon took place over **19 and 20 September 2019**.
 
@@ -162,7 +172,7 @@ Participants combined:
 
 The objective was to produce something tangible rather than simply discuss potential applications.
 
-## Rapid MVP Development
+## Rapid MVP development
 
 Participants received preparatory training before the main event.
 
@@ -178,7 +188,7 @@ This provided teams with a common foundation before the 48-hour event.
 
 The focus on **minimum viable products (MVPs)** helped participants move rapidly from ideas towards demonstrable concepts.
 
-## Knowledge Exchange
+## Knowledge exchange
 
 The hackathon was designed as a knowledge-exchange activity rather than a conventional coding competition.
 
@@ -198,15 +208,15 @@ The hackathon took place at the **University of Leicester**, drawing on the Univ
 
 The venue was:
 
-**David Wilson Library**  
-University Road  
-Leicester  
-LE1 7RH  
+**David Wilson Library**
+University Road
+Leicester
+LE1 7RH
 United Kingdom
 
 The event also formed part of Leicester's wider development as a centre for space-enabled innovation.
 
-## Organisers and Sponsors
+## Organisers and sponsors
 
 The hackathon was supported by a network of organisations from the space, Earth observation, food, research and innovation communities.
 
@@ -292,7 +302,7 @@ Mentors included:
 
 The mentoring model gave participants access to expertise beyond their individual teams and helped bridge the gap between technical development, research and potential real-world applications.
 
-## My Role
+## My role
 
 I participated as a **mentor**, supporting teams during the hackathon and contributing to the wider knowledge exchange around space-enabled applications.
 
@@ -300,7 +310,7 @@ The role involved helping participants think through the practical application o
 
 This included supporting teams as they moved through the rapid development process and helping connect technical possibilities with user needs and wider applications.
 
-## From Data to Impact
+## From data to impact
 
 A central theme of the hackathon was the transformation of raw Earth observation data into useful information and ultimately actionable solutions.
 
@@ -312,7 +322,7 @@ Copernicus provides the data infrastructure, but the value emerges when that dat
 
 The hackathon provided a practical environment for exploring this transition.
 
-## Food Security and Resilience
+## Food security and resilience
 
 Food security is not simply a question of producing more food.
 
@@ -333,7 +343,7 @@ Earth observation can provide a powerful perspective because satellites can repe
 
 This creates opportunities to monitor change, identify risks and support decisions across different scales.
 
-## Space-Enabled Innovation
+## Space-enabled innovation
 
 The hackathon demonstrated the potential of space technologies to contribute to challenges far beyond the traditional space sector.
 
@@ -366,7 +376,7 @@ Potential outcomes included:
 
 The organising partners provided opportunities for promising concepts to receive further support after the event.
 
-## Why the Hackathon Matters
+## Significance
 
 The Food Security and Resilience Copernicus Hackathon demonstrated a model for bringing together **space data, multidisciplinary expertise and rapid innovation** around a real-world sustainability challenge.
 
@@ -386,7 +396,7 @@ It brought together an unusually broad ecosystem spanning:
 
 The event also provided an example of how relatively short, focused innovation programmes can create connections between communities that do not traditionally work together.
 
-## Event Summary
+## Event summary
 
 | Detail | Information |
 | --- | --- |
@@ -401,7 +411,7 @@ The event also provided an example of how relatively short, focused innovation p
 | **Role** | Mentor |
 | **Client** | University of Leicester |
 
-## Sources
+## Further reading
 
 - [Food Security and Resilience Copernicus Hackathon](https://copernicus-hackathon.le.ac.uk/)
 - [Call for Ideas](https://copernicus-hackathon.le.ac.uk/call-for-ideas/)

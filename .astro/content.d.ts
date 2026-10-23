@@ -180,6 +180,15 @@ declare module 'astro:content' {
   filePath?: string;
   digest?: string | number;
 }>;
+"builds": Record<string, {
+  id: string;
+  body?: string;
+  collection: "builds";
+  data: InferEntrySchema<"builds">;
+  rendered?: RenderedContent;
+  filePath?: string;
+  digest?: string | number;
+}>;
 "caseStudies": Record<string, {
   id: string;
   body?: string;

@@ -1,12 +1,31 @@
 ---
-id: 41
+id: 38
 slug: oceanstatereport4
 title: Ocean State Report 4
 type: featured
 status: completed
-description: Design and data visualisation work supporting the communication of the fourth Copernicus Marine Service Ocean State Report, translating complex ocean science, climate indicators and policy-relevant findings into accessible visual communication.
+draft: false
+description: >
+  Design and data visualisation work supporting the communication of the
+  fourth Copernicus Marine Service Ocean State Report, translating complex
+  ocean science, climate indicators and policy-relevant findings into
+  accessible visual communication.
 startDate: 2019-07-01
 endDate: 2020-07-01
+client: Mercator Ocean
+organisation: Design & Data GmbH
+category:
+  - work
+  - design
+tags:
+  - design
+  - data
+  - science-policy
+  - ocean
+  - climate
+  - copernicus
+  - earth-observation
+  - mercator-ocean
 tools_tech:
   - Data Visualisation
   - Information Design
@@ -14,40 +33,31 @@ tools_tech:
   - Science Policy
   - Oceanography
   - Copernicus Marine Service
-tags:
-  - portfolio
-  - design
-  - data
-  - science policy
-  - ocean
-  - climate
-  - Copernicus
-  - Earth observation
-  - Mercator Ocean
-youtubeId: xlKmSGvqaFo
 links:
   web: https://marine.copernicus.eu/
   youtube: https://youtu.be/xlKmSGvqaFo?is=CkpLT3PQgJK1UkrG
-  impact: {}
-client: "Mercator Ocean"
+youtubeId: xlKmSGvqaFo
+impact:
+  summary: >
+    Contributed design and data-visualisation work communicating the findings
+    of the fourth Copernicus Marine Service Ocean State Report to policy and
+    public audiences.
+heroImage: /images/projects/OceanStateReport4_Banner.png
+heroAlt: Ocean State Report 4 Thumbnail
+imageCredit: ESA / Design & Data
 relatedExperience:
   - exp-design-and-data
-heroImage: /images/projects/OceanStateReport4_Banner.png
-heroAlt: "Ocean State Report 4 Thumbnail"
-imageCredit: "ESA / Design & Data"
 ---
 
-# Ocean State Report 4
-
-## Communicating the State of the Ocean
+## Overview
 
 The **Ocean State Report 4 (OSR4)** was the fourth edition of the **Copernicus Marine Service Ocean State Report**, providing a comprehensive assessment of the state, variability and ongoing changes in the global ocean and European regional seas.
 
-The report brought together scientific observations, ocean models and analysis from more than **140 scientific experts across more than 30 European institutions**. Its findings examined changes in the physical and biogeochemical ocean, climate-driven trends, extreme events and the value of ocean ecosystem services. :chatgpt-content-reference{index="1"}
+The report brought together scientific observations, ocean models and analysis from more than **140 scientific experts across more than 30 European institutions**. Its findings examined changes in the physical and biogeochemical ocean, climate-driven trends, extreme events and the value of ocean ecosystem services.
 
 This project focused on the **design and communication of complex ocean science and data**, helping translate technical scientific information into visual and accessible material for wider audiences.
 
-## The Challenge
+## The challenge
 
 The ocean is one of the most important components of the Earth's climate system, but communicating its condition is challenging.
 
@@ -86,9 +96,9 @@ It combines information from:
 - Near-real-time analysis
 - Forecasting systems
 
-This creates a continuously updated picture of the ocean across space and time. :chatgpt-content-reference{index="2"}
+This creates a continuously updated picture of the ocean across space and time.
 
-The service is implemented by **Mercator Ocean International** on behalf of the European Commission. :chatgpt-content-reference{index="3"}
+The service is implemented by **Mercator Ocean International** on behalf of the European Commission.
 
 ## Ocean State Report
 
@@ -106,13 +116,13 @@ It serves audiences including:
 
 The report connects ocean observations and scientific analysis with the wider question of how society responds to a changing ocean.
 
-## Understanding a Changing Ocean
+## Understanding a changing ocean
 
 OSR4 focused particularly on the changes observed during the period leading up to **2018**, while placing those observations within longer-term records.
 
 The report highlighted a number of major indicators of ocean change.
 
-### Sea-Level Rise
+### Sea-level rise
 
 Global mean sea level has continued to rise.
 
@@ -122,7 +132,7 @@ OSR4 reported an average rate of approximately:
 
 since 1993.
 
-The report also identified evidence that the rate of sea-level rise is accelerating. :chatgpt-content-reference{index="4"}
+The report also identified evidence that the rate of sea-level rise is accelerating.
 
 Sea-level rise has implications for:
 
@@ -133,7 +143,7 @@ Sea-level rise has implications for:
 - Flood risk
 - Adaptation planning
 
-## Ocean Warming
+## Ocean warming
 
 The ocean absorbs the vast majority of the excess heat associated with human-driven climate change.
 
@@ -141,7 +151,7 @@ OSR4 highlighted continuing warming of the global ocean and reported a global se
 
 **0.014 ± 0.001 °C per year**
 
-The report also noted that the four years preceding its assessment were the four warmest on record at that time. :chatgpt-content-reference{index="5"}
+The report also noted that the four years preceding its assessment were the four warmest on record at that time.
 
 Ocean warming affects:
 
@@ -153,21 +163,21 @@ Ocean warming affects:
 - Climate feedbacks
 - Coastal communities
 
-## Ocean Acidification
+## Ocean acidification
 
 The ocean acts as a major sink for anthropogenic carbon dioxide.
 
 While this uptake helps reduce the amount of excess CO₂ remaining in the atmosphere, it also changes ocean chemistry.
 
-OSR4 highlighted the continuing acidification of the ocean and its potential consequences for marine organisms and ecosystems. :chatgpt-content-reference{index="6"}
+OSR4 highlighted the continuing acidification of the ocean and its potential consequences for marine organisms and ecosystems.
 
 Ocean acidification is particularly important for organisms that depend on carbonate chemistry to build shells and skeletons.
 
-## Sea Ice
+## Sea ice
 
 The report also examined changes in the polar ocean.
 
-In the Arctic, the **2018 winter maximum sea-ice extent** was the second lowest on record at the time, after 2017. :chatgpt-content-reference{index="7"}
+In the Arctic, the **2018 winter maximum sea-ice extent** was the second lowest on record at the time, after 2017.
 
 OSR4 also examined Antarctic and Baltic sea-ice conditions.
 
@@ -180,11 +190,11 @@ Sea ice is an important component of the ocean system because it influences:
 - Marine navigation
 - Polar communities
 
-## The Blue, Green and White Ocean
+## The blue, green and white ocean
 
 A useful conceptual framework within OSR4 is the division of ocean indicators into three broad categories:
 
-### The Blue Ocean
+### The blue ocean
 
 The **blue ocean** describes the physical state of the ocean.
 
@@ -199,7 +209,7 @@ Indicators include:
 - Salinity
 - Density
 
-### The Green Ocean
+### The green ocean
 
 The **green ocean** describes the biogeochemical processes operating within the marine environment.
 
@@ -213,7 +223,7 @@ Indicators include:
 - Deoxygenation
 - Biological carbon pumps
 
-### The White Ocean
+### The white ocean
 
 The **white ocean** describes the frozen components of the marine environment.
 
@@ -226,7 +236,7 @@ Indicators include:
 
 Together, these three perspectives provide a more complete picture of the changing ocean.
 
-## Ocean Ecosystem Services
+## Ocean ecosystem services
 
 OSR4 went beyond describing physical and biogeochemical changes.
 
@@ -243,7 +253,7 @@ These services underpin economic activity, food systems, coastal communities and
 
 However, many of these benefits are not adequately represented in conventional economic accounting.
 
-## The Ocean as a Carbon Sink
+## The ocean as a carbon sink
 
 One of the notable contributions of OSR4 was an assessment of the **carbon-sink ecosystem service of the Mediterranean Sea**.
 
@@ -253,9 +263,9 @@ For the Mediterranean Sea, OSR4 estimated the value of this carbon-sink service 
 
 **€2.1 billion in 2018**
 
-This provided an example of how scientific ocean observations can be connected with economic and policy analysis. :chatgpt-content-reference{index="8"}
+This provided an example of how scientific ocean observations can be connected with economic and policy analysis.
 
-## From Data to Decision-Making
+## From data to decision-making
 
 A central purpose of the Copernicus Marine Service is not simply to collect ocean data.
 
@@ -269,7 +279,7 @@ Ocean State Reports help bridge the gap between scientific monitoring and wider 
 
 This makes effective visual communication particularly important.
 
-## Data Visualisation
+## Data visualisation
 
 The project involved communicating scientific information where context and clarity are critical.
 
@@ -288,7 +298,7 @@ The objective is not simply to make scientific data visually attractive.
 
 It is to make the underlying evidence **comprehensible, comparable and actionable**.
 
-## Science Communication
+## Science communication
 
 Ocean State Report 4 sits at the intersection of:
 
@@ -306,7 +316,7 @@ For industry and environmental stakeholders, the information needs to be relevan
 
 For the wider public, the story needs to be understandable.
 
-## Supporting Climate Policy
+## Supporting climate policy
 
 Ocean monitoring provides important evidence for understanding climate change and developing adaptation strategies.
 
@@ -324,7 +334,7 @@ This information can support:
 
 The Ocean State Report therefore provides a bridge between operational Earth observation and policy-relevant evidence.
 
-## The Role of Copernicus
+## The role of Copernicus
 
 Copernicus demonstrates the value of combining multiple observing systems.
 
@@ -342,29 +352,27 @@ Models provide the ability to integrate observations and estimate ocean conditio
 
 Together, these systems create a powerful operational monitoring capability.
 
-## Project Context
+## Project context
 
 Ocean State Report 4 was produced as part of the wider Copernicus Marine Service activity and subsequently published as a supplement to the **Journal of Operational Oceanography**.
 
-The report represented a major collaborative scientific effort involving more than 140 experts from over 30 European institutions. :chatgpt-content-reference{index="9"}
+The report represented a major collaborative scientific effort involving more than 140 experts from over 30 European institutions.
 
-The OSR4 summary was released in 2020, with the report focusing on observations and analysis of the ocean's state and changes, particularly during 2018. :chatgpt-content-reference{index="10"}
+The OSR4 summary was released in 2020, with the report focusing on observations and analysis of the ocean's state and changes, particularly during 2018.
 
 ## Client
 
 **Mercator Ocean International**
 
-Mercator Ocean International implements the Copernicus Marine Service for the European Commission and develops operational ocean analysis and forecasting capabilities covering the global ocean and European regional seas. :chatgpt-content-reference{index="11"}
+Mercator Ocean International implements the Copernicus Marine Service for the European Commission and develops operational ocean analysis and forecasting capabilities covering the global ocean and European regional seas.
 
-## Role
+## My role
 
-**Design & Data**
+I contributed through Design & Data, combining visual communication and scientific data to help communicate the findings and wider significance of the Ocean State Report.
 
-The project combined visual communication and scientific data to help communicate the findings and wider significance of the Ocean State Report.
+The work required translating complex scientific material into accessible visual narratives while keeping the credibility and context that science and policy audiences expect.
 
-The work required translating complex scientific material into accessible visual narratives while maintaining the credibility and context required for science and policy audiences.
-
-## Key Themes
+## Key themes
 
 The project brought together several areas of expertise:
 
@@ -388,7 +396,7 @@ The broader value lies in connecting:
 
 **Ocean observations → Scientific understanding → Public awareness → Policy and action**
 
-## Selected Findings
+## Selected findings
 
 | Indicator | OSR4 finding |
 | --- | --- |
@@ -399,7 +407,7 @@ The broader value lies in connecting:
 | **Ocean carbon uptake** | Ocean absorbs a major proportion of anthropogenic CO₂ |
 | **Mediterranean carbon-sink service** | Estimated value of ~€2.1 billion in 2018 |
 
-Figures and findings above are taken from the official OSR4 summary and press material. :chatgpt-content-reference{index="12"}
+Figures and findings above are taken from the official OSR4 summary and press material.
 
 ## Video
 
@@ -407,7 +415,7 @@ The project is represented in the accompanying video:
 
 [**Ocean State Report 4 — Project Video**](https://youtu.be/xlKmSGvqaFo?is=CkpLT3PQgJK1UkrG)
 
-## Sources
+## Further reading
 
 - [Copernicus Marine Service — Ocean State Report 4 Summary](https://marine.copernicus.eu/sites/default/files/wp-content/uploads/2020/06/OSR4_Summary_WEB_SinglePages.pdf)
 - [Copernicus Marine Service — Ocean State Report 4 Press Release](https://marine.copernicus.eu/sites/default/files/wp-content/uploads/2020/06/CopernicusMarineOceanStateReport4PressRelease.pdf)

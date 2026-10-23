@@ -142,3 +142,14 @@
   a{color:#000;text-decoration:none}
   .cv-item{break-inside:avoid}
 }
+
+/* Work detail layout (projects, case studies, initiatives, events).
+   DOM order is content first, sidebar second, so keyboard and screen-reader order
+   matches the visual order at every width. */
+.project-layout { display: grid; gap: 2.5rem; grid-template-columns: minmax(0, 1fr); align-items: start; }
+.project-main { min-width: 0; display: grid; gap: 2.5rem; }
+.project-body.prose { max-width: 46rem; }
+@media (min-width: 64rem) {
+  .project-layout:has(> .project-main > *):has(> .entry-sidebar) { grid-template-columns: minmax(0, 1fr) 17rem; gap: clamp(2rem, 4vw, 3.5rem); }
+  .project-layout > .entry-sidebar { position: sticky; top: calc(var(--nav-h) + 1.5rem); max-height: calc(100vh - var(--nav-h) - 3rem); overflow-y: auto; padding-right: .25rem; }
+}

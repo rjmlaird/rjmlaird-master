@@ -1,9 +1,10 @@
 ---
-id: 43
+id: 5
 slug: galaxy-facebook
-title: "Galaxy Facebook: X-ray source population analysis of the Galactic Centre"
+title: 'Galaxy Facebook: X-ray source population analysis of the Galactic Centre'
 type: research
 status: completed
+draft: false
 description: >
   Undergraduate research project analysing XMM-Newton observations of two
   Galactic Ridge fields to investigate intermediate-luminosity X-ray sources,
@@ -11,6 +12,12 @@ description: >
   variable or transient sources.
 startDate: 2008-01-01
 endDate: 2008-04-16
+client: University of Leicester
+organisation: Department of Physics and Astronomy
+role: Undergraduate researcher
+category:
+  - research
+  - astrophysics
 tags:
   - x-ray-astronomy
   - galactic-centre
@@ -21,9 +28,6 @@ tags:
   - data-reduction
   - x-ray-sources
   - x-ray-transients
-category:
-  - research
-  - astrophysics
 tools_tech:
   - XMM-Newton
   - European Photon Imaging Camera
@@ -39,28 +43,25 @@ tools_tech:
 links: {}
 impact:
   summary: >
-    Analysed a sample of approximately 30 intermediate-luminosity X-ray sources
-    in two Galactic Ridge fields, comparing source populations, absorption
-    effects and multi-epoch variability to identify candidate transient and
-    high-variability objects.
+    Analysed a sample of approximately 30 intermediate-luminosity X-ray
+    sources in two Galactic Ridge fields, comparing source populations,
+    absorption effects and multi-epoch variability to identify candidate
+    transient and high-variability objects.
   outcomes:
     - Reduced and examined multi-instrument XMM-Newton EPIC datasets
     - Compared source behaviour across five X-ray energy bands
     - Identified candidate variable and transient X-ray sources
     - Cross-referenced measured sources with the 2XMM catalogue
     - Completed an undergraduate research report supervised by Professor Bob Warwick
-institution: University of Leicester
-organisation: Department of Physics and Astronomy
-client: University of Leicester
-relatedEducation:
-  - edu-leicester-physics-astrophysics
-relatedExperience:
-  - exp-leicester-undergraduate-research
 heroImage: /images/projects/galaxy-facebook.png
 heroAlt: >
   XMM-Newton X-ray observation showing point sources and diffuse high-energy
   emission in a Galactic Ridge field.
 imageCredit: XMM-Newton Survey Science Centre / ESA / University of Leicester
+relatedExperience:
+  - exp-leicester-undergraduate-research
+relatedEducation:
+  - edu-leicester-physics-astrophysics
 ---
 
 ## Overview
@@ -285,7 +286,7 @@ and absorbing columns were not independently determined for every object.
 Detailed spectral fitting and absorption corrections would be required to
 derive robust intrinsic luminosities.
 
-## Contribution
+## My role
 
 I completed this research as an undergraduate physics student at the University
 of Leicester, working with Leon Hicks under the supervision of **Professor Bob
@@ -301,22 +302,7 @@ The project provided practical experience in:
 - Interpreting high-energy observations in the context of Galactic source
   populations and interstellar absorption.
 
-## Related output
-
-### X-ray source population of the nearby Galactic Centre
-
-**Ryan John McCall Laird**
-
-Undergraduate research report, Department of Physics and Astronomy, University
-of Leicester, 16 April 2008.
-
-Supervised by Professor Bob Warwick.
-
-The report documented the XMM-Newton EPIC data-reduction process, source
-detection workflow, energy-band comparisons, catalogue cross-matching and
-source flux tabulations for Galactic Ridge 1 and Galactic Ridge 2.
-
-## Scientific significance
+## Significance
 
 The Galactic Ridge X-ray emission is produced by a mixture of diffuse
 processes and large populations of faint or unresolved point sources.
@@ -351,8 +337,17 @@ The analysis should consequently be interpreted as an exploratory source
 population study and as evidence for candidate variability, rather than a
 complete census or definitive classification programme.
 
-## Keywords
+## Related outputs
 
-Galactic Centre; Galactic Ridge; XMM-Newton; EPIC; MOS1; MOS2; pn; X-ray
-sources; X-ray transients; high-energy astrophysics; FITS; data reduction;
-2XMM; interstellar absorption.
+### X-ray source population of the nearby Galactic Centre
+
+**Ryan John McCall Laird**
+
+Undergraduate research report, Department of Physics and Astronomy, University
+of Leicester, 16 April 2008.
+
+Supervised by Professor Bob Warwick.
+
+The report documented the XMM-Newton EPIC data-reduction process, source
+detection workflow, energy-band comparisons, catalogue cross-matching and
+source flux tabulations for Galactic Ridge 1 and Galactic Ridge 2.

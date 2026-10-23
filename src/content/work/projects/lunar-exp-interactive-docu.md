@@ -1,9 +1,10 @@
 ---
-id: 41
+id: 28
 slug: lunar-exp-interactive-docu
 title: Lunar Exploration Interactive Documentary
 type: featured
 status: completed
+draft: false
 description: >
   Editorial development and content-promotion work for ESA’s Lunar Exploration
   Interactive Documentary, an award-winning web experience that makes lunar
@@ -12,6 +13,12 @@ description: >
 startDate: 2016-12-01
 endDate: 2017-06-30
 updatedDate: 2017-06-30
+client: European Space Agency
+organisation: Design & Data GmbH
+role: Editorial contributor and content-promotion planner
+category:
+  - work
+  - editorial
 tags:
   - esa
   - lunar-exploration
@@ -24,9 +31,6 @@ tags:
   - digital-storytelling
   - web-campaign
   - design-and-data
-category:
-  - work
-  - editorial
 tools_tech:
   - Editorial development
   - Content strategy
@@ -58,18 +62,15 @@ impact:
     - Connected individual posts to relevant videos and library content
     - Supported trailer promotion and web-documentary discovery
     - Contributed to an Award of Excellence-winning project
-client: European Space Agency
-organisation: Design & Data GmbH
-role: Editorial contributor and content-promotion planner
-relatedExperience:
-  - exp-design-and-data
-relatedAwards:
-  - awards-comm-awards
 heroImage: /images/projects/lunar-exploration.png
 heroAlt: >
   ESA Lunar Exploration interactive documentary, featuring expert interviews,
   lunar missions and science stories.
 imageCredit: ESA / Design & Data
+relatedExperience:
+  - exp-design-and-data
+relatedAwards:
+  - awards-comm-awards
 ---
 
 ## Overview
@@ -81,14 +82,14 @@ missions and expert voices.
 The documentary includes more than 40 videos featuring scientists involved in
 lunar research. Visitors can follow their own route through subjects including
 the Moon’s history, human exploration, robotic missions, lunar resources,
-spacecraft technologies and future exploration plans. 
+spacecraft technologies and future exploration plans.
 
 My role focused on **editorial development and content promotion**: shaping
 complex source material into accessible public stories, planning thematic
 campaign content and connecting audiences from ESA social channels to relevant
 areas of the web documentary.
 
-## My editorial role
+## My role
 
 I worked as an **Editorial Contributor and Content-Promotion Planner** through
 Design & Data.
@@ -113,7 +114,7 @@ My responsibilities included:
 - Helping ensure terminology, tone and claims were appropriate for public
   science communication.
 
-## Editorial challenge
+## The challenge
 
 The documentary covered a broad and technically demanding field.
 
@@ -161,7 +162,7 @@ language direct and readable.
 
 The platform’s science content includes contributors from ESA, DLR, CNRS and
 universities, covering subjects such as lunar origins, resources, Solar System
-history and human exploration. 
+history and human exploration.
 
 ### Make technical content useful
 
@@ -239,7 +240,7 @@ interactive experience that visitors could explore in their own way.
 
 ESA’s trailer description identifies the platform as a web documentary with
 more than 40 scientist-led videos and encourages viewers to explore science,
-technology and lunar missions through the site. 
+technology and lunar missions through the site.
 
 ## Technology editorial stories
 
@@ -289,7 +290,7 @@ Drill beneath the surface
 
 ESA’s documentary content describes PROSPECT as a package for collecting and
 analysing lunar samples, while later ESA material confirms its focus on drilling
-and analysing polar material in the search for volatiles. 
+and analysing polar material in the search for volatiles.
 
 ### METERON: humans and robots
 
@@ -348,7 +349,7 @@ formation of the Earth-Moon system.
 
 The relevant documentary section includes expert discussion of lunar origins
 and evolution, using Moon rocks and planetary research to explore how the Moon
-formed. [web:336]
+formed.
 
 ### Solar System history
 
@@ -421,7 +422,7 @@ For these settings, editorial work supported the framing of the documentary as
 both a public-learning resource and a live demonstration of ESA’s lunar
 exploration ambitions.
 
-## Editorial outcomes
+## Outcomes
 
 My contribution helped establish a repeatable content model for a large
 interactive documentary.
@@ -445,15 +446,6 @@ Awards**.
 The award recognised the project’s combination of interactive design,
 multimedia storytelling and public-facing science communication.
 
-## Related work
-
-This project is part of wider ESA and Design & Data work on interactive
-storytelling, science communication and public engagement with space
-exploration.
-
-- [Explore the Lunar Exploration Interactive Documentary](https://lunarexploration.esa.int)
-- [ESA’s interactive guide trailer](https://www.esa.int/esatv/Videos/2017/02/The_Moon_ESA_s_interactive_guide)
-
 ## Limitations
 
 My role was editorial and campaign-focused. I did not lead the overall website
@@ -466,24 +458,17 @@ audience behaviour. Mission plans, technologies and schedules presented in the
 2016–17 documentary should also be checked against current ESA programme
 information.
 
-## Keywords
+## Related work
 
-European Space Agency; ESA; Moon; lunar exploration; editorial development;
-content strategy; science communication; interactive documentary; social media;
-digital storytelling; lunar science; lunar technology; public engagement;
-Design & Data.
+This project is part of wider ESA and Design & Data work on interactive
+storytelling, science communication and public engagement with space
+exploration.
 
-ESA describes the platform as an interactive web documentary featuring more than 40 scientist-led videos on lunar science, technology and missions.[1][2]
+- [Explore the Lunar Exploration Interactive Documentary](https://lunarexploration.esa.int)
+- [ESA’s interactive guide trailer](https://www.esa.int/esatv/Videos/2017/02/The_Moon_ESA_s_interactive_guide)
 
-Sources
-[1] Videos - 2017 - 02 - The Moon – ESA's interactive guide https://www.esa.int/esatv/Videos/2017/02/The_Moon_ESA_s_interactive_guide
-[2] The Moon – ESA's Interactive Guide - European Space Agency https://www.esa.int/Education/Teach_with_the_Moon/The_Moon_ESA_s_Interactive_Guide
-[3] ESA Lunar Exploration https://lunarexploration.esa.int/
-[4] Technology - Descent and Ascent - Ascent from the Moon https://lunarexploration.esa.int/explore/technology/226?ia=288
-[5] The Moon – ESA's interactive guide - European Space Agency https://www.esa.int/ESA_Multimedia/Videos/2017/02/The_Moon_ESA_s_interactive_guide
-[6] ESA's Missions - lunar exploration https://lunarexploration.esa.int/explore/esa/233
-[7] Explore - Science - Solar System History - Moon Rocks https://lunarexploration.esa.int/explore/science/223?ia=281
-[8] Moon Facts https://lunarexploration.esa.int/basic-facts
-[9] Explore - Missions - Robotic Landers https://lunarexploration.esa.int/explore/missions/239
-[10] Explore - Missions - Robotic sample return - Luna 16 https://lunarexploration.esa.int/explore/missions/238?a=317
+## Further reading
 
+- [The Moon: ESA's interactive guide](https://www.esa.int/Education/Teach_with_the_Moon/The_Moon_ESA_s_Interactive_Guide)
+- [ESA Lunar Exploration interactive documentary](https://lunarexploration.esa.int/)
+- [Moon facts, ESA Lunar Exploration](https://lunarexploration.esa.int/basic-facts)

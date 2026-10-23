@@ -1,28 +1,37 @@
 ---
-id: 41
+id: 2
 slug: telescope-astrosoc
 title: Telescope Coordinator - Astrosoc
 type: featured
 status: completed
-description: A short summary of what this project does.
+draft: false
+description: >
+  Telescope Coordinator for the University of Leicester Astronomy Society
+  (Astrosoc), looking after the society's telescopes and observing sessions.
 startDate: 2007-07-01
-tools_tech:
-  - TypeScript
-  - Astro
-  - Zod
-features:
-  - Feature one
-  - Feature two
+client: University of Leicester Astrosoc
+category:
+  - volunteering
+  - astronomy
 tags:
-  - portfolio
-  - web
-  - example
-links:
-  github: https://github.com/yourname/example-project
-  live: https://example.com
-impact: {}
+  - astrosoc
+  - university-of-leicester
+  - telescopes
+  - astronomy
+  - student-society
+links: {}
+impact:
+  summary: >
+    Looked after the society's telescopes and helped members get hands-on
+    observing experience.
 ---
 
-# Telescope Coordinator
+<!-- DRAFT: written from the project metadata and public context. Confirm my role, dates and any outcomes before publishing. -->
 
-Organisations: University of Leicester Astrosoc (https://app.notion.com/p/University-of-Leicester-Astrosoc-3813a96540ad80ffbe73c4394909321c?pvs=21)
+## Overview
+
+**Astrosoc** is the University of Leicester Astronomy Society. As its **Telescope Coordinator**, I looked after the society's telescopes and helped members use them.
+
+## My role
+
+I served as the society's Telescope Coordinator.

@@ -101,6 +101,21 @@ const pageDescription = caseStudy.description || caseStudy.excerpt || `Project d
 >
   <section class="section publications-gallery">
     <div class="project-layout">
+
+      <div class="project-main">
+        <div class="project-body prose">
+          <div class="pg-intro">
+            {cleanText(caseStudy.description) && <p class="pg-lead">{cleanText(caseStudy.description)}</p>}
+          </div>
+
+          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
+
+          <Content />
+        </div>
+
+        <ImpactStats impact={caseStudy.impact} outputs={(caseStudy as any).outputs} />
+      </div>
+
       <ProjectSidebar
         sectors={sectors}
         tools={tools}
@@ -115,25 +130,6 @@ const pageDescription = caseStudy.description || caseStudy.excerpt || `Project d
         relatedVideos={relatedVideos}
         links={links}
       />
-
-      <article class="project-content">
-        <div class="project-body">
-          <div class="pg-intro">
-            {cleanText(caseStudy.description) && <p class="pg-lead">{cleanText(caseStudy.description)}</p>}
-          </div>
-
-          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
-
-          <Content />
-        </div>
-
-        {caseStudy.impact && Object.keys(caseStudy.impact).length > 0 && (
-          <section class="sidebar-block">
-            <h2>Impact</h2>
-            <ImpactStats impact={caseStudy.impact} />
-          </section>
-        )}
-      </article>
     </div>
   </section>
 </ProjectLayout>

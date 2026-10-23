@@ -1,9 +1,14 @@
 ---
+// Impact and outputs for work entries. Handles the shapes found in content:
+// short values (stat tiles), long prose (labelled paragraphs) and arrays (lists).
 export interface Props {
   impact?: Record<string, unknown> | null;
+  /** Top-level `outputs` field, if an entry uses it instead of impact.outputs */
+  outputs?: string[] | null;
+  heading?: string;
 }
 
-const { impact } = Astro.props as Props;
+const { impact, outputs, heading = "Impact" } = Astro.props as Props;
 
 const humanize = (key: string) =>
   key
@@ -11,58 +16,165 @@ const humanize = (key: string) =>
     .replace(/[_-]+/g, " ")
     .replace(/^./, (c) => c.toUpperCase());
 
-const formatValue = (value: unknown) => {
-  if (value === null || value === undefined) return "";
-  if (typeof value === "string" || typeof value === "number") return String(value);
-  if (typeof value === "boolean") return value ? "Yes" : "No";
-  if (Array.isArray(value)) return value.join(", ");
-  return JSON.stringify(value);
-};
+const text = (v: unknown) =>
+  typeof v === "string" ? v.trim() : typeof v === "number" ? String(v) : typeof v === "boolean" ? (v ? "Yes" : "No") : "";
 
-const entries = impact
-  ? Object.entries(impact).filter(([, value]) => formatValue(value) !== "")
-  : [];
+const SHORT = 48;
+const tiles: { label: string; value: string }[] = [];
+const prose: { label: string; value: string }[] = [];
+const lists: { label: string; items: string[] }[] = [];
+
+for (const [key, value] of Object.entries(impact ?? {})) {
+  if (Array.isArray(value)) {
+    const items = value.map(text).filter(Boolean);
+    if (items.length) lists.push({ label: humanize(key), items });
+  } else if (value && typeof value === "object") {
+    const items = Object.entries(value as Record<string, unknown>)
+      .map(([k, v]) => `${humanize(k)}: ${text(v)}`)
+      .filter((s) => !s.endsWith(": "));
+    if (items.length) lists.push({ label: humanize(key), items });
+  } else {
+    const v = text(value);
+    if (!v) continue;
+    (v.length <= SHORT ? tiles : prose).push({ label: humanize(key), value: v });
+  }
+}
+
+const extra = (outputs ?? []).map(text).filter(Boolean);
+if (extra.length && !lists.some((l) => l.label === "Outputs")) lists.push({ label: "Outputs", items: extra });
+
+const hasContent = tiles.length + prose.length + lists.length > 0;
+const id = `impact-${heading.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`;
 ---
 
-{entries.length > 0 && (
-  <ul class="impact-stats">
-    {entries.map(([key, value]) => (
-      <li class="stat">
-        <p class="stat-label">{humanize(key)}</p>
-        <p class="stat-value">{formatValue(value)}</p>
-      </li>
+{hasContent && (
+  <section class="impact" aria-labelledby={id}>
+    <h2 id={id} class="impact__heading">{heading}</h2>
+
+    {tiles.length > 0 && (
+      <dl class="impact__tiles">
+        {tiles.map((t) => (
+          <div class="impact__tile">
+            <dt>{t.label}</dt>
+            <dd>{t.value}</dd>
+          </div>
+        ))}
+      </dl>
+    )}
+
+    {prose.map((p) => (
+      <div class="impact__block">
+        <h3>{p.label}</h3>
+        <p>{p.value}</p>
+      </div>
     ))}
-  </ul>
+
+    {lists.map((l) => (
+      <div class="impact__block">
+        <h3>{l.label}</h3>
+        <ul>
+          {l.items.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    ))}
+  </section>
 )}
 
 <style>
-  .impact-stats {
+  .impact {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.25rem;
+    min-width: 0;
+    padding: clamp(1.1rem, 3vw, 1.75rem);
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    background: var(--card);
+  }
+
+  .impact__heading {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    line-height: 1.2;
+    color: var(--w);
+  }
+
+  .impact__tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
     gap: 0.75rem;
-    list-style: none;
     margin: 0;
-    padding: 0;
   }
-  .stat {
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
-    background: var(--color-surface);
+
+  .impact__tile {
+    min-width: 0;
     padding: 0.85rem 1rem;
+    border: 1px solid var(--bd);
+    border-radius: var(--radius);
+    background: var(--lift);
   }
-  .stat-label {
-    margin: 0;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
+
+  .impact__tile dt {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    color: var(--color-text-muted);
+    color: var(--mb);
   }
-  .stat-value {
-    margin: 0.35rem 0 0;
+
+  .impact__tile dd {
+    margin: 0.3rem 0 0;
     font-size: 1.05rem;
     font-weight: 600;
     line-height: 1.4;
-    color: var(--color-text);
+    overflow-wrap: anywhere;
+    color: var(--w);
+  }
+
+  .impact__block {
+    min-width: 0;
+    max-width: 46rem;
+  }
+
+  .impact__block h3 {
+    margin: 0 0 0.4rem;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mb);
+  }
+
+  .impact__block p {
+    margin: 0;
+    line-height: 1.7;
+    color: var(--w);
+    overflow-wrap: break-word;
+  }
+
+  .impact__block ul {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .impact__block li {
+    position: relative;
+    padding-left: 1.1rem;
+    line-height: 1.6;
+    color: var(--w);
+    overflow-wrap: break-word;
+  }
+
+  .impact__block li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 0.5rem;
+    height: 2px;
+    background: var(--teal);
   }
 </style>

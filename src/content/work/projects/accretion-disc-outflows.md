@@ -1,17 +1,25 @@
 ---
-id: 44
+id: 8
 slug: accretion-disc-outflows
 title: Models of Time-dependent Accretion Discs with Outflows
 type: research
 status: completed
+draft: false
 description: >
   Numerical investigation of time-dependent accretion-disc evolution with mass
   feedback and outflows. The project developed and validated a Fortran model
   based on Shakura-Sunyaev disc solutions and wind-infall formulations to
-  examine disc dynamics, angular-momentum transport and wind energy deposition.
+  examine disc dynamics, angular-momentum transport and wind energy
+  deposition.
 startDate: 2009-02-01
 endDate: 2009-02-27
 updatedDate: 2009-02-27
+client: University of Leicester
+organisation: Department of Physics and Astronomy
+role: Final-year undergraduate researcher
+category:
+  - research
+  - astrophysics
 tags:
   - accretion-discs
   - high-energy-astrophysics
@@ -23,9 +31,6 @@ tags:
   - fluid-dynamics
   - outflows
   - fortran
-category:
-  - research
-  - astrophysics
 tools_tech:
   - Fortran 77
   - IDL
@@ -40,9 +45,9 @@ impact:
   summary: >
     Developed and tested a numerical model for time-dependent accretion discs
     supplied by wind-fed material. The simulations indicated that large-scale
-    wind deposition can dominate disc evolution across extreme angular-momentum
-    assumptions, while small-scale deposition produces more distinct
-    mass-retention and depletion behaviour.
+    wind deposition can dominate disc evolution across extreme
+    angular-momentum assumptions, while small-scale deposition produces more
+    distinct mass-retention and depletion behaviour.
   outcomes:
     - Validated steady-state alpha-disc solutions against gas- and radiation-pressure regimes
     - Implemented time-dependent surface-density diffusion and mass-conservation calculations
@@ -50,18 +55,15 @@ impact:
     - Simulated large-scale and small-scale wind-feedback regimes
     - Compared extreme angular-momentum cases for supplied material
     - Completed final-year undergraduate research under Dr Sergei Nayakshin
-institution: University of Leicester
-organisation: Department of Physics and Astronomy
-client: University of Leicester
-relatedEducation:
-  - edu-leicester-physics-astrophysics
-relatedExperience:
-  - exp-leicester-undergraduate-research
 heroImage: /images/projects/accretion-discs-outflows.png
 heroAlt: >
-  Numerical plot of temperature, pressure and radial properties in steady-state
-  and time-dependent accretion-disc models with wind feedback.
+  Numerical plot of temperature, pressure and radial properties in
+  steady-state and time-dependent accretion-disc models with wind feedback.
 imageCredit: R. J. M. Laird / University of Leicester
+relatedExperience:
+  - exp-leicester-undergraduate-research
+relatedEducation:
+  - edu-leicester-physics-astrophysics
 ---
 
 ## Overview
@@ -75,7 +77,7 @@ For gas to move inward and accrete, angular momentum must be transported
 outwards through the disc. The widely used Shakura-Sunyaev alpha-disc model
 represents this transport through an effective viscosity parameter, alpha. The
 model provides a useful framework for describing thin, radiatively efficient
-accretion discs. [web:190][web:194]
+accretion discs.
 
 This final-year undergraduate research project developed a numerical model of
 an accretion disc evolving over time while receiving matter and energy from
@@ -117,7 +119,7 @@ In the standard alpha-disc prescription, kinematic viscosity is represented by:
 
 where \(\nu\) is the kinematic viscosity, \(\alpha\) is a dimensionless
 efficiency parameter, \(c_{\mathrm{s}}\) is the sound speed and \(H\) is the
-disc scale height. [web:194][web:197]
+disc scale height.
 
 ### Shakura-Sunyaev discs
 
@@ -125,7 +127,7 @@ The project used Shakura-Sunyaev thin-disc solutions as the initial and
 validation framework. In this approach, disc properties depend on the central
 mass, mass-accretion rate, viscosity parameter and radial distance from the
 accretor. The model includes regimes in which gas pressure or radiation pressure
-dominates the disc structure. [web:195][web:196]
+dominates the disc structure.
 
 ### Wind-fed accretion
 
@@ -138,7 +140,7 @@ the disc.
 The project used modified conservation equations based on wind-infall
 formulations associated with Falcke, Melia and collaborators. These models
 provide a simplified way to explore the interaction between wind-fed material,
-disc evolution and accretion onto a central black hole. [web:191]
+disc evolution and accretion onto a central black hole.
 
 ## Numerical model
 
@@ -284,7 +286,7 @@ remaining relatively faint in radiative output. The project illustrated how
 the location, angular momentum and feedback associated with supplied wind
 material can affect the rate at which gas reaches the central black hole.
 
-## Contribution
+## My role
 
 I completed this project independently as a final-year undergraduate physics
 student at the University of Leicester under the supervision of **Dr Sergei
@@ -300,22 +302,7 @@ My work included:
 - Producing IDL routines for diagnostic plots and model comparison.
 - Writing the final project dissertation.
 
-## Related output
-
-### Models of Time-dependent Accretion Discs with Outflows
-
-**R. J. M. Laird**
-
-Undergraduate Final Year Project Report, Department of Physics and Astronomy,
-University of Leicester, 27 February 2009.
-
-Supervised by Dr Sergei Nayakshin.
-
-The dissertation documented the theoretical framework, numerical algorithms,
-Fortran implementation, stability and conservation tests, and comparative
-evolution plots for wind-fed accretion-disc models.
-
-## Scientific significance
+## Significance
 
 Accretion discs connect small-scale gas physics with some of the most luminous
 phenomena in the Universe. Their behaviour affects black-hole growth, stellar
@@ -348,8 +335,17 @@ limitations:
 The results therefore provide insight into the behaviour of the model rather
 than a complete prediction for any specific accreting black-hole system.
 
-## Keywords
+## Related outputs
 
-Accretion discs; time-dependent accretion; black holes; active galactic nuclei;
-wind feedback; outflows; angular momentum; alpha-disc; Shakura-Sunyaev;
-numerical modelling; Fortran; Sagittarius A*.
+### Models of Time-dependent Accretion Discs with Outflows
+
+**R. J. M. Laird**
+
+Undergraduate Final Year Project Report, Department of Physics and Astronomy,
+University of Leicester, 27 February 2009.
+
+Supervised by Dr Sergei Nayakshin.
+
+The dissertation documented the theoretical framework, numerical algorithms,
+Fortran implementation, stability and conservation tests, and comparative
+evolution plots for wind-fed accretion-disc models.

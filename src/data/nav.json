@@ -53,8 +53,8 @@
       "href": "/insights/",
       "children": [
         {
-          "label": "Articles",
-          "href": "/insights/articles/"
+          "label": "Blog",
+          "href": "/insights/blog/"
         },
         {
           "label": "Research",

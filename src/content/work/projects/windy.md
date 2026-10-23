@@ -1,10 +1,10 @@
 ---
-id: 4
+id: 35
 slug: windy
 title: Windy
 type: featured
-draft: false
 status: completed
+draft: false
 description: >
   Editorial and science-communication work supporting ECMWF and the Copernicus
   Atmosphere Monitoring Service in explaining how weather and atmospheric data
@@ -12,6 +12,12 @@ description: >
 startDate: 2018-04-10
 endDate: 2019-06-01
 updatedDate: 2019-06-01
+client: ECMWF
+organisation: Design & Data GmbH
+role: Editor and science communicator
+category:
+  - work
+  - editorial
 tags:
   - cams
   - c3s
@@ -23,9 +29,6 @@ tags:
   - earth-observation
   - science-communication
   - design-and-data
-category:
-  - work
-  - editorial
 tools_tech:
   - Editorial development
   - Video scripting
@@ -33,32 +36,30 @@ tools_tech:
   - Atmospheric-data visualisation
   - Copernicus data services
   - ECMWF forecast data
-youtubeId: RCWH-Z14Uts
 links:
   youtube: https://youtu.be/RCWH-Z14Uts?si=oYkWpKhRhBg159Dt
   web: https://atmosphere.copernicus.eu/cams-signs-partnership-weather-application-windy
+youtubeId: RCWH-Z14Uts
 impact:
   summary: >
     Supported communication around the use of ECMWF and Copernicus atmospheric
-    data in Windy, helping make forecast information about weather, air quality
-    and aerosols understandable and accessible to broad public audiences.
+    data in Windy, helping make forecast information about weather, air
+    quality and aerosols understandable and accessible to broad public
+    audiences.
   outcomes:
     - Supported editorial communication for ECMWF and Copernicus services
     - Helped explain weather and atmospheric-data visualisation for public audiences
     - Connected ECMWF forecasting with the Windy web and mobile platform
     - Contributed to communications around CAMS air-quality data integration
-client: ECMWF
-organisation: Design & Data GmbH
-role: Editor and science communicator
-relatedExperience:
-  - exp-design-and-data
-relatedCaseStudies:
-  - esotc2017
 heroImage: https://img.youtube.com/vi/RCWH-Z14Uts/maxresdefault.jpg
 heroAlt: >
   Windy weather visualisation showing global atmospheric and weather data over
   an interactive map.
 imageCredit: ECMWF / Design & Data
+relatedExperience:
+  - exp-design-and-data
+relatedCaseStudies:
+  - esotc2017
 ---
 
 ## Overview
@@ -90,7 +91,7 @@ maps offer a practical way to show changing conditions across time and place.
 Windy is a weather-visualisation service that displays a range of forecast
 layers over an interactive global map. It uses ECMWF weather information
 alongside other sources to present variables including wind, rain, lightning
-and cloud types. [web:219][web:226]
+and cloud types.
 
 ## The challenge
 
@@ -116,12 +117,12 @@ about atmospheric composition, including air pollutants, aerosols and other
 components that affect air quality, climate and human health.
 
 ECMWF implements CAMS on behalf of the European Union as part of the Copernicus
-Earth-observation programme. [web:227][web:221]
+Earth-observation programme.
 
 CAMS combines atmospheric models with satellite and in-situ observations to
 produce daily analyses and forecasts of atmospheric composition. Its data can
 support work on air quality, dust transport, wildfire smoke, volcanic ash,
-solar energy and climate-related environmental monitoring. [web:226][web:228]
+solar energy and climate-related environmental monitoring.
 
 ## Windy partnership
 
@@ -139,7 +140,7 @@ The integration included forecasts for:
 
 CAMS supplied daily forecasts, while Windy made the information accessible
 through its visual map interface. Copernicus reported that Windy served around
-800,000 users per day at the time the partnership was announced. [web:219]
+800,000 users per day at the time the partnership was announced.
 
 ## My role
 
@@ -187,6 +188,18 @@ Key outcomes included:
 - Editorial framing of interactive environmental-data visualisation.
 - Video and multimedia material associated with the project.
 
+## Limitations
+
+This project concerned editorial communication and public understanding of
+environmental information. It did not involve producing ECMWF forecast models,
+operating Copernicus services or developing the Windy platform itself.
+
+Forecast and monitoring products remain subject to uncertainty, spatial
+resolution limits, data availability and the interpretation constraints
+associated with any environmental model. Public communication should therefore
+help audiences understand both the value and the limits of forecast
+information.
+
 ## Related media
 
 - [Watch on YouTube](https://youtu.be/RCWH-Z14Uts?si=oYkWpKhRhBg159Dt)
@@ -201,21 +214,3 @@ climate services, atmospheric monitoring and environmental data.
 See also:
 
 - [European State of the Climate 2017 case study](/work/case-studies/esotc2017/)
-
-## Limitations
-
-This project concerned editorial communication and public understanding of
-environmental information. It did not involve producing ECMWF forecast models,
-operating Copernicus services or developing the Windy platform itself.
-
-Forecast and monitoring products remain subject to uncertainty, spatial
-resolution limits, data availability and the interpretation constraints
-associated with any environmental model. Public communication should therefore
-help audiences understand both the value and the limits of forecast
-information.
-
-## Keywords
-
-ECMWF; Copernicus; CAMS; C3S; Windy; air quality; atmospheric composition;
-weather forecasting; environmental data; Earth observation; science
-communication; editorial strategy.

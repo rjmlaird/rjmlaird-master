@@ -1,0 +1,1232 @@
+---
+// src/pages/builds/index.astro
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+import techStack from "../../data/dev/techstack.json";
+
+/**
+ * TECH STACK
+ */
+
+type StackItem = {
+  name: string;
+  url: string;
+  logo?: string;
+  color: string;
+  logoColor?: string;
+  context?: string;
+};
+
+type StackCategory = {
+  name: string;
+  items: StackItem[];
+};
+
+const categories = techStack.categories as StackCategory[];
+
+function normalise(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+const stackByName = new Map<string, StackItem>();
+
+for (const category of categories) {
+  for (const item of category.items) {
+    const key = normalise(item.name);
+
+    if (!stackByName.has(key)) {
+      stackByName.set(key, item);
+    }
+  }
+}
+
+function badgeUrl(item: StackItem): string {
+  const label = encodeURIComponent(item.name);
+  const color = encodeURIComponent(item.color);
+  const logo = item.logo
+    ? `&logo=${encodeURIComponent(item.logo)}`
+    : "";
+
+  const logoColor = encodeURIComponent(item.logoColor ?? "white");
+
+  return (
+    `https://img.shields.io/badge/-${label}-${color}` +
+    `?style=flat-square${logo}&logoColor=${logoColor}`
+  );
+}
+
+function uniqueTechnologies(values: string[]): string[] {
+  const seen = new Set<string>();
+
+  return values.filter((value) => {
+    const key = normalise(value);
+
+    if (!key || seen.has(key)) return false;
+
+    seen.add(key);
+    return true;
+  });
+}
+
+/**
+ * BUILDS
+ */
+
+const entries = await getCollection(
+  "builds",
+  ({ data }) => data.draft !== true,
+);
+
+type BuildEntry = (typeof entries)[number];
+
+const typeLabels = {
+  lab: "Lab",
+  tool: "Tool",
+  app: "App",
+};
+
+const statusLabels = {
+  planned: "Planned",
+  active: "Active",
+  maintenance: "Maintenance",
+  paused: "Paused",
+  retired: "Retired",
+  archived: "Archived",
+};
+
+function buildTime(entry: BuildEntry): number | null {
+  const dates = [
+    entry.data.updatedDate,
+    entry.data.launchedDate,
+    entry.data.publishedDate,
+    entry.data.startDate,
+  ];
+
+  for (const date of dates) {
+    if (!date) continue;
+
+    const time = date.getTime();
+
+    if (!Number.isNaN(time)) return time;
+  }
+
+  return null;
+}
+
+const builds = [...entries].sort((a, b) => {
+  const featuredDifference =
+    Number(b.data.featured) - Number(a.data.featured);
+
+  if (featuredDifference !== 0) return featuredDifference;
+
+  const aTime = buildTime(a);
+  const bTime = buildTime(b);
+
+  if (aTime !== null && bTime !== null) {
+    const difference = bTime - aTime;
+
+    if (difference !== 0) return difference;
+  } else if (aTime !== null) {
+    return -1;
+  } else if (bTime !== null) {
+    return 1;
+  }
+
+  return a.data.title.localeCompare(b.data.title);
+});
+
+const typeOrder = ["lab", "tool", "app"] as const;
+
+const typeCallouts = {
+  lab: {
+    icon: "L",
+    label: "Labs",
+    title: "Experiments and prototypes",
+    text: "Working experiments, research prototypes and interactive explorations across science, data, design and the web.",
+    cta: "Explore labs",
+    href: "https://labs.rjmlaird.co.uk/",
+  },
+  tool: {
+    icon: "T",
+    label: "Tools",
+    title: "Focused utilities",
+    text: "Smaller, task-specific utilities, calculators and templates designed to make a particular job quicker, clearer or easier.",
+    cta: "Explore tools",
+    href: "https://tools.rjmlaird.co.uk/",
+  },
+  app: {
+    icon: "A",
+    label: "Apps",
+    title: "Interactive applications",
+    text: "More complete, user-facing experiences for exploring data, solving problems and working with information over time.",
+    cta: "Explore apps",
+    href: "https://apps.rjmlaird.co.uk/",
+  },
+} as const;
+
+const typeCounts = {
+  lab: builds.filter((build) => build.data.type === "lab").length,
+  tool: builds.filter((build) => build.data.type === "tool").length,
+  app: builds.filter((build) => build.data.type === "app").length,
+};
+
+const availableTypes = Object.entries(typeLabels).filter(([value]) =>
+  builds.some((build) => build.data.type === value),
+);
+
+const availableStatuses = Object.entries(statusLabels).filter(([value]) =>
+  builds.some((build) => build.data.status === value),
+);
+
+const technologyCounts = new Map<
+  string,
+  { label: string; count: number }
+>();
+
+for (const build of builds) {
+  for (const technology of uniqueTechnologies(build.data.toolsTech)) {
+    const key = normalise(technology);
+    const existing = technologyCounts.get(key);
+
+    if (existing) {
+      existing.count += 1;
+    } else {
+      technologyCounts.set(key, {
+        label: stackByName.get(key)?.name ?? technology.trim(),
+        count: 1,
+      });
+    }
+  }
+}
+
+const availableTechnologies = [...technologyCounts.entries()]
+  .map(([value, item]) => ({
+    value,
+    label: item.label,
+    count: item.count,
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+
+const totalTechnologies = availableTechnologies.length;
+
+function buildHref(entry: BuildEntry): string {
+  const slug = (entry.data.slug?.trim() || entry.id)
+    .replace(/^\/+|\/+$/g, "");
+
+  return `/builds/${slug
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/")}/`;
+}
+
+function searchText(entry: BuildEntry): string {
+  const { data } = entry;
+
+  return [
+    data.title,
+    data.summary,
+    data.tagline,
+    data.type,
+    data.status,
+    ...data.platforms,
+    ...data.tags,
+    ...data.toolsTech,
+    ...data.audience,
+    ...data.features,
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+}
+---
+
+<Layout
+  title="Builds"
+  description="Explore my labs, tools and apps, including the technologies behind them. Filter builds by type, status and tech stack."
+>
+  <section class="build-index" data-builds-index>
+    <div class="container pg-shell">
+      <header class="page-head">
+        <p class="sl">Builds</p>
+
+        <h1 class="fade">
+          Labs, tools <em>&amp; apps</em>
+        </h1>
+
+        <div class="lede">
+          <p>
+            Experiments, focused utilities and applications I’m building
+            across astronomy, data and digital workflows. Explore what
+            each build does, who it is for and the technology behind it.
+          </p>
+
+          <p>
+            These pages provide an overview. Usage guides and technical
+            references live in the documentation, source code and
+            contributor instructions live in the repositories, and
+            development stories sit in the <a class="hp-link" href="/insights/blog/">blog</a>.
+          </p>
+        </div>
+
+        {
+          builds.length > 0 && (
+            <p class="build-overview">
+              <span>
+                {builds.length} published{" "}
+                {builds.length === 1 ? "build" : "builds"}
+              </span>
+
+              {totalTechnologies > 0 && (
+                <span>
+                  {totalTechnologies}{" "}
+                  {totalTechnologies === 1 ? "technology" : "technologies"}
+                </span>
+              )}
+            </p>
+          )
+        }
+
+        <ul class="type-legend" aria-label="Build types">
+          {typeOrder.map((type) => (
+            <li class="type-legend-item" data-type={type}>
+              {typeLabels[type]}
+            </li>
+          ))}
+        </ul>
+      </header>
+
+      {
+        builds.length > 0 ? (
+          <>
+            <form
+              class="build-filters"
+              data-build-filters
+              aria-label="Filter builds"
+              hidden
+            >
+              <div class="filter-field filter-search">
+                <label for="build-search">Search</label>
+
+                <input
+                  id="build-search"
+                  name="search"
+                  type="search"
+                  placeholder="Search builds, features or technology"
+                  autocomplete="off"
+                  aria-controls="buildGrid"
+                />
+              </div>
+
+              <div class="filter-field">
+                <label for="build-type">Type</label>
+
+                <select
+                  id="build-type"
+                  name="type"
+                  aria-controls="buildGrid"
+                >
+                  <option value="">All types</option>
+
+                  {availableTypes.map(([value, label]) => (
+                    <option value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label for="build-status">Status</label>
+
+                <select
+                  id="build-status"
+                  name="status"
+                  aria-controls="buildGrid"
+                >
+                  <option value="">All statuses</option>
+
+                  {availableStatuses.map(([value, label]) => (
+                    <option value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label for="build-technology">Technology</label>
+
+                <select
+                  id="build-technology"
+                  name="technology"
+                  aria-controls="buildGrid"
+                >
+                  <option value="">All technologies</option>
+
+                  {availableTechnologies.map((technology) => (
+                    <option value={technology.value}>
+                      {technology.label} ({technology.count})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button class="filter-reset" type="reset">
+                Clear filters
+              </button>
+            </form>
+
+            <p
+              class="results-count"
+              data-build-count
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {builds.length} {builds.length === 1 ? "build" : "builds"}
+            </p>
+
+            <div class="build-grid" id="buildGrid">
+              {builds.map((build) => {
+                const { data } = build;
+                const href = buildHref(build);
+                const technologies = uniqueTechnologies(data.toolsTech);
+
+                return (
+                  <article
+                    class="build-card"
+                    data-build-card
+                    data-search={searchText(build)}
+                    data-type={data.type}
+                    data-status={data.status}
+                    data-technologies={JSON.stringify(
+                      technologies.map(normalise),
+                    )}
+                  >
+                    {data.heroImage && (
+                      <a
+                        class="build-card-image"
+                        href={href}
+                        tabindex="-1"
+                        aria-hidden="true"
+                      >
+                        <img
+                          src={data.heroImage}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+                    )}
+
+                    <div class="build-card-body">
+                      <div class="build-card-meta">
+                        <span class="build-type">
+                          {typeLabels[data.type]}
+                        </span>
+
+                        <span
+                          class="build-status"
+                          data-status={data.status}
+                        >
+                          {statusLabels[data.status]}
+                        </span>
+
+                        {data.featured && (
+                          <span class="build-featured">Featured</span>
+                        )}
+                      </div>
+
+                      <h2>
+                        <a href={href}>{data.title}</a>
+                      </h2>
+
+                      <p class="build-summary">{data.summary}</p>
+
+                      {technologies.length > 0 && (
+                        <div class="build-stack">
+                          <p class="stack-label">Built with</p>
+
+                          <ul
+                            class="tech-badges"
+                            aria-label={`${data.title} technology stack`}
+                          >
+                            {technologies.map((technology) => {
+                              const item = stackByName.get(
+                                normalise(technology),
+                              );
+
+                              return (
+                                <li>
+                                  {item ? (
+                                    <a
+                                      class="tech-badge-link"
+                                      href={item.url}
+                                      title={item.context || item.name}
+                                    >
+                                      <img
+                                        src={badgeUrl(item)}
+                                        alt={item.name}
+                                        height="20"
+                                        loading="lazy"
+                                        decoding="async"
+                                      />
+                                    </a>
+                                  ) : (
+                                    <span class="tech-badge-fallback">
+                                      {technology}
+                                    </span>
+                                  )}
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        </div>
+                      )}
+
+                      <div class="build-card-footer">
+                        <a class="hp-link" href={href}>
+                          Explore build
+                          <span aria-hidden="true"> →</span>
+                          <span class="visually-hidden">
+                            : {data.title}
+                          </span>
+                        </a>
+
+                        {data.primaryCta &&
+                          data.primaryCta.href !== href && (
+                            <a
+                              class="build-primary-cta"
+                              href={data.primaryCta.href}
+                            >
+                              {data.primaryCta.label}
+                              <span class="visually-hidden">
+                                : {data.title}
+                              </span>
+                            </a>
+                          )}
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+            </div>
+
+            <div class="build-empty" data-build-empty hidden>
+              <h2>No matching builds</h2>
+              <p>
+                Try another search or clear the filters to see all builds.
+              </p>
+            </div>
+          </>
+        ) : (
+          <div class="build-empty">
+            <h2>Builds are on the way</h2>
+            <p>
+              Labs, tools and apps will appear here as they are published.
+            </p>
+          </div>
+        )
+      }
+
+      <section class="type-callout" aria-labelledby="type-callout-title">
+        <div class="type-callout-intro">
+          <p class="type-callout-eyebrow">Digital projects</p>
+          <h2 id="type-callout-title">Labs, tools and apps</h2>
+          <p>
+            Explore working experiments and prototypes, focused utilities and
+            more complete applications, each built for useful tasks, clearer
+            information and better decisions.
+          </p>
+        </div>
+
+        <ul class="type-callout-grid" role="list">
+          {
+            typeOrder.map((type) => {
+              const callout = typeCallouts[type];
+
+              return (
+                <li class="type-callout-card" data-type={type}>
+                  <div class="type-callout-icon" aria-hidden="true">
+                    {callout.icon}
+                  </div>
+
+                  <div>
+                    <p class="type-callout-label">
+                      {callout.label}
+                      {typeCounts[type] > 0 && (
+                        <span class="type-callout-count">
+                          {typeCounts[type]} published
+                        </span>
+                      )}
+                    </p>
+                    <h3>{callout.title}</h3>
+                    <p>{callout.text}</p>
+                  </div>
+
+                  <a class="type-callout-link" href={callout.href}>
+                    {callout.cta}
+                    <span aria-hidden="true">→</span>
+                  </a>
+                </li>
+              );
+            })
+          }
+        </ul>
+      </section>
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function initialiseBuildFilters() {
+    document
+      .querySelectorAll<HTMLElement>("[data-builds-index]")
+      .forEach((root) => {
+        const form =
+          root.querySelector<HTMLFormElement>("[data-build-filters]");
+
+        if (!form || form.dataset.initialised === "true") return;
+
+        const search =
+          form.querySelector<HTMLInputElement>('[name="search"]');
+
+        const type =
+          form.querySelector<HTMLSelectElement>('[name="type"]');
+
+        const status =
+          form.querySelector<HTMLSelectElement>('[name="status"]');
+
+        const technology =
+          form.querySelector<HTMLSelectElement>('[name="technology"]');
+
+        const count =
+          root.querySelector<HTMLElement>("[data-build-count]");
+
+        const empty =
+          root.querySelector<HTMLElement>("[data-build-empty]");
+
+        if (
+          !search ||
+          !type ||
+          !status ||
+          !technology ||
+          !count ||
+          !empty
+        ) {
+          return;
+        }
+
+        const cards = Array.from(
+          root.querySelectorAll<HTMLElement>("[data-build-card]"),
+        ).map((element) => ({
+          element,
+          search: element.dataset.search ?? "",
+          type: element.dataset.type ?? "",
+          status: element.dataset.status ?? "",
+          technologies: JSON.parse(
+            element.dataset.technologies ?? "[]",
+          ) as string[],
+        }));
+
+        const applyFilters = () => {
+          const terms = search.value
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+          let visibleCount = 0;
+
+          for (const card of cards) {
+            const visible =
+              terms.every((term) => card.search.includes(term)) &&
+              (!type.value || card.type === type.value) &&
+              (!status.value || card.status === status.value) &&
+              (!technology.value ||
+                card.technologies.includes(technology.value));
+
+            card.element.hidden = !visible;
+
+            if (visible) visibleCount += 1;
+          }
+
+          const hasFilters =
+            terms.length > 0 ||
+            Boolean(type.value) ||
+            Boolean(status.value) ||
+            Boolean(technology.value);
+
+          const noun = cards.length === 1 ? "build" : "builds";
+
+          count.textContent = hasFilters
+            ? `${visibleCount} of ${cards.length} ${noun}`
+            : `${cards.length} ${noun}`;
+
+          empty.hidden = visibleCount !== 0;
+        };
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          applyFilters();
+        });
+
+        form.addEventListener("input", applyFilters);
+        form.addEventListener("change", applyFilters);
+
+        form.addEventListener("reset", () => {
+          requestAnimationFrame(applyFilters);
+        });
+
+        form.dataset.initialised = "true";
+        form.hidden = false;
+
+        applyFilters();
+      });
+  }
+
+  initialiseBuildFilters();
+
+  document.addEventListener("astro:page-load", initialiseBuildFilters);
+</script>
+
+<style>
+  .build-index {
+    --build-border: color-mix(in srgb, currentColor 18%, transparent);
+    --build-surface: color-mix(in srgb, currentColor 4%, transparent);
+    --build-muted: color-mix(in srgb, currentColor 75%, transparent);
+
+    --type-lab: #8b7cf6;
+    --type-tool: #00c2a8;
+    --type-app: #f5a623;
+  }
+
+  :is(.build-card, .type-legend-item, .type-callout-card)[data-type="lab"] {
+    --type-accent: var(--type-lab);
+  }
+
+  :is(.build-card, .type-legend-item, .type-callout-card)[data-type="tool"] {
+    --type-accent: var(--type-tool);
+  }
+
+  :is(.build-card, .type-legend-item, .type-callout-card)[data-type="app"] {
+    --type-accent: var(--type-app);
+  }
+
+  .hp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    width: fit-content;
+    min-height: 2.75rem;
+    color: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: var(--type-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .hp-link:hover,
+  .hp-link:focus-visible {
+    color: var(--type-accent);
+  }
+
+  .page-head {
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .lede {
+    max-width: 72ch;
+  }
+
+  .lede p + p {
+    margin-top: 1rem;
+  }
+
+  .build-overview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 1.5rem 0 0;
+    color: var(--build-muted);
+    font-size: 0.875rem;
+  }
+
+  .build-filters {
+    display: grid;
+    grid-template-columns:
+      minmax(14rem, 2fr)
+      repeat(2, minmax(8rem, 1fr))
+      minmax(11rem, 1.25fr)
+      auto;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+
+  .build-filters[hidden],
+  .build-card[hidden],
+  .build-empty[hidden] {
+    display: none;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .filter-field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .filter-field input,
+  .filter-field select,
+  .filter-reset {
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    border: 1px solid var(--build-border);
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.8rem;
+    color: inherit;
+    background: var(--build-surface);
+    font: inherit;
+  }
+
+  .filter-field input,
+  .filter-field select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filter-field input::placeholder {
+    color: var(--build-muted);
+    opacity: 1;
+  }
+
+  .filter-field select option {
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .filter-reset {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-reset:hover {
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .build-index :is(a, input, select, button):focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .results-count {
+    margin: 0 0 1.25rem;
+    color: var(--build-muted);
+    font-size: 0.9rem;
+  }
+
+  .build-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  .build-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--build-border);
+    border-radius: 0.85rem;
+    background: var(--build-surface);
+  }
+
+  .build-card-image {
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-bottom: 1px solid var(--build-border);
+  }
+
+  .build-card-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .build-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .build-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    font-size: 0.75rem;
+  }
+
+  .build-type,
+  .build-status,
+  .build-featured {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--build-border);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    line-height: 1.5;
+  }
+
+  .build-type,
+  .build-featured {
+    font-weight: 600;
+  }
+
+  .build-status[data-status="active"] {
+    border-color: color-mix(in srgb, #16803c 45%, transparent);
+    background: color-mix(in srgb, #16803c 12%, transparent);
+  }
+
+  .build-status[data-status="retired"],
+  .build-status[data-status="archived"] {
+    border-style: dashed;
+  }
+
+  .build-card h2 {
+    margin: 0;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .build-card h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .build-card h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .build-summary {
+    margin: 0;
+    color: var(--build-muted);
+    line-height: 1.65;
+  }
+
+  .build-stack {
+    min-width: 0;
+  }
+
+  .stack-label {
+    margin: 0 0 0.5rem;
+    color: var(--build-muted);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tech-badges li {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .tech-badge-link {
+    display: inline-flex;
+    max-width: 100%;
+    vertical-align: middle;
+  }
+
+  .tech-badge-link img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    min-height: 20px;
+  }
+
+  .tech-badge-fallback {
+    display: inline-block;
+    border: 1px solid var(--build-border);
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .build-card-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .build-primary-cta {
+    font-size: 0.9rem;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+  }
+
+  .build-empty {
+    padding: 2rem 0;
+  }
+
+  .build-empty h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  .build-empty p {
+    margin: 0;
+    color: var(--build-muted);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .build-card {
+    border-top: 4px solid var(--type-accent, var(--build-border));
+    transition:
+      border-color 0.15s,
+      transform 0.15s;
+  }
+
+  .build-card:hover {
+    border-color: color-mix(in srgb, var(--type-accent) 55%, var(--build-border));
+    transform: translateY(-2px);
+  }
+
+  .build-type {
+    gap: 0.4rem;
+    border-color: color-mix(in srgb, var(--type-accent, currentColor) 60%, transparent);
+    background: color-mix(in srgb, var(--type-accent, currentColor) 14%, transparent);
+  }
+
+  .build-type::before,
+  .type-legend-item::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--type-accent);
+  }
+
+  .type-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    color: var(--build-muted);
+    font-size: 0.85rem;
+    list-style: none;
+  }
+
+  .type-legend-item {
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+  }
+
+  .type-callout {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--build-border);
+    padding-top: clamp(2rem, 4vw, 3rem);
+  }
+
+  .type-callout-intro {
+    max-width: 62ch;
+    margin-bottom: 1.5rem;
+  }
+
+  .type-callout-eyebrow {
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--build-muted);
+  }
+
+  .type-callout h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+    line-height: 1.25;
+  }
+
+  .type-callout-intro > p:last-child {
+    margin: 1rem 0 0;
+    color: var(--build-muted);
+    line-height: 1.65;
+  }
+
+  .type-callout-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .type-callout-card {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 1rem;
+    border: 1px solid var(--build-border);
+    border-top: 4px solid var(--type-accent);
+    border-radius: 0.85rem;
+    padding: 1.4rem;
+    background: var(--build-surface);
+    transition:
+      border-color 0.15s,
+      transform 0.15s;
+  }
+
+  .type-callout-card:hover {
+    border-color: color-mix(in srgb, var(--type-accent) 55%, var(--build-border));
+    transform: translateY(-2px);
+  }
+
+  .type-callout-icon {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    place-items: center;
+    border: 1px solid var(--type-accent);
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, var(--type-accent) 16%, transparent);
+    font-weight: 700;
+  }
+
+  .type-callout-label {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    align-items: baseline;
+    margin: 0 0 0.4rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .type-callout-count {
+    color: var(--build-muted);
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .type-callout-card h3 {
+    margin: 0;
+    font-size: 1.2rem;
+    line-height: 1.25;
+  }
+
+  .type-callout-card p:not(.type-callout-label) {
+    margin: 0.7rem 0 0;
+    color: var(--build-muted);
+    line-height: 1.6;
+  }
+
+  .type-callout-link {
+    grid-column: 1 / -1;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    width: fit-content;
+    min-height: 44px;
+    font-weight: 600;
+    text-decoration-color: var(--type-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+
+  .type-callout-link:hover {
+    text-decoration-thickness: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .build-card,
+    .type-callout-card {
+      transition: none;
+    }
+
+    .build-card:hover,
+    .type-callout-card:hover {
+      transform: none;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .build-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .type-callout-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .build-filters {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .filter-search {
+      grid-column: 1 / -1;
+    }
+
+    .filter-reset {
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .build-grid,
+    .build-filters,
+    .type-callout-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-search {
+      grid-column: auto;
+    }
+
+    .filter-reset {
+      justify-self: stretch;
+    }
+  }
+</style>

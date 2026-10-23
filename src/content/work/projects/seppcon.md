@@ -1,16 +1,23 @@
 ---
-id: 41
+id: 9
 slug: seppcon
-title: "SEPPCoN: Survey of the Ensemble Physical Properties of Cometary Nuclei"
+title: 'SEPPCoN: Survey of the Ensemble Physical Properties of Cometary Nuclei'
 type: research
 status: completed
+draft: false
 description: >
   Collaborative observational programme investigating the physical and surface
-  properties of Jupiter-family comet nuclei through thermal-infrared observations
-  from the Spitzer Space Telescope and complementary ground-based visible-light
-  measurements.
+  properties of Jupiter-family comet nuclei through thermal-infrared
+  observations from the Spitzer Space Telescope and complementary ground-based
+  visible-light measurements.
 startDate: 2009-09-01
 endDate: 2011-12-31
+client: University of Kent
+organisation: Centre for Astrophysics and Planetary Science
+role: Doctoral researcher
+category:
+  - research
+  - planetary-science
 tags:
   - planetary-science
   - astronomy
@@ -20,9 +27,6 @@ tags:
   - infrared-astronomy
   - spitzer
   - small-bodies
-category:
-  - research
-  - planetary-science
 tools_tech:
   - Spitzer Space Telescope
   - Infrared Spectrograph Peak-Up Imaging
@@ -34,18 +38,18 @@ links:
   web: https://www.spitzer.caltech.edu/
 impact:
   summary: >
-    Contributed to a collaborative survey of roughly 100 Jupiter-family comets,
-    combining thermal-infrared and visible-light observations to constrain nucleus
-    sizes, albedos and thermal properties across a substantial fraction of the
-    known population.
-client: University of Kent
-institution: University of Kent
-organisation: Centre for Astrophysics and Planetary Science
+    Contributed to a collaborative survey of roughly 100 Jupiter-family
+    comets, combining thermal-infrared and visible-light observations to
+    constrain nucleus sizes, albedos and thermal properties across a
+    substantial fraction of the known population.
+heroImage: /images/projects/seppcon.png
+heroAlt: >
+  Examples of processed optical R-band imaging of three comets successfully
+  detected at the ESO 3.6-m NTT telescope in May 2007. Comet Lovas 1 shows
+  clear signs of activity, whereas comets NEAT and Klemola appear unresolved.
+imageCredit: Processed by Ryan Laird.
 relatedEducation:
   - edu-kent-astronomy
-heroImage: /images/projects/seppcon.png
-heroAlt: "Examples of processed optical R-band imaging of three comets successfully detected at the ESO 3.6-m NTT telescope in May 2007. Comet Lovas 1 shows clear signs of activity, whereas comets NEAT and Klemola appear unresolved."
-imageCredit: Processed by Ryan Laird.
 ---
 
 ## Overview
@@ -139,7 +143,7 @@ The survey provided a larger and more consistently analysed dataset for
 evaluating the physical properties of Jupiter-family comet nuclei than was
 available from isolated observations alone.
 
-## Contribution
+## My role
 
 I contributed to the SEPPCoN collaboration while associated with the Centre for
 Astrophysics and Planetary Science at the University of Kent.
@@ -163,18 +167,6 @@ physical interpretation. Combining thermal-infrared and visible-light
 measurements provides a stronger basis for estimating intrinsic nucleus
 properties.
 
-## Related presentation
-
-### Results from the SEPPCoN Survey of Jupiter-Family Comets
-
-**S. C. Lowry, Y. Fernández, R. Laird, M. F. A'Hearn, J. M. Bauer, H. Campins,
-A. Fitzsimmons and collaborators**
-
-Results from the programme were presented at the European Planetary Science
-Congress. The presentation described a survey of approximately 100
-Jupiter-family comets, using Spitzer observations of thermal emission together
-with extensive ground-based optical monitoring.
-
 ## Limitations
 
 Cometary nuclei are difficult targets because activity can obscure or alter the
@@ -187,8 +179,14 @@ complete physical description of every observed comet. Derived radii and
 albedos should be interpreted alongside model assumptions and the quality of
 the available optical and thermal measurements.
 
-## Keywords
+## Related outputs
 
-Jupiter-family comets; cometary nuclei; planetary science; Spitzer Space
-Telescope; thermal infrared; geometric albedo; thermal inertia; small bodies;
-Solar System evolution; photometry.
+### Results from the SEPPCoN Survey of Jupiter-Family Comets
+
+**S. C. Lowry, Y. Fernández, R. Laird, M. F. A'Hearn, J. M. Bauer, H. Campins,
+A. Fitzsimmons and collaborators**
+
+Results from the programme were presented at the European Planetary Science
+Congress. The presentation described a survey of approximately 100
+Jupiter-family comets, using Spitzer observations of thermal emission together
+with extensive ground-based optical monitoring.

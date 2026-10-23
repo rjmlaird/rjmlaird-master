@@ -1,13 +1,19 @@
-// src/content/config.ts
+// src/content.config.ts
 import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
+
 import {
   assetSchema as brandAssetSchema,
   docSchema as brandDocSchema,
   siteProfileSchema as brandSiteSchema,
 } from "./brand/lib/schemas";
+
 import { faqs } from "./lib/faq-collection";
+
+/**
+ * SHARED HELPERS
+ */
 
 const optionalUrl = z.preprocess(
   (value) => (value === "" || value == null ? undefined : value),
@@ -15,6 +21,10 @@ const optionalUrl = z.preprocess(
 );
 
 const stringArray = z.array(z.string()).default([]);
+
+/**
+ * SEO
+ */
 
 const seoSchema = z.object({
   title: z.string().optional(),
@@ -26,6 +36,10 @@ const seoSchema = z.object({
   noindex: z.boolean().default(false),
   nofollow: z.boolean().default(false),
 });
+
+/**
+ * SHARED RELATED CONTENT
+ */
 
 const relatedItemSchema = z.object({
   id: z.union([z.string(), z.number()]).optional(),
@@ -58,10 +72,12 @@ const relatedVideoSchema = z.object({
   heroImage: z.string().optional(),
   heroAlt: z.string().optional(),
   imageCredit: z.string().optional(),
+
   relatedPodcasts: stringArray,
   relatedExperience: stringArray,
   relatedInitiatives: stringArray,
   relatedEvents: stringArray,
+
   videoType: z.string().optional(),
   tags: stringArray,
 });
@@ -76,6 +92,10 @@ const relatedArticleSchema = z.object({
   date: z.coerce.date().optional(),
   publication: z.string().optional(),
 });
+
+/**
+ * SHARED SUPPORTING CONTENT
+ */
 
 const testimonialSchema = z.object({
   quote: z.string(),
@@ -100,18 +120,26 @@ const linksSchema = z.object({
   api: optionalUrl,
 });
 
+/**
+ * BASE CONTENT
+ *
+ * Shared metadata, media, relationships and work-related fields.
+ */
+
 const baseSchema = seoSchema.extend({
   id: z.union([z.string(), z.number()]).optional(),
   slug: z.string().optional(),
 
   draft: z.boolean().default(false),
   featured: z.boolean().default(false),
+
   publishedDate: z.coerce.date().optional(),
   updatedDate: z.coerce.date().optional(),
   startDate: z.coerce.date().optional(),
   endDate: z.coerce.date().optional(),
 
   author: z.string().optional(),
+
   tags: stringArray,
   sectors: stringArray,
 
@@ -164,8 +192,13 @@ const baseSchema = seoSchema.extend({
   approach: z.string().optional(),
   outputs: stringArray,
   outcomes: z.string().optional(),
+
   testimonial: testimonialSchema.optional(),
 });
+
+/**
+ * WORK
+ */
 
 const workSchema = baseSchema.extend({
   title: z.string(),
@@ -174,6 +207,162 @@ const workSchema = baseSchema.extend({
   status: z.enum(["active", "completed", "archived"]).optional(),
   year: z.union([z.string(), z.number()]).optional(),
 });
+
+/**
+ * BUILDS
+ *
+ * Public-facing pages for labs, tools and apps on the main website.
+ *
+ * These entries explain:
+ * - what a build does;
+ * - who it is for;
+ * - its features and use cases;
+ * - its availability, maturity and limitations;
+ * - where to launch it or find supporting material.
+ *
+ * Content boundaries:
+ * - Main website: discovery, overview and evaluation.
+ * - docs.rjmlaird.co.uk: usage guides and reference documentation.
+ * - Repository: installation, development and contribution instructions.
+ * - Blog: development stories, reasoning and lessons.
+ * - Work: broader project context, responsibilities and outcomes.
+ */
+
+const buildTypeEnum = z.enum(["lab", "tool", "app"]);
+
+const buildStatusEnum = z.enum([
+  "planned",
+  "active",
+  "maintenance",
+  "paused",
+  "retired",
+  "archived",
+]);
+
+const buildStageEnum = z.enum([
+  "concept",
+  "prototype",
+  "alpha",
+  "beta",
+  "stable",
+]);
+
+const buildPlatformEnum = z.enum([
+  "web",
+  "desktop",
+  "mobile",
+  "cli",
+  "api",
+  "library",
+  "browser-extension",
+  "hardware",
+  "other",
+]);
+
+const buildAccessEnum = z.enum([
+  "public",
+  "signup",
+  "invite-only",
+  "private",
+  "unavailable",
+]);
+
+const buildPricingEnum = z.enum([
+  "free",
+  "freemium",
+  "paid",
+  "mixed",
+  "not-applicable",
+]);
+
+const buildScreenshotSchema = z.object({
+  src: z.string().trim().min(1),
+  alt: z.string().trim().min(1),
+  caption: z.string().optional(),
+  credit: z.string().optional(),
+});
+
+const buildUseCaseSchema = z.object({
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+});
+
+const buildCtaSchema = z.object({
+  label: z.string().trim().min(1),
+  href: z.string().trim().min(1),
+});
+
+const buildReplacementSchema = z.object({
+  title: z.string().trim().min(1),
+  href: z.string().trim().min(1),
+});
+
+const buildLinksSchema = linksSchema.extend({
+  repository: optionalUrl,
+  download: optionalUrl,
+  releases: optionalUrl,
+  issues: optionalUrl,
+  support: optionalUrl,
+  privacy: optionalUrl,
+  terms: optionalUrl,
+});
+
+const buildSchema = baseSchema.extend({
+  // Identity and discovery
+  title: z.string().trim().min(1),
+  summary: z.string().trim().min(1),
+  tagline: z.string().optional(),
+
+  type: buildTypeEnum,
+  platforms: z.array(buildPlatformEnum).default([]),
+
+  // Maintenance state and product maturity are independent.
+  status: buildStatusEnum.default("active"),
+  stage: buildStageEnum.default("prototype"),
+
+  launchedDate: z.coerce.date().optional(),
+  retiredDate: z.coerce.date().optional(),
+
+  // Audience and purpose
+  audience: stringArray,
+  problem: z.string().optional(),
+  useCases: z.array(buildUseCaseSchema).default([]),
+
+  // Availability and pricing
+  access: buildAccessEnum.default("public"),
+  pricing: buildPricingEnum.default("free"),
+
+  // Concise public-facing information, not full documentation.
+  requirements: stringArray,
+  limitations: stringArray,
+
+  // Code availability is separate from price and hosted access.
+  sourceAvailability: z
+    .enum(["open-source", "source-available", "closed-source"])
+    .optional(),
+
+  license: z.string().optional(),
+
+  // Media
+  screenshots: z.array(buildScreenshotSchema).default([]),
+
+  // Local paths and absolute URLs are both permitted.
+  primaryCta: buildCtaSchema.optional(),
+
+  // Destinations for the application and supporting material.
+  links: buildLinksSchema.optional().default({}),
+
+  // Existing work relationships are inherited from baseSchema.
+  relatedBuilds: stringArray,
+  relatedInsights: stringArray,
+
+  // Optional successor for a retired or superseded build.
+  replacement: buildReplacementSchema.optional(),
+});
+
+/**
+ * SERVICES
+ */
 
 const serviceSchema = seoSchema.extend({
   title: z.string(),
@@ -199,6 +388,10 @@ const serviceSchema = seoSchema.extend({
   contactCtaHref: z.string().optional().default("/contact/"),
 });
 
+/**
+ * INSIGHTS
+ */
+
 const insightSchema = baseSchema.extend({
   title: z.string(),
   summary: z.string().optional(),
@@ -208,8 +401,13 @@ const insightSchema = baseSchema.extend({
   series: z.string().optional(),
 });
 
+/**
+ * PODCASTS
+ */
+
 const podcastSchema = baseSchema.extend({
   title: z.string(),
+
   podcastTitle: z.string().optional(),
   podcastDescription: z.string().optional(),
   podcastWebsite: optionalUrl,
@@ -235,12 +433,14 @@ const podcastSchema = baseSchema.extend({
   summary: z.string().optional(),
 
   relatedEpisodes: z.array(relatedItemSchema).default([]),
+
   relatedPodcasts: z
     .array(
       z.object({
         id: z.union([z.string(), z.number()]).optional(),
         title: z.string().optional(),
         description: z.string().optional(),
+
         podcastTitle: z.string().optional(),
         podcastDescription: z.string().optional(),
         podcastWebsite: optionalUrl,
@@ -257,6 +457,9 @@ const podcastSchema = baseSchema.extend({
     .default([]),
 });
 
+/**
+ * EVENTS
+ */
 
 const eventLocationSchema = z.object({
   name: z.string().optional(),
@@ -306,7 +509,10 @@ const eventSchema = baseSchema.extend({
   locationEmbedUrl: optionalUrl,
   format: z.enum(["in-person", "online", "hybrid"]).optional(),
 
-  organiser: z.union([z.string(), z.array(eventOrganiserSchema)]).optional(),
+  organiser: z
+    .union([z.string(), z.array(eventOrganiserSchema)])
+    .optional(),
+
   coOrganisers: z.array(eventOrganiserSchema).default([]),
   speakers: stringArray,
   hosts: stringArray,
@@ -336,24 +542,22 @@ const eventSchema = baseSchema.extend({
     .default({}),
 });
 
-const researchThemeEnum = z.enum([
-  "earth-observation",
-  "astronomy",
-  "space-sustainability",
-  "climate-data",
-  "science-communication",
-  "digital-research-systems",
-]);
+/**
+ * COLLECTIONS
+ */
 
 export const collections = {
   faqs,
+
   /**
    * WORK
+   *
    * Public routes:
    * - /work/case-studies/
    * - /work/projects/
    * - /work/initiatives/
    */
+
   caseStudies: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",
@@ -379,7 +583,35 @@ export const collections = {
   }),
 
   /**
+   * BUILDS
+   *
+   * Intended public routes:
+   * - /builds/
+   * - /builds/[slug]/
+   *
+   * Optional filtered listings:
+   * - /builds/labs/
+   * - /builds/tools/
+   * - /builds/apps/
+   *
+   * Content directory:
+   * - src/content/builds/
+   *
+   * One entry per build, with type used for filtering.
+   * Route templates are defined separately from this collection.
+   */
+
+  builds: defineCollection({
+    loader: glob({
+      pattern: "**/*.{md,mdx}",
+      base: "./src/content/builds",
+    }),
+    schema: buildSchema,
+  }),
+
+  /**
    * SERVICES
+   *
    * Content directories:
    * - src/content/services/strategy/
    * - src/content/services/communications/
@@ -392,6 +624,7 @@ export const collections = {
    * Tutoring is a service area, but its public pages can remain under
    * /tutoring/ if that is the appropriate audience-facing URL.
    */
+
   services: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",
@@ -402,11 +635,14 @@ export const collections = {
 
   /**
    * INSIGHTS
-   * Public routes:
+   *
+   * Existing public content:
    * - /insights/blog/
-   * - /insights/research/
    * - /insights/podcasts/
+   *
+   * No research collection is registered here.
    */
+
   blog: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",
@@ -423,6 +659,10 @@ export const collections = {
     schema: podcastSchema,
   }),
 
+  /**
+   * EVENTS
+   */
+
   events: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",
@@ -433,8 +673,10 @@ export const collections = {
 
   /**
    * ABOUT
+   *
    * Keep author profiles only if multiple contributors are genuinely used.
    */
+
   authors: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",
@@ -452,8 +694,10 @@ export const collections = {
 
   /**
    * BRAND SYSTEM
+   *
    * Retained as an internal/specialist documentation area.
    */
+
   brandDocs: defineCollection({
     loader: glob({
       pattern: "**/*.{md,mdx}",

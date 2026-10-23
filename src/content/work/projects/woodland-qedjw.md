@@ -1,11 +1,20 @@
 ---
-id: 41
+id: 44
 slug: woodland-qedjw
 title: Queen Elizabeth Diamond Jubilee Wood (QEDJW) volunteering work
 type: featured
 status: active
-description: The Queen Elizabeth Diamond Jubilee Wood (QEDJW) lies in the National Forest in north-west Leicestershire, 24.1km (15 miles) from Leicester, 6.4km (4 miles) from Ashby-de-la-Zouch, 11.2km (7 miles) from Coalville, and close to the village of Normanton le Heath.
+draft: false
+description: >
+  The Queen Elizabeth Diamond Jubilee Wood (QEDJW) lies in the National Forest
+  in north-west Leicestershire, 24.1km (15 miles) from Leicester, 6.4km (4
+  miles) from Ashby-de-la-Zouch, 11.2km (7 miles) from Coalville, and close to
+  the village of Normanton le Heath.
 startDate: 2024-07-01
+role: Volunteer
+category:
+  - volunteering
+  - environment
 tags:
   - woodland-trust
   - leicestershire
@@ -16,18 +25,23 @@ tags:
   - biodiversity
   - nature-recovery
   - community
+sectors:
+  - environment
 links:
-  web: https://www.woodlandtrust.org.uk/visiting-woods/woods/queen-elizabeth-diamond-jubilee-wood/
+  web: >
+    https://www.woodlandtrust.org.uk/visiting-woods/woods/queen-elizabeth-diamond-jubilee-wood/
 impact:
   summary: >
-    Ongoing volunteering at one of the Woodland Trust's flagship Jubilee Woods,
-    supporting the care of a young 116-hectare native woodland and wetland in
-    the National Forest and helping keep it welcoming for people and wildlife.
-relatedVolunteering: ["vol-woodland-trust"]
-heroImage: https://www.woodlandtrust.org.uk/media/3210/grassland-lake-queen-elizabeth-diamond-jubilee-wood-wtml-1082922-richard-faulks.jpg
-heroAlt: "At the lake you'll find vegetation including bulrush and yellow iris."
+    Ongoing volunteering at one of the Woodland Trust's flagship Jubilee
+    Woods, supporting the care of a young 116-hectare native woodland and
+    wetland in the National Forest and helping keep it welcoming for people
+    and wildlife.
+heroImage: >
+  https://www.woodlandtrust.org.uk/media/3210/grassland-lake-queen-elizabeth-diamond-jubilee-wood-wtml-1082922-richard-faulks.jpg
+heroAlt: At the lake you'll find vegetation including bulrush and yellow iris.
 imageCredit: Richard Faulks / WTML
-sectors: ["environment"]
+relatedVolunteering:
+  - vol-woodland-trust
 ---
 
 ## Overview
@@ -141,17 +155,11 @@ part of the Jubilee Woods project and the National Forest's transformation of
 former mining and farmland into woodland, with nearby extension sites (QEDJW
 Extension and QEDJW Ext 2) adding to the wider woodland network.
 
-## My volunteering
+## My role
 
-Add a short description of what you do here, for example:
+I volunteer with the Woodland Trust at QEDJW, supporting the care of the wood and helping to keep it welcoming for people and wildlife.
 
-- Tasks undertaken (path and signage checks, litter picking, tree-care,
-  habitat work, visitor welcome, species recording).
-- Frequency and the team you work with.
-- Skills gained or used, and any training completed with the Woodland Trust.
-- Any events or community days you have supported.
-
-## Why it matters
+## Significance
 
 Young woodland creation sites depend on continued care as trees establish and
 habitats mature. Volunteers help to keep paths safe, monitor wildlife and
@@ -159,15 +167,9 @@ support a welcoming experience, so that a site created for a royal jubilee
 remains a lasting public benefit: a place for nature recovery, climate
 resilience, learning and wellbeing within easy reach of Leicester.
 
-## Related links
+## Further reading
 
 - [Queen Elizabeth Diamond Jubilee Wood on the Woodland Trust website](https://www.woodlandtrust.org.uk/visiting-woods/woods/queen-elizabeth-diamond-jubilee-wood/)
 - [Woodland Trust volunteering](https://www.woodlandtrust.org.uk/support-us/act/volunteer-with-us/)
 - [QEDJW walking map (PDF)](https://www.woodlandtrust.org.uk/media/52936/queen-elizabeth-diamond-jubilee-wood-accessible-walking-map.pdf)
 - [QEDJW public management plan (PDF)](https://www.woodlandtrust.org.uk/media/p5co1113/5658-queen-elizabeth-diamond-jubilee-wood-public-management-plan.pdf)
-
-## Keywords
-
-Woodland Trust; Queen Elizabeth Diamond Jubilee Wood; QEDJW; Jubilee Woods;
-National Forest; Leicestershire; Normanton le Heath; volunteering; woodland
-creation; ancient woodland; wetland; birdwatching; nature recovery; community.

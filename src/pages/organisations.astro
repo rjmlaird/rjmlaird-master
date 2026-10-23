@@ -1,0 +1,868 @@
+---
+// src/pages/organisations/index.astro
+import Layout from "../layouts/Layout.astro";
+import organisationsData from "../data/organisations.json";
+
+/**
+ * DATA TYPES
+ */
+
+type Organisation = {
+  slug: string;
+  name: string;
+  shortName?: string | null;
+  aliases?: string[];
+  legacySlugs?: string[];
+  kind?: string | null;
+  sectors?: string[];
+  relationships?: string[];
+  description?: string | null;
+  shortDescription?: string | null;
+  url?: string | null;
+  logo?: string | null;
+  featured?: boolean;
+  hubspotId?: string | null;
+};
+
+type OrganisationCard = {
+  slug: string;
+  name: string;
+  shortName: string;
+  description: string;
+  kind: string;
+  sectors: string[];
+  website: string | null;
+  logo: string;
+  featured: boolean;
+  search: string;
+};
+
+/**
+ * LABELS
+ */
+
+const kindLabels: Record<string, string> = {
+  company: "Company",
+  community_interest_company: "Community interest company",
+  professional_body: "Professional body",
+  learned_society: "Learned society",
+  ngo_charity: "NGO or charity",
+  network: "Network",
+  programme: "Programme",
+  initiative: "Initiative",
+  student_society: "Student society",
+  school: "School",
+  college: "College",
+  university: "University",
+  space_agency: "Space agency",
+  trade_association: "Trade association",
+  government: "Government",
+  local_authority: "Local authority",
+  intergovernmental: "Intergovernmental organisation",
+  observatory: "Observatory",
+  research_centre: "Research centre",
+  training_provider: "Training provider",
+  awarding_body: "Awarding body",
+  accreditation: "Accreditation scheme",
+  event: "Event",
+};
+
+const sectorLabels: Record<string, string> = {
+  astronomy: "Astronomy",
+  space: "Space",
+  science_research: "Science and research",
+  climate_sustainability: "Climate and sustainability",
+  education: "Education",
+  engineering: "Engineering",
+  technology_digital: "Technology and digital",
+  software: "Software",
+  marketing_comms: "Marketing and communications",
+  media_publishing: "Media and publishing",
+  design_creative: "Design and creative",
+  business_support: "Business support",
+  entrepreneurship: "Entrepreneurship",
+  community_charity: "Community and charity",
+  health_neurodiversity: "Health and neurodiversity",
+  events_culture: "Events and culture",
+  government_policy: "Government and policy",
+  finance: "Finance",
+  telecoms: "Telecommunications",
+};
+
+/**
+ * NORMALISATION
+ *
+ * These aliases affect display and filtering only.
+ * They do not modify the source JSON.
+ */
+
+const kindAliases: Record<string, string> = {
+  learnedsociety: "learned_society",
+  education_provider: "training_provider",
+};
+
+const sectorAliases: Record<string, string> = {
+  marketing_communications: "marketing_comms",
+};
+
+function text(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function normalise(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+function humanise(value: string): string {
+  const result = value.replace(/[_-]+/g, " ").trim();
+
+  return result
+    ? result.charAt(0).toUpperCase() + result.slice(1)
+    : "";
+}
+
+function kindLabel(value: string): string {
+  return kindLabels[value] ?? humanise(value);
+}
+
+function sectorLabel(value: string): string {
+  return sectorLabels[value] ?? humanise(value);
+}
+
+function websiteUrl(value: unknown): string | null {
+  const candidate = text(value);
+
+  if (!candidate) return null;
+
+  try {
+    const url = new URL(candidate);
+
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.href
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * INPUT CHECKS
+ *
+ * Fail clearly instead of silently dropping nested arrays or duplicates.
+ */
+
+const rawData: unknown = organisationsData;
+
+if (
+  !Array.isArray(rawData) ||
+  rawData.some(
+    (item) =>
+      item === null ||
+      typeof item !== "object" ||
+      Array.isArray(item),
+  )
+) {
+  throw new Error(
+    "organisations.json must contain one flat array of organisation objects.",
+  );
+}
+
+const records = rawData as Organisation[];
+const seenSlugs = new Set<string>();
+
+for (const record of records) {
+  const slug = text(record.slug);
+  const name = text(record.name);
+
+  if (!slug || !name) {
+    throw new Error(
+      "Every organisation must have a non-empty slug and name.",
+    );
+  }
+
+  const key = normalise(slug);
+
+  if (seenSlugs.has(key)) {
+    throw new Error(
+      `Duplicate organisation slug "${slug}". Merge or correct the duplicate records.`,
+    );
+  }
+
+  seenSlugs.add(key);
+}
+
+/**
+ * PREPARE CARDS
+ */
+
+const organisations: OrganisationCard[] = records
+  .map((record) => {
+    const name = text(record.name);
+    const shortName = text(record.shortName);
+
+    const rawKind = normalise(text(record.kind));
+    const kind = kindAliases[rawKind] ?? rawKind;
+
+    const sectors = [
+      ...new Set(
+        (record.sectors ?? [])
+          .map((sector) => normalise(sector))
+          .filter(Boolean)
+          .map((sector) => sectorAliases[sector] ?? sector),
+      ),
+    ];
+
+    const description =
+      text(record.shortDescription) || text(record.description);
+
+    const search = [
+      name,
+      shortName,
+      ...(record.aliases ?? []),
+      ...(record.legacySlugs ?? []),
+      text(record.description),
+      text(record.shortDescription),
+      kind,
+      kindLabel(kind),
+      ...sectors,
+      ...sectors.map(sectorLabel),
+    ]
+      .join(" ")
+      .toLowerCase();
+
+    return {
+      slug: text(record.slug),
+      name,
+      shortName,
+      description,
+      kind,
+      sectors,
+      website: websiteUrl(record.url),
+      logo: text(record.logo),
+      featured: record.featured === true,
+      search,
+    };
+  })
+  .sort(
+    (a, b) =>
+      Number(b.featured) - Number(a.featured) ||
+      a.name.localeCompare(b.name, "en-GB"),
+  );
+
+/**
+ * FILTER OPTIONS
+ */
+
+const availableKinds = [
+  ...new Set(
+    organisations
+      .map((organisation) => organisation.kind)
+      .filter(Boolean),
+  ),
+]
+  .map((value) => ({
+    value,
+    label: kindLabel(value),
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+
+const availableSectors = [
+  ...new Set(
+    organisations.flatMap((organisation) => organisation.sectors),
+  ),
+]
+  .map((value) => ({
+    value,
+    label: sectorLabel(value),
+  }))
+  .sort((a, b) => a.label.localeCompare(b.label));
+---
+
+<Layout
+  title="Organisations"
+  description="Browse an organisation directory across space, astronomy, science, sustainability, education and digital technology."
+>
+  <section class="organisation-index" data-organisation-index>
+    <div class="container pg-shell">
+      <header class="page-head">
+        <p class="sl">Organisations</p>
+
+        <h1 class="fade">
+          Organisations across <em>science, space &amp; sustainability</em>
+        </h1>
+
+        <div class="lede">
+          <p>
+            Browse organisations, institutions, networks and initiatives
+            across science, education, sustainability and technology.
+            Search by name or filter by organisation type and sector.
+          </p>
+
+          <p class="directory-note">
+            Inclusion in this directory does not, by itself, indicate
+            a current affiliation, commercial relationship or endorsement.
+          </p>
+        </div>
+      </header>
+
+      {
+        organisations.length > 0 ? (
+          <>
+            <form
+              class="organisation-filters"
+              data-organisation-filters
+              aria-label="Filter organisations"
+              hidden
+            >
+              <div class="filter-field filter-search">
+                <label for="organisation-search">Search</label>
+
+                <input
+                  id="organisation-search"
+                  name="search"
+                  type="search"
+                  placeholder="Search names, acronyms or descriptions"
+                  autocomplete="off"
+                  aria-controls="organisationGrid"
+                />
+              </div>
+
+              <div class="filter-field">
+                <label for="organisation-kind">Organisation type</label>
+
+                <select
+                  id="organisation-kind"
+                  name="kind"
+                  aria-controls="organisationGrid"
+                >
+                  <option value="">All types</option>
+
+                  {availableKinds.map(({ value, label }) => (
+                    <option value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label for="organisation-sector">Sector</label>
+
+                <select
+                  id="organisation-sector"
+                  name="sector"
+                  aria-controls="organisationGrid"
+                >
+                  <option value="">All sectors</option>
+
+                  {availableSectors.map(({ value, label }) => (
+                    <option value={value}>{label}</option>
+                  ))}
+                </select>
+              </div>
+
+              <button class="filter-reset" type="reset">
+                Clear filters
+              </button>
+            </form>
+
+            <p
+              class="results-count"
+              data-organisation-count
+              role="status"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {organisations.length}{" "}
+              {organisations.length === 1
+                ? "organisation"
+                : "organisations"}
+            </p>
+
+            <div class="organisation-grid" id="organisationGrid">
+              {organisations.map((organisation) => (
+                <article
+                  class="organisation-card"
+                  data-organisation-card
+                  data-search={organisation.search}
+                  data-kind={organisation.kind}
+                  data-sectors={JSON.stringify(organisation.sectors)}
+                >
+                  {organisation.logo && (
+                    <div class="organisation-logo">
+                      <img
+                        src={organisation.logo}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        width="180"
+                        height="80"
+                      />
+                    </div>
+                  )}
+
+                  <div class="organisation-card-body">
+                    {(organisation.kind || organisation.featured) && (
+                      <div class="organisation-meta">
+                        {organisation.kind && (
+                          <span class="organisation-kind">
+                            {kindLabel(organisation.kind)}
+                          </span>
+                        )}
+
+                        {organisation.featured && (
+                          <span class="organisation-featured">
+                            Featured
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    <h2>
+                      {organisation.website ? (
+                        <a href={organisation.website}>
+                          {organisation.name}
+                        </a>
+                      ) : (
+                        organisation.name
+                      )}
+                    </h2>
+
+                    {organisation.shortName &&
+                      organisation.shortName !== organisation.name && (
+                        <p class="organisation-short-name">
+                          {organisation.shortName}
+                        </p>
+                      )}
+
+                    {organisation.description && (
+                      <p class="organisation-description">
+                        {organisation.description}
+                      </p>
+                    )}
+
+                    {organisation.sectors.length > 0 && (
+                      <ul class="sector-tags" aria-label="Sectors">
+                        {organisation.sectors.map((sector) => (
+                          <li>{sectorLabel(sector)}</li>
+                        ))}
+                      </ul>
+                    )}
+
+                    {organisation.website && (
+                      <div class="organisation-card-footer">
+                        <a href={organisation.website}>
+                          Visit website
+                          <span aria-hidden="true"> →</span>
+                          <span class="visually-hidden">
+                            : {organisation.name}
+                          </span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div class="organisation-empty" data-organisation-empty hidden>
+              <h2>No matching organisations</h2>
+              <p>
+                Try another search or clear the filters to see all entries.
+              </p>
+            </div>
+          </>
+        ) : (
+          <div class="organisation-empty">
+            <h2>No organisations to show yet</h2>
+            <p>Entries will appear here when added to the directory.</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<script>
+  function initialiseOrganisationFilters() {
+    document
+      .querySelectorAll<HTMLElement>("[data-organisation-index]")
+      .forEach((root) => {
+        const form = root.querySelector<HTMLFormElement>(
+          "[data-organisation-filters]",
+        );
+
+        if (!form || form.dataset.initialised === "true") return;
+
+        const search =
+          form.querySelector<HTMLInputElement>('[name="search"]');
+
+        const kind =
+          form.querySelector<HTMLSelectElement>('[name="kind"]');
+
+        const sector =
+          form.querySelector<HTMLSelectElement>('[name="sector"]');
+
+        const count = root.querySelector<HTMLElement>(
+          "[data-organisation-count]",
+        );
+
+        const empty = root.querySelector<HTMLElement>(
+          "[data-organisation-empty]",
+        );
+
+        if (!search || !kind || !sector || !count || !empty) return;
+
+        const cards = Array.from(
+          root.querySelectorAll<HTMLElement>(
+            "[data-organisation-card]",
+          ),
+        ).map((element) => ({
+          element,
+          search: element.dataset.search ?? "",
+          kind: element.dataset.kind ?? "",
+          sectors: JSON.parse(
+            element.dataset.sectors ?? "[]",
+          ) as string[],
+        }));
+
+        const applyFilters = () => {
+          const terms = search.value
+            .trim()
+            .toLowerCase()
+            .split(/\s+/)
+            .filter(Boolean);
+
+          let visibleCount = 0;
+
+          for (const card of cards) {
+            const visible =
+              terms.every((term) => card.search.includes(term)) &&
+              (!kind.value || card.kind === kind.value) &&
+              (!sector.value || card.sectors.includes(sector.value));
+
+            card.element.hidden = !visible;
+
+            if (visible) visibleCount += 1;
+          }
+
+          const hasFilters =
+            terms.length > 0 ||
+            Boolean(kind.value) ||
+            Boolean(sector.value);
+
+          const noun =
+            cards.length === 1 ? "organisation" : "organisations";
+
+          count.textContent = hasFilters
+            ? `${visibleCount} of ${cards.length} ${noun}`
+            : `${cards.length} ${noun}`;
+
+          empty.hidden = visibleCount !== 0;
+        };
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          applyFilters();
+        });
+
+        form.addEventListener("input", applyFilters);
+        form.addEventListener("change", applyFilters);
+
+        form.addEventListener("reset", () => {
+          requestAnimationFrame(applyFilters);
+        });
+
+        form.dataset.initialised = "true";
+        form.hidden = false;
+
+        applyFilters();
+      });
+  }
+
+  initialiseOrganisationFilters();
+
+  document.addEventListener(
+    "astro:page-load",
+    initialiseOrganisationFilters,
+  );
+</script>
+
+<style>
+  .organisation-index {
+    --org-border: color-mix(in srgb, currentColor 18%, transparent);
+    --org-surface: color-mix(in srgb, currentColor 4%, transparent);
+    --org-muted: color-mix(in srgb, currentColor 75%, transparent);
+  }
+
+  .page-head {
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .lede {
+    max-width: 74ch;
+  }
+
+  .lede p + p {
+    margin-top: 1rem;
+  }
+
+  .directory-note {
+    color: var(--org-muted);
+    font-size: 0.9rem;
+  }
+
+  .organisation-filters {
+    display: grid;
+    grid-template-columns:
+      minmax(15rem, 2fr)
+      minmax(12rem, 1fr)
+      minmax(12rem, 1fr)
+      auto;
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1rem;
+  }
+
+  .organisation-filters[hidden],
+  .organisation-card[hidden],
+  .organisation-empty[hidden] {
+    display: none;
+  }
+
+  .filter-field {
+    display: grid;
+    gap: 0.4rem;
+    min-width: 0;
+  }
+
+  .filter-field label {
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .filter-field input,
+  .filter-field select,
+  .filter-reset {
+    box-sizing: border-box;
+    min-height: 2.75rem;
+    border: 1px solid var(--org-border);
+    border-radius: 0.5rem;
+    padding: 0.65rem 0.8rem;
+    color: inherit;
+    background: var(--org-surface);
+    font: inherit;
+  }
+
+  .filter-field input,
+  .filter-field select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .filter-field input::placeholder {
+    color: var(--org-muted);
+    opacity: 1;
+  }
+
+  .filter-field select option {
+    color: CanvasText;
+    background: Canvas;
+  }
+
+  .filter-reset {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .filter-reset:hover {
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .organisation-index :is(a, input, select, button):focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .results-count {
+    margin: 0 0 1.25rem;
+    color: var(--org-muted);
+    font-size: 0.9rem;
+  }
+
+  .organisation-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  .organisation-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--org-border);
+    border-radius: 0.85rem;
+    background: var(--org-surface);
+  }
+
+  .organisation-logo {
+    display: flex;
+    min-height: 7rem;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--org-border);
+    padding: 1.25rem;
+    background: #fff;
+  }
+
+  .organisation-logo img {
+    display: block;
+    max-width: 100%;
+    object-fit: contain;
+  }
+
+  .organisation-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .organisation-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .organisation-kind,
+  .organisation-featured {
+    border: 1px solid var(--org-border);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  .organisation-featured {
+    font-weight: 600;
+  }
+
+  .organisation-card h2 {
+    margin: 0;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+  }
+
+  .organisation-card h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .organisation-card h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .organisation-short-name {
+    margin: -0.4rem 0 0;
+    color: var(--org-muted);
+    font-size: 0.875rem;
+  }
+
+  .organisation-description {
+    margin: 0;
+    color: var(--org-muted);
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+  }
+
+  .sector-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .sector-tags li {
+    max-width: 100%;
+    border: 1px solid var(--org-border);
+    border-radius: 0.35rem;
+    padding: 0.2rem 0.45rem;
+    font-size: 0.75rem;
+    overflow-wrap: anywhere;
+  }
+
+  .organisation-card-footer {
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .organisation-card-footer a {
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-underline-offset: 0.2em;
+  }
+
+  .organisation-empty {
+    padding: 2rem 0;
+  }
+
+  .organisation-empty h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  .organisation-empty p {
+    margin: 0;
+    color: var(--org-muted);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 1100px) {
+    .organisation-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .organisation-filters {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .filter-search {
+      grid-column: 1 / -1;
+    }
+
+    .filter-reset {
+      justify-self: start;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .organisation-grid,
+    .organisation-filters {
+      grid-template-columns: 1fr;
+    }
+
+    .filter-search {
+      grid-column: auto;
+    }
+
+    .filter-reset {
+      justify-self: stretch;
+    }
+  }
+</style>

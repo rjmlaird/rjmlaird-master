@@ -1,47 +1,45 @@
 ---
-id: 41
+id: 3
 slug: fuse
 title: Velocity discrimination in hydrogen-deficient white dwarfs
 type: research
 status: completed
+draft: false
 description: >
-  Undergraduate research using Far Ultraviolet Spectroscopic Explorer spectra to
-  distinguish photospheric and interstellar absorption lines in hydrogen-deficient
-  white dwarfs, helping constrain possible identifications for previously
-  unidentified far-ultraviolet features.
+  Undergraduate research using Far Ultraviolet Spectroscopic Explorer spectra
+  to distinguish photospheric and interstellar absorption lines in
+  hydrogen-deficient white dwarfs, helping constrain possible identifications
+  for previously unidentified far-ultraviolet features.
 startDate: 2007-07-16
 endDate: 2007-08-24
 updatedDate: 2007-08-24
+client: University of Leicester
+organisation: Department of Physics and Astronomy
+role: Undergraduate researcher (Summer Undergraduate Research Experience)
+category:
+  - research
+  - astrophysics
 tags:
   - research
   - astrophysics
   - stellar-spectroscopy
-  - white-dwarves
+  - white-dwarfs
   - ultraviolet-astronomy
-  - FUSE
+  - fuse
   - atomic-data
-category:
-  - research
-  - astrophysics
 links:
   web: https://le.ac.uk/physics
-institution: University of Leicester
-organisation: Department of Physics and Astronomy
-relatedExperience:
-  - exp-uol-research-2008
 impact:
-  contribution: >
-    Contributed to a Summer Undergraduate Research Experience project investigating
-    the origin and possible identification of unidentified far-ultraviolet spectral
-    lines in hydrogen-deficient white dwarfs.
-  methods: >
-    Radial-velocity discrimination, comparison of stellar spectra, line-list
-    testing and analysis of Far Ultraviolet Spectroscopic Explorer data.
-  outputs:
+  summary: >
+    Contributed to a Summer Undergraduate Research Experience project
+    investigating the origin and possible identification of unidentified
+    far-ultraviolet spectral lines in hydrogen-deficient white dwarfs.
+  outcomes:
     - Poster and research presentation material
     - Contribution to work on unidentified far-ultraviolet lines
-heroAlt: >
-  Illustration of a white dwarf star and its far-ultraviolet spectrum.
+heroAlt: Illustration of a white dwarf star and its far-ultraviolet spectrum.
+relatedExperience:
+  - exp-uol-research-2008
 ---
 
 ## Overview
@@ -81,4 +79,16 @@ radial velocities.
   origins even where a line’s atomic identification is initially unknown.
 
 Known spectral lines were used to establish the characteristic velocities of
-the photosp
+the photosphere and the interstellar medium in each star.
+
+## My role
+
+I contributed to a Summer Undergraduate Research Experience project at the University of Leicester, applying radial-velocity discrimination to FUSE spectra of hydrogen-deficient white dwarfs.
+
+## Limitations
+
+This was a short summer research placement. It was designed to narrow down the origin of unidentified lines rather than to identify every feature, and conclusions depend on the quality of the atomic data and the number of stars compared.
+
+## Related outputs
+
+- Poster and research presentation material.

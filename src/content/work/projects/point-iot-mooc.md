@@ -1,15 +1,31 @@
 ---
-id: 41
+id: 40
 slug: point-iot-mooc
 title: Point.IOT.MOOC
 type: featured
 status: completed
+draft: false
 description: >
   Point.MOOC is a free, self-directed online course that guides entrepreneurs
-  and developers through the business and technical development of IoT products
-  that use Galileo and other satellite positioning technologies. It forms part
-  of the EU-funded POINT.IoT programme.
+  and developers through the business and technical development of IoT
+  products that use Galileo and other satellite positioning technologies. It
+  forms part of the EU-funded POINT.IoT programme.
 startDate: 2020-07-01
+client: SpaceTec Partners
+organisation: Design & Data GmbH
+category:
+  - work
+  - education
+tags:
+  - galileo
+  - gnss
+  - iot
+  - mooc
+  - entrepreneurship
+  - training
+  - horizon-2020
+  - euspa
+  - space-applications
 tools_tech:
   - Massive Open Online Course (MOOC) platform
   - On-demand video training
@@ -22,16 +38,6 @@ features:
   - Business design track covering customer, value proposition, MVP, business model, go-to-market and funding
   - Technical track covering GNSS, Galileo, low-power positioning, cloud processing, edge computing and IoT security
   - Delivered by European industry experts from SpaceTec Partners, Verhaert and Rokubun
-tags:
-  - galileo
-  - gnss
-  - iot
-  - mooc
-  - entrepreneurship
-  - training
-  - horizon-2020
-  - euspa
-  - space-applications
 links:
   web: https://cordis.europa.eu/project/id/870283
 impact:
@@ -44,8 +50,8 @@ heroImage: /images/projects/point-iot.png
 heroAlt: >
   Point.IoT
 imageCredit: Point.IoT Consortium
-client: SpaceTec Partners
-relatedExperience: ["exp-design-and-data"]
+relatedExperience:
+  - exp-design-and-data
 ---
 
 ## Overview
@@ -159,12 +165,9 @@ European ecosystem.
 
 ## My role
 
-Add a short description of your contribution here, for example: content
-development, editorial or script support, communications and promotion, course
-production, coordination with SpaceTec Partners, or work delivered through
-Design & Data.
+I contributed to the course through Design & Data, working with SpaceTec Partners on the POINT.IoT programme.
 
-## Why it matters
+## Significance
 
 Satellite navigation is becoming a foundational layer of the connected world,
 but turning it into successful products requires both technical understanding
@@ -173,13 +176,7 @@ lowered the barrier to entry for European IoT start-ups and helped spread
 knowledge of Galileo's advantages for positioning, velocity and timing,
 particularly in demanding urban environments.
 
-## Related links
+## Further reading
 
 - [POINT.IoT project on CORDIS](https://cordis.europa.eu/project/id/870283)
 - [POINT.IoT on the EUSPA project portfolio](https://www.euspa.europa.eu/opportunities/horizon-europe/project-portfolio/pointiot-stimulating-fusion-iot-and-gnss)
-
-## Keywords
-
-Point.IoT; Point.MOOC; Galileo; EGNSS; GNSS; Internet of Things; IoT
-entrepreneurship; business design; MVP; low-power positioning; edge computing;
-IoT security; Horizon 2020; EUSPA; SpaceTec Partners; Verhaert; Rokubun.

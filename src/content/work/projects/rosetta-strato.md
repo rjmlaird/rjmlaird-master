@@ -1,17 +1,21 @@
 ---
-id: 41
+id: 29
 slug: rosetta-strato
-title: "Rosetta Strato Campaign"
+title: Rosetta Strato Campaign
 type: featured
 status: completed
+draft: false
 description: >
   A digital and educational campaign inspired by ESA's Rosetta mission and the
   Philae lander, combining design, storytelling and public engagement to
   communicate the mission and support a charity campaign.
 startDate: 2017-01-01
+client: Universe Awareness (UNAWE)
+organisation: Design & Data GmbH
+category:
+  - work
+  - digital
 tags:
-  - portfolio
-  - web
   - space
   - astronomy
   - planetary-science
@@ -22,21 +26,24 @@ tags:
   - education
   - digital-campaign
   - design
-youtubeId: iYaFGL7dEBk
 links:
-  github: "https://github.com/yourname/example-project"
-  youtube: "https://youtu.be/iYaFGL7dEBk?is=aYOy039ug9GnuNcj"
-  indiegogo: "https://www.indiegogo.com/en/projects/designdatagmbh/rosetta-strato-charity-campaign"
-  unaweUpdate1: "https://eu-unawe.org/updates/unawe-update-2017-005/"
-  unaweUpdate2: "https://unawe.org/updates/unawe-update-2017-006/"
-impact: {}
-client: Universe Awareness (UNAWE)
-caseStudy: Rosetta Philae
-relatedExperience:
-  - "exp-design-and-data"
-heroImage: "https://img.youtube.com/vi/iYaFGL7dEBk/maxresdefault.jpg"
-heroAlt: "Screenshots of Rosetta Strato"
+  youtube: https://youtu.be/iYaFGL7dEBk?is=aYOy039ug9GnuNcj
+  indiegogo: https://www.indiegogo.com/en/projects/designdatagmbh/rosetta-strato-charity-campaign
+  unaweUpdate1: https://eu-unawe.org/updates/unawe-update-2017-005/
+  unaweUpdate2: https://unawe.org/updates/unawe-update-2017-006/
+youtubeId: iYaFGL7dEBk
+impact:
+  summary: >
+    Contributed to a digital and educational campaign built around Rosetta and
+    Philae, supporting a charity crowdfunding campaign and educational
+    outreach.
+heroImage: https://img.youtube.com/vi/iYaFGL7dEBk/maxresdefault.jpg
+heroAlt: Screenshots of Rosetta Strato
 imageCredit: Design & Data GmbH
+relatedExperience:
+  - exp-design-and-data
+relatedCaseStudies:
+  - rosetta-philae
 ---
 
 ## Overview
@@ -200,23 +207,17 @@ This approach helps bridge the gap between:
 
 **scientific achievement → understandable story → public engagement**
 
-## Contribution
+## My role
 
-Rosetta Strato demonstrates experience in combining **design, digital
-communication and space-science storytelling**.
+I contributed through Design & Data, combining design, digital communication and space-science storytelling.
 
 The project brought together:
 
 - Digital campaign development
 - Visual communication
-- Space-sector storytelling
-- Science education
-- Public engagement
+- Science education and public engagement
 - Charity campaigning
 - Video communication
-
-It provides an example of using a major space mission as the foundation for a
-broader communication and engagement campaign.
 
 ## Outcomes
 
@@ -270,7 +271,20 @@ Space exploration is ultimately carried out by people, organisations and
 communities. Communicating those stories can make technically sophisticated
 missions much more relatable.
 
-## Related resources
+## Significance
+
+Rosetta Strato is an example of how **space exploration, digital design and
+science communication can be brought together within a single campaign**.
+
+The project used one of the most engaging stories in modern planetary
+exploration — Rosetta's journey to a comet and the deployment of Philae — as a
+foundation for public-facing communication.
+
+Its lasting value lies not only in the campaign itself, but in demonstrating
+the potential of creative communication to make ambitious scientific and
+engineering projects accessible to broader audiences.
+
+## Further reading
 
 ### Campaign
 
@@ -285,16 +299,3 @@ missions much more relatable.
 [UNAWE Update 2017-005](https://eu-unawe.org/updates/unawe-update-2017-005/)
 
 [UNAWE Update 2017-006](https://unawe.org/updates/unawe-update-2017-006/)
-
-## Project significance
-
-Rosetta Strato is an example of how **space exploration, digital design and
-science communication can be brought together within a single campaign**.
-
-The project used one of the most engaging stories in modern planetary
-exploration — Rosetta's journey to a comet and the deployment of Philae — as a
-foundation for public-facing communication.
-
-Its lasting value lies not only in the campaign itself, but in demonstrating
-the potential of creative communication to make ambitious scientific and
-engineering projects accessible to broader audiences.

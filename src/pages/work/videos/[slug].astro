@@ -145,12 +145,7 @@ const pageDescription = video.description || video.summary || `Video details for
           )}
         </div>
 
-        {video.impact && Object.keys(video.impact).length > 0 && (
-          <section class="sidebar-block">
-            <h2>Impact</h2>
-            <ImpactStats impact={video.impact} />
-          </section>
-        )}
+        <ImpactStats impact={video.impact} outputs={(video as any).outputs} />
       </article>
     </div>
   </section>

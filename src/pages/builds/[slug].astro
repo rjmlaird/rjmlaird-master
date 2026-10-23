@@ -1,0 +1,1232 @@
+---
+// src/pages/builds/[slug].astro
+import Layout from "../../layouts/Layout.astro";
+import YouTubeEmbed from "../../components/YouTubeEmbed.astro";
+
+import {
+  getCollection,
+  render,
+  type CollectionEntry,
+} from "astro:content";
+
+import techStack from "../../data/dev/techstack.json";
+
+/**
+ * STATIC PATHS
+ */
+
+export async function getStaticPaths() {
+  const entries = await getCollection(
+    "builds",
+    ({ data }) => data.draft !== true,
+  );
+
+  return entries.map((entry) => ({
+    params: {
+      slug: (entry.data.slug?.trim() || entry.id)
+        .replace(/^\/+|\/+$/g, ""),
+    },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props as {
+  entry: CollectionEntry<"builds">;
+};
+
+const build = entry.data;
+const { Content } = await render(entry);
+
+/**
+ * TECH STACK
+ */
+
+type StackItem = {
+  name: string;
+  url: string;
+  logo?: string;
+  color: string;
+  logoColor?: string;
+  context?: string;
+};
+
+type StackCategory = {
+  name: string;
+  items: StackItem[];
+};
+
+const categories = techStack.categories as StackCategory[];
+
+function normalise(value: string): string {
+  return value.trim().toLowerCase();
+}
+
+// Keep the first entry if a technology appears in multiple categories.
+const stackByName = new Map<string, StackItem>();
+
+for (const category of categories) {
+  for (const item of category.items) {
+    const key = normalise(item.name);
+
+    if (!stackByName.has(key)) {
+      stackByName.set(key, item);
+    }
+  }
+}
+
+function badgeUrl(item: StackItem): string {
+  const label = encodeURIComponent(item.name);
+  const color = encodeURIComponent(item.color);
+
+  const logo = item.logo
+    ? `&logo=${encodeURIComponent(item.logo)}`
+    : "";
+
+  const logoColor = encodeURIComponent(item.logoColor ?? "white");
+
+  return (
+    `https://img.shields.io/badge/-${label}-${color}` +
+    `?style=flat-square${logo}&logoColor=${logoColor}`
+  );
+}
+
+function uniqueTechnologies(values: string[]): string[] {
+  const seen = new Set<string>();
+
+  return values.filter((value) => {
+    const key = normalise(value);
+
+    if (!key || seen.has(key)) return false;
+
+    seen.add(key);
+    return true;
+  });
+}
+
+const technologies = uniqueTechnologies(build.toolsTech).map((name) => ({
+  name: name.trim(),
+  item: stackByName.get(normalise(name)),
+}));
+
+/**
+ * LABELS
+ */
+
+const typeLabels = {
+  lab: "Lab",
+  tool: "Tool",
+  app: "App",
+};
+
+const statusLabels = {
+  planned: "Planned",
+  active: "Active",
+  maintenance: "Maintenance",
+  paused: "Paused",
+  retired: "Retired",
+  archived: "Archived",
+};
+
+const platformLabels = {
+  web: "Web",
+  desktop: "Desktop",
+  mobile: "Mobile",
+  cli: "CLI",
+  api: "API",
+  library: "Library",
+  "browser-extension": "Browser extension",
+  hardware: "Hardware",
+  other: "Other",
+};
+
+const sourceLabels = {
+  "open-source": "Open source",
+  "source-available": "Source available",
+  "closed-source": "Closed source",
+};
+
+/**
+ * PAGE METADATA
+ */
+
+const pageTitle = build.title;
+
+const pageDescription =
+  build.description?.trim() ||
+  build.excerpt?.trim() ||
+  build.summary;
+
+function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+
+/**
+ * LINKS
+ */
+
+const linkDefinitions = [
+  { key: "web", label: "Visit website" },
+  { key: "demo", label: "Try demo" },
+  { key: "docs", label: "Documentation" },
+  { key: "repository", label: "Source repository" },
+  { key: "github", label: "GitHub" },
+  { key: "download", label: "Download" },
+  { key: "store", label: "App store" },
+  { key: "api", label: "API" },
+  { key: "releases", label: "Releases" },
+  { key: "issues", label: "Issues and feedback" },
+  { key: "support", label: "Support" },
+  { key: "privacy", label: "Privacy" },
+  { key: "terms", label: "Terms" },
+] as const;
+
+const resourceLinks: { label: string; url: string }[] = [];
+const seenUrls = new Set<string>();
+
+for (const { key, label } of linkDefinitions) {
+  const url = build.links[key]?.trim();
+
+  if (!url || seenUrls.has(url)) continue;
+
+  seenUrls.add(url);
+  resourceLinks.push({ label, url });
+}
+
+/**
+ * RELATED CONTENT
+ */
+
+const [buildEntries, blogEntries, projectEntries] = await Promise.all([
+  getCollection("builds", ({ data }) => data.draft !== true),
+  getCollection("blog", ({ data }) => data.draft !== true),
+  getCollection("projects", ({ data }) => data.draft !== true),
+]);
+
+type RelatedEntry =
+  | CollectionEntry<"builds">
+  | CollectionEntry<"blog">
+  | CollectionEntry<"projects">;
+
+function entrySlug(item: RelatedEntry): string {
+  return (item.data.slug?.trim() || item.id)
+    .replace(/^\/+|\/+$/g, "");
+}
+
+function entryHref(item: RelatedEntry, base: string): string {
+  const slug = entrySlug(item)
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+
+  return `${base}/${slug}/`;
+}
+
+function resolveRelated<T extends RelatedEntry>(
+  ids: string[],
+  items: T[],
+): T[] {
+  const selected: T[] = [];
+  const seen = new Set<string>();
+
+  for (const id of ids) {
+    const item = items.find(
+      (candidate) =>
+        candidate.id === id || entrySlug(candidate) === id,
+    );
+
+    if (!item || seen.has(item.id)) continue;
+
+    seen.add(item.id);
+    selected.push(item);
+  }
+
+  return selected;
+}
+
+const relatedBuilds = resolveRelated(
+  build.relatedBuilds,
+  buildEntries.filter((item) => item.id !== entry.id),
+);
+
+const relatedInsights = resolveRelated(
+  build.relatedInsights,
+  blogEntries,
+);
+
+const relatedProjects = resolveRelated(
+  build.relatedProjects,
+  projectEntries,
+);
+
+const relatedGroups = [
+  {
+    title: "Related builds",
+    base: "/builds",
+    items: relatedBuilds,
+  },
+  {
+    title: "From the blog",
+    base: "/insights/blog",
+    items: relatedInsights,
+  },
+  {
+    title: "Related projects",
+    base: "/work/projects",
+    items: relatedProjects,
+  },
+].filter((group) => group.items.length > 0);
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="build-detail" data-type={build.type}>
+    <div class="container pg-shell">
+      <nav class="build-breadcrumb" aria-label="Breadcrumb">
+        <a href="/builds/">Builds</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{build.title}</span>
+      </nav>
+
+      <header class="page-head">
+        <div class="build-meta">
+          <span class="build-type">
+            {typeLabels[build.type]}
+          </span>
+
+          <span class="build-status" data-status={build.status}>
+            {statusLabels[build.status]}
+          </span>
+
+          {
+            build.featured && (
+              <span class="build-featured">Featured</span>
+            )
+          }
+        </div>
+
+        <h1 class="fade">{build.title}</h1>
+
+        {
+          build.tagline && (
+            <p class="build-tagline">{build.tagline}</p>
+          )
+        }
+
+        <p class="lede build-summary">{build.summary}</p>
+
+        {
+          (build.primaryCta || build.links.docs) && (
+            <div class="hp-actions">
+              {build.primaryCta && (
+                <a class="hp-btn hp-btn--primary" href={build.primaryCta.href}>
+                  {build.primaryCta.label}
+                  <span aria-hidden="true"> →</span>
+                </a>
+              )}
+
+              {build.links.docs &&
+                build.links.docs !== build.primaryCta?.href && (
+                  <a class="hp-btn hp-btn--secondary" href={build.links.docs}>
+                    Read the documentation
+                  </a>
+                )}
+            </div>
+          )
+        }
+      </header>
+
+      {
+        build.replacement && (
+          <aside class="build-notice" aria-label="Replacement build">
+            <p>
+              {build.status === "retired" || build.status === "archived"
+                ? "Looking for an alternative?"
+                : "Also available:"}{" "}
+              <a href={build.replacement.href}>
+                {build.replacement.title}
+              </a>
+            </p>
+          </aside>
+        )
+      }
+
+      {
+        build.heroImage && (
+          <div class="build-hero">
+            <img
+              src={build.heroImage}
+              alt={build.heroAlt ?? ""}
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+        )
+      }
+
+      <div class="build-layout">
+        <div class="build-main">
+          {
+            build.problem && (
+              <section class="build-section">
+                <h2>The problem it addresses</h2>
+                <p>{build.problem}</p>
+              </section>
+            )
+          }
+
+          {
+            build.audience.length > 0 && (
+              <section class="build-section">
+                <h2>Who it is for</h2>
+
+                <ul class="build-list">
+                  {build.audience.map((audience) => (
+                    <li>{audience}</li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            build.features.length > 0 && (
+              <section class="build-section">
+                <h2>What it does</h2>
+
+                <ul class="build-list">
+                  {build.features.map((feature) => (
+                    <li>{feature}</li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            build.useCases.length > 0 && (
+              <section class="build-section">
+                <h2>Ways to use it</h2>
+
+                <div class="use-case-grid">
+                  {build.useCases.map((useCase) => (
+                    <div class="use-case">
+                      <h3>{useCase.title}</h3>
+                      <p>{useCase.description}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )
+          }
+
+          {
+            (build.youtubeId || build.links.youtube) && (
+              <section class="build-section">
+                <h2>Watch the build</h2>
+
+                <YouTubeEmbed
+                  id={build.youtubeId}
+                  url={build.links.youtube}
+                />
+              </section>
+            )
+          }
+
+          <div class="build-body prose">
+            <Content />
+          </div>
+
+          {
+            build.screenshots.length > 0 && (
+              <section class="build-section">
+                <h2>Screenshots</h2>
+
+                <div class="screenshot-grid">
+                  {build.screenshots.map((screenshot) => (
+                    <figure class="build-screenshot">
+                      <a href={screenshot.src}>
+                        <img
+                          src={screenshot.src}
+                          alt={screenshot.alt}
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </a>
+
+                      {(screenshot.caption || screenshot.credit) && (
+                        <figcaption>
+                          {screenshot.caption && (
+                            <span>{screenshot.caption}</span>
+                          )}
+
+                          {screenshot.credit && (
+                            <span class="screenshot-credit">
+                              Credit: {screenshot.credit}
+                            </span>
+                          )}
+                        </figcaption>
+                      )}
+                    </figure>
+                  ))}
+                </div>
+              </section>
+            )
+          }
+
+          {
+            build.requirements.length > 0 && (
+              <section class="build-section">
+                <h2>Requirements</h2>
+
+                <ul class="build-list">
+                  {build.requirements.map((requirement) => (
+                    <li>{requirement}</li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+
+          {
+            build.limitations.length > 0 && (
+              <section class="build-section">
+                <h2>Limitations and considerations</h2>
+
+                <ul class="build-list">
+                  {build.limitations.map((limitation) => (
+                    <li>{limitation}</li>
+                  ))}
+                </ul>
+              </section>
+            )
+          }
+        </div>
+
+        <aside class="build-sidebar" aria-label="Build details">
+          <div class="sidebar-panel">
+            <h2>At a glance</h2>
+
+            <dl class="build-facts">
+              <div>
+                <dt>Type</dt>
+                <dd>{typeLabels[build.type]}</dd>
+              </div>
+
+              <div>
+                <dt>Status</dt>
+                <dd>{statusLabels[build.status]}</dd>
+              </div>
+
+              {
+                build.platforms.length > 0 && (
+                  <div>
+                    <dt>Platforms</dt>
+                    <dd>
+                      {build.platforms
+                        .map((platform) => platformLabels[platform])
+                        .join(", ")}
+                    </dd>
+                  </div>
+                )
+              }
+
+              {
+                build.launchedDate && (
+                  <div>
+                    <dt>Launched</dt>
+                    <dd>
+                      <time datetime={build.launchedDate.toISOString()}>
+                        {formatDate(build.launchedDate)}
+                      </time>
+                    </dd>
+                  </div>
+                )
+              }
+
+              {
+                build.updatedDate && (
+                  <div>
+                    <dt>Updated</dt>
+                    <dd>
+                      <time datetime={build.updatedDate.toISOString()}>
+                        {formatDate(build.updatedDate)}
+                      </time>
+                    </dd>
+                  </div>
+                )
+              }
+
+              {
+                build.retiredDate && (
+                  <div>
+                    <dt>Retired</dt>
+                    <dd>
+                      <time datetime={build.retiredDate.toISOString()}>
+                        {formatDate(build.retiredDate)}
+                      </time>
+                    </dd>
+                  </div>
+                )
+              }
+
+              {
+                build.sourceAvailability && (
+                  <div>
+                    <dt>Source</dt>
+                    <dd>{sourceLabels[build.sourceAvailability]}</dd>
+                  </div>
+                )
+              }
+
+              {
+                build.license && (
+                  <div>
+                    <dt>Licence</dt>
+                    <dd>{build.license}</dd>
+                  </div>
+                )
+              }
+            </dl>
+          </div>
+
+          {
+            technologies.length > 0 && (
+              <section class="sidebar-panel">
+                <h2>Built with</h2>
+
+                <ul
+                  class="tech-badges"
+                  aria-label={`${build.title} technology stack`}
+                >
+                  {technologies.map(({ name, item }) => (
+                    <li>
+                      {item ? (
+                        <a
+                          class="tech-badge-link"
+                          href={item.url}
+                          title={item.context || item.name}
+                        >
+                          <img
+                            src={badgeUrl(item)}
+                            alt={item.name}
+                            height="20"
+                            loading="lazy"
+                            decoding="async"
+                          />
+                        </a>
+                      ) : (
+                        <span class="tech-badge-fallback">
+                          {name}
+                        </span>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+
+                {technologies.some(({ item }) => item?.context) && (
+                  <dl class="tech-contexts">
+                    {technologies.map(({ item }) =>
+                      item?.context ? (
+                        <div>
+                          <dt>
+                            <a href={item.url}>{item.name}</a>
+                          </dt>
+                          <dd>{item.context}</dd>
+                        </div>
+                      ) : null,
+                    )}
+                  </dl>
+                )}
+              </section>
+            )
+          }
+
+          {
+            resourceLinks.length > 0 && (
+              <nav class="sidebar-panel" aria-label="Build resources">
+                <h2>Links and resources</h2>
+
+                <ul class="resource-links">
+                  {resourceLinks.map((link) => (
+                    <li>
+                      <a class="hp-link" href={link.url}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            )
+          }
+        </aside>
+      </div>
+
+      {
+        relatedGroups.length > 0 && (
+          <div class="related-content">
+            {relatedGroups.map((group) => (
+              <section class="related-group">
+                <h2>{group.title}</h2>
+
+                <div class="related-grid">
+                  {group.items.map((item) => (
+                    <article class="related-card">
+                      <h3>
+                        <a href={entryHref(item, group.base)}>
+                          {item.data.title}
+                        </a>
+                      </h3>
+
+                      {item.data.summary && (
+                        <p>{item.data.summary}</p>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )
+      }
+
+      <footer class="build-footer">
+        <a class="hp-link" href="/builds/">
+          <span aria-hidden="true">← </span>
+          All builds
+        </a>
+      </footer>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .build-detail {
+    --build-border: color-mix(in srgb, currentColor 18%, transparent);
+    --build-surface: color-mix(in srgb, currentColor 4%, transparent);
+    --build-muted: color-mix(in srgb, currentColor 75%, transparent);
+
+    --type-lab: #8b7cf6;
+    --type-tool: #00c2a8;
+    --type-app: #f5a623;
+    --type-accent: var(--build-border);
+
+    --w: #fff;
+    --on-accent: #111;
+    --bm: var(--build-border);
+  }
+
+  .build-detail[data-type="lab"] {
+    --type-accent: var(--type-lab);
+  }
+
+  .build-detail[data-type="tool"] {
+    --type-accent: var(--type-tool);
+  }
+
+  .build-detail[data-type="app"] {
+    --type-accent: var(--type-app);
+  }
+
+  .hp-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin: 1.75rem 0 0;
+  }
+
+  .hp-actions--after {
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  }
+
+  .hp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 2.75rem;
+    padding: 0.8rem 1.1rem;
+    border: 1px solid transparent;
+    border-radius: 0.5rem;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-align: center;
+    text-decoration: none;
+    transition:
+      border-color 0.2s ease,
+      color 0.2s ease,
+      background 0.2s ease;
+  }
+
+  .hp-btn--primary {
+    border-color: var(--type-accent);
+    color: var(--on-accent);
+    background: var(--type-accent);
+  }
+
+  .hp-btn--primary:hover,
+  .hp-btn--primary:focus-visible {
+    border-color: var(--w);
+    color: var(--on-accent);
+    background: var(--w);
+  }
+
+  .hp-btn--secondary {
+    border-color: var(--bm);
+    color: inherit;
+    background: transparent;
+  }
+
+  .hp-btn--secondary:hover,
+  .hp-btn--secondary:focus-visible {
+    border-color: var(--type-accent);
+    color: var(--type-accent);
+  }
+
+  .hp-link,
+  .hp-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    width: fit-content;
+    min-height: 2.75rem;
+    color: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: var(--type-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .hp-link:hover,
+  .hp-link:focus-visible,
+  .hp-card--work:hover .hp-card__link,
+  .hp-card--work:focus-visible .hp-card__link {
+    color: var(--type-accent);
+  }
+
+  .build-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    color: var(--build-muted);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+
+  .page-head {
+    max-width: 78ch;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .page-head h1 {
+    overflow-wrap: anywhere;
+  }
+
+  .build-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .build-type,
+  .build-status,
+  .build-featured {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--build-border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .build-type,
+  .build-featured {
+    font-weight: 600;
+  }
+
+  .build-status[data-status="active"] {
+    border-color: color-mix(in srgb, #16803c 45%, transparent);
+    background: color-mix(in srgb, #16803c 12%, transparent);
+  }
+
+  .build-status[data-status="retired"],
+  .build-status[data-status="archived"] {
+    border-style: dashed;
+  }
+
+  .build-tagline {
+    margin: 1rem 0;
+    font-size: clamp(1.15rem, 2vw, 1.4rem);
+  }
+
+  .build-summary {
+    max-width: 70ch;
+    color: var(--build-muted);
+    line-height: 1.7;
+  }
+
+  .build-detail a {
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .build-detail a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .build-notice {
+    margin-bottom: 2rem;
+    border-left: 3px solid currentColor;
+    padding: 1rem 1.25rem;
+    background: var(--build-surface);
+  }
+
+  .build-notice p {
+    margin: 0;
+  }
+
+  .build-hero {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    overflow: hidden;
+    border: 1px solid var(--build-border);
+    border-radius: 0.85rem;
+  }
+
+  .build-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .build-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .build-main,
+  .build-sidebar {
+    min-width: 0;
+  }
+
+  .build-main {
+    max-width: 78ch;
+  }
+
+  .build-section,
+  .build-body {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+  }
+
+  .build-body:empty {
+    display: none;
+  }
+
+  .build-body {
+    overflow-wrap: anywhere;
+  }
+
+  .build-body :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .build-body :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .build-body :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .build-section h2,
+  .related-group h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
+  }
+
+  .build-section p,
+  .build-list {
+    line-height: 1.7;
+  }
+
+  .build-list {
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .build-list li + li {
+    margin-top: 0.5rem;
+  }
+
+  .use-case-grid,
+  .screenshot-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .use-case {
+    border-left: 2px solid var(--build-border);
+    padding-left: 1rem;
+  }
+
+  .use-case h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.05rem;
+  }
+
+  .use-case p {
+    margin: 0;
+    color: var(--build-muted);
+  }
+
+  .build-screenshot {
+    min-width: 0;
+    margin: 0;
+  }
+
+  .build-screenshot img {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: auto;
+    border: 1px solid var(--build-border);
+    border-radius: 0.6rem;
+  }
+
+  .build-screenshot figcaption {
+    display: grid;
+    gap: 0.25rem;
+    padding-top: 0.65rem;
+    color: var(--build-muted);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .screenshot-credit {
+    font-size: 0.8rem;
+  }
+
+  .build-sidebar {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sidebar-panel {
+    min-width: 0;
+    border: 1px solid var(--build-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    background: var(--build-surface);
+  }
+
+  .sidebar-panel h2 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+
+  .build-facts {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+
+  .build-facts dt {
+    margin-bottom: 0.2rem;
+    color: var(--build-muted);
+    font-size: 0.8rem;
+  }
+
+  .build-facts dd {
+    margin: 0;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .tech-badges li {
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .tech-badge-link {
+    display: inline-flex;
+    max-width: 100%;
+    vertical-align: middle;
+  }
+
+  .tech-badge-link img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    min-height: 20px;
+  }
+
+  .tech-badge-fallback {
+    display: inline-block;
+    border: 1px solid var(--build-border);
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .tech-contexts {
+    display: grid;
+    gap: 1rem;
+    margin: 1.25rem 0 0;
+    border-top: 1px solid var(--build-border);
+    padding-top: 1rem;
+  }
+
+  .tech-contexts dt {
+    margin-bottom: 0.3rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .tech-contexts dd {
+    margin: 0;
+    color: var(--build-muted);
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+
+  .resource-links {
+    display: grid;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-content {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--build-border);
+    padding-top: 2.5rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .related-card {
+    min-width: 0;
+    border: 1px solid var(--build-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    background: var(--build-surface);
+  }
+
+  .related-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .related-card p {
+    margin: 0.75rem 0 0;
+    color: var(--build-muted);
+    line-height: 1.6;
+  }
+
+  .build-footer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--build-border);
+    padding-top: 1.5rem;
+  }
+
+  .page-head::before {
+    content: "";
+    display: block;
+    width: 4rem;
+    height: 4px;
+    margin-bottom: 1.25rem;
+    border-radius: 2px;
+    background: var(--type-accent);
+  }
+
+  .build-type {
+    gap: 0.4rem;
+    border-color: color-mix(in srgb, var(--type-accent) 60%, transparent);
+    background: color-mix(in srgb, var(--type-accent) 14%, transparent);
+  }
+
+  .build-type::before {
+    content: "";
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--type-accent);
+  }
+
+  .build-hero {
+    border-top: 4px solid var(--type-accent);
+  }
+
+  .build-notice,
+  .use-case {
+    border-left-color: var(--type-accent);
+  }
+
+  .sidebar-panel:first-child {
+    border-top: 4px solid var(--type-accent);
+  }
+
+  .build-facts div:first-child dd::before {
+    content: "";
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-right: 0.45rem;
+    border-radius: 50%;
+    background: var(--type-accent);
+  }
+
+  @media (max-width: 1000px) {
+    .build-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 17rem);
+      gap: 2rem;
+    }
+
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .build-layout,
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .build-main {
+      max-width: none;
+    }
+  }
+</style>

@@ -157,6 +157,31 @@ const pageDescription = cleanText(event.description) || cleanText(event.excerpt)
 >
   <section class="section publications-gallery">
     <div class="project-layout">
+
+      <div class="project-main">
+        <div class="project-body prose">
+          <div class="pg-intro">
+            {cleanText(event.description) && <p class="pg-lead">{cleanText(event.description)}</p>}
+          </div>
+
+          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
+
+          {hasLocation && (
+            <div style="margin:1.25rem 0">
+              {embedUrl ? (
+                <MapEmbed embedUrl={embedUrl} title={`${pageTitle} location map`} height="320px" />
+              ) : addressString ? (
+                <MapEmbed address={addressString} title={`${pageTitle} location map`} height="320px" />
+              ) : null}
+            </div>
+          )}
+
+          <Content />
+        </div>
+
+        <ImpactStats impact={event.impact} outputs={(event as any).outputs} />
+      </div>
+
       <ProjectSidebar
         sectors={sectors}
         tools={tools}
@@ -179,35 +204,6 @@ const pageDescription = cleanText(event.description) || cleanText(event.excerpt)
         location={location}
         format={format}
       />
-
-      <article class="project-content">
-        <div class="project-body">
-          <div class="pg-intro">
-            {cleanText(event.description) && <p class="pg-lead">{cleanText(event.description)}</p>}
-          </div>
-
-          <YouTubeEmbed id={youtubeId} url={youtubeUrl} />
-
-          {hasLocation && (
-            <div style="margin:1.25rem 0">
-              {embedUrl ? (
-                <MapEmbed embedUrl={embedUrl} title={`${pageTitle} location map`} height="320px" />
-              ) : addressString ? (
-                <MapEmbed address={addressString} title={`${pageTitle} location map`} height="320px" />
-              ) : null}
-            </div>
-          )}
-
-          <Content />
-        </div>
-
-        {event.impact && Object.keys(event.impact).length > 0 && (
-          <section class="sidebar-block">
-            <h2>Impact</h2>
-            <ImpactStats impact={event.impact} />
-          </section>
-        )}
-      </article>
     </div>
   </section>
 </ProjectLayout>

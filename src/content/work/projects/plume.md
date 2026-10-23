@@ -1,20 +1,19 @@
 ---
-id: 42
+id: 1
 slug: plume
 title: PLUME Student CubeSat Micrometeoroid Experiment
 type: featured
 status: completed
-description: A University of Leicester student CubeSat mission designed to investigate the near-Earth dust environment using an active nanometeoroid detector.
+draft: false
+description: >
+  A University of Leicester student CubeSat mission designed to investigate
+  the near-Earth dust environment using an active nanometeoroid detector.
 startDate: 2007-01-01
-tools_tech:
-  - CubeSat
-  - Microchannel Plates
-  - Nanometeoroid Detection
-  - Spacecraft Telemetry
-  - Satellite Communications
-  - Attitude Determination and Control
-  - High-Voltage Electronics
-  - Spacecraft Systems Engineering
+client: University of Leicester
+role: Communications officer (volunteer)
+category:
+  - projects
+  - space-engineering
 tags:
   - space
   - cubesat
@@ -25,20 +24,34 @@ tags:
   - student-satellite
   - satellite-engineering
   - astronomy
+tools_tech:
+  - CubeSat
+  - Microchannel Plates
+  - Nanometeoroid Detection
+  - Spacecraft Telemetry
+  - Satellite Communications
+  - Attitude Determination and Control
+  - High-Voltage Electronics
+  - Spacecraft Systems Engineering
 links:
   web: https://www.le.ac.uk/
   source: https://www.astronomy.com/space-exploration/students-prepare-for-dust-up/
   archive: https://sites.google.com/view/andythomasorg/home
-impact: {}
+impact:
+  summary: >
+    Supported communications for a University of Leicester student CubeSat
+    designed to measure near-Earth nanometeoroid dust.
 heroImage: /images/projects/plume.png
 heroAlt: >
   PLUME logo
 imageCredit: University of Leicester
-relatedEducation: ["edu-leicester-mphys"]
-relatedVolunteering: ["vol-plume-comms-officer"]
+relatedEducation:
+  - edu-leicester-mphys
+relatedVolunteering:
+  - vol-plume-comms-officer
 ---
 
-# PLUME
+## Overview
 
 **PLUME — the Detector Picosatellite of Leicester University Micrometeoroid Experiment —** was a student-led CubeSat project at the University of Leicester designed to investigate the near-Earth space-dust environment.
 
@@ -46,7 +59,7 @@ The project began in **January 2007** and brought together undergraduate student
 
 The mission aimed to demonstrate that students could take responsibility for a complete space mission, from initial concept and spacecraft design through to communications, payload development and launch.
 
-## Mission Overview
+## Mission overview
 
 PLUME was developed by undergraduate students in the University of Leicester's **Department of Physics and Astronomy**, with support from the University's **Space Research Centre** and engineering company **Magna Parva Ltd**.
 
@@ -58,7 +71,7 @@ The spacecraft was being developed to the **CubeSat standard**, originally devel
 
 More than simply an educational exercise, PLUME was intended to produce useful scientific measurements of the near-Earth dust environment.
 
-## Student-Led Space Engineering
+## Student-led space engineering
 
 Around **20 University of Leicester undergraduate students** were involved in the mission.
 
@@ -84,7 +97,7 @@ As Philip Peterson, a second-year undergraduate working on the Attitude Determin
 
 The project therefore served both a scientific purpose and an important educational role, providing students with practical experience of spacecraft development and the professional environment of the space industry.
 
-## Industry Collaboration
+## Industry collaboration
 
 PLUME was supported by **Magna Parva Ltd**, an engineering company based in Loughborough.
 
@@ -96,7 +109,7 @@ This industry–university model was intended to give students practical experie
 
 The project also had the support of the **University of Leicester Space Research Centre**, with the **East Midlands Space Academy** considered as a potential source of financial support.
 
-## The Science Case
+## The science case
 
 Space dust is found throughout the Solar System and is an important component of the near-Earth environment.
 
@@ -104,7 +117,7 @@ Dust contributes to phenomena including the **zodiacal light**, with thermal emi
 
 The PLUME science case distinguished between naturally occurring **space dust** and human-generated **orbital debris**.
 
-### Space Dust
+### Space dust
 
 Space dust is naturally occurring material originating from sources such as:
 
@@ -113,7 +126,7 @@ Space dust is naturally occurring material originating from sources such as:
 - Collisions between Solar System bodies
 - Interplanetary dust populations
 
-### Orbital Debris
+### Orbital debris
 
 Orbital debris, by contrast, is predominantly human-made material associated with spacecraft and launch systems.
 
@@ -125,7 +138,7 @@ Impact velocities can exceed:
 
 At these velocities, even extremely small particles can produce significant effects.
 
-## Why Measure Near-Earth Dust?
+## Why measure near-Earth dust?
 
 Understanding the near-Earth dust population has implications for both fundamental science and spacecraft engineering.
 
@@ -142,7 +155,7 @@ The PLUME team aimed to improve the characterisation of very small particles bey
 
 The proposed detector was intended to provide measurements of particles down to approximately **20 nm** in diameter.
 
-## Dusty Plasmas
+## Dusty plasmas
 
 Charged dust grains can interact strongly with surrounding plasma.
 
@@ -157,7 +170,7 @@ The PLUME science case highlighted research into the role of dusty plasmas in:
 
 The interaction between dust and plasma therefore provides an additional scientific motivation for understanding the population of small particles in space.
 
-## Spacecraft Risk
+## Spacecraft risk
 
 Micrometeoroids are also an important consideration for spacecraft and scientific instruments.
 
@@ -167,7 +180,7 @@ Open-optics instruments can be particularly vulnerable to dust impacts because p
 
 A better understanding of the near-Earth dust population can therefore contribute to spacecraft and instrument risk assessment.
 
-## The PLUME Detector
+## The PLUME detector
 
 The central scientific instrument was an active nanometeoroid detector based on **microchannel plates (MCPs)**.
 
@@ -181,7 +194,7 @@ The proposed PLUME detector had a minimum detectable particle diameter of approx
 
 **~20 nm**
 
-## Microchannel Plate Detection
+## Microchannel plate detection
 
 The detector used the physical effects produced when a hypervelocity dust particle strikes the thin aluminium-coated MCP surface.
 
@@ -195,7 +208,7 @@ The basic detection chain was:
 
 **Particle impact → plasma generation → electron cascade → electrical pulse → signal processing → spacecraft computer**
 
-## Signal Processing
+## Signal processing
 
 The detector electronics were designed to convert the very small impact event into a measurable voltage signal.
 
@@ -220,7 +233,7 @@ The computer then:
 
 A **commercial off-the-shelf (COTS) ultra-light high-voltage power supply** was used to generate the voltage required by the MCP detector.
 
-## Detector Specifications
+## Detector specifications
 
 The proposed detector had the following characteristics:
 
@@ -239,7 +252,7 @@ The proposed detector had the following characteristics:
 
 The extremely small detection threshold was one of the key scientific advantages proposed for PLUME.
 
-## MCP Technology
+## MCP technology
 
 The detector's MCPs were coated with an aluminium film.
 
@@ -257,7 +270,7 @@ For PLUME, the detector concept used:
 
 This provided a lightweight detector architecture suitable for a CubeSat-scale spacecraft.
 
-## Communications and Telemetry
+## Communications and telemetry
 
 The mission also provided an opportunity for students to work on spacecraft communications and telemetry.
 
@@ -275,7 +288,7 @@ The PLUME communications work therefore built on established amateur and researc
 
 The project also involved **John Heath (G7HIA)** as a fellow communications mentor.
 
-## Student Engineering Experience
+## Student engineering experience
 
 One of the defining characteristics of PLUME was its emphasis on genuine student ownership.
 
@@ -295,7 +308,7 @@ This provided experience across disciplines including:
 
 The project demonstrated how CubeSats could provide universities with a relatively accessible route into practical spacecraft development.
 
-## A CubeSat for Leicester
+## A cubesat for Leicester
 
 The PLUME project emerged during an important period in the development of university CubeSat missions.
 
@@ -307,7 +320,7 @@ The mission combined:
 
 **Student education + scientific research + spacecraft engineering + industry collaboration**
 
-## Project Timeline
+## Project timeline
 
 ### January 2007
 
@@ -350,7 +363,11 @@ The project brought together:
 - Amateur satellite communications
 - CubeSat engineering
 
-## Sources
+## My role
+
+I supported PLUME as its volunteer communications officer, helping to explain the mission and its science to wider audiences.
+
+## Further reading
 
 - [Astronomy — Students prepare for dust up](https://www.astronomy.com/space-exploration/students-prepare-for-dust-up/)
 - [University of Leicester](https://le.ac.uk/)

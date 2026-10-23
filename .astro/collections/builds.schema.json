@@ -1,0 +1,689 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string"
+    },
+    "image": {
+      "type": "string"
+    },
+    "imageCredit": {
+      "type": "string"
+    },
+    "canonical": {
+      "type": "string",
+      "format": "uri"
+    },
+    "noindex": {
+      "default": false,
+      "type": "boolean"
+    },
+    "nofollow": {
+      "default": false,
+      "type": "boolean"
+    },
+    "id": {
+      "type": [
+        "string",
+        "number"
+      ]
+    },
+    "slug": {
+      "type": "string"
+    },
+    "draft": {
+      "default": false,
+      "type": "boolean"
+    },
+    "featured": {
+      "default": false,
+      "type": "boolean"
+    },
+    "publishedDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "startDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "endDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "author": {
+      "type": "string"
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sectors": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "category": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "links": {
+      "type": "object",
+      "properties": {
+        "github": {
+          "type": "string",
+          "format": "uri"
+        },
+        "web": {
+          "type": "string",
+          "format": "uri"
+        },
+        "demo": {
+          "type": "string",
+          "format": "uri"
+        },
+        "docs": {
+          "type": "string",
+          "format": "uri"
+        },
+        "youtube": {
+          "type": "string",
+          "format": "uri"
+        },
+        "store": {
+          "type": "string",
+          "format": "uri"
+        },
+        "api": {
+          "type": "string",
+          "format": "uri"
+        },
+        "repository": {
+          "type": "string",
+          "format": "uri"
+        },
+        "download": {
+          "type": "string",
+          "format": "uri"
+        },
+        "releases": {
+          "type": "string",
+          "format": "uri"
+        },
+        "issues": {
+          "type": "string",
+          "format": "uri"
+        },
+        "support": {
+          "type": "string",
+          "format": "uri"
+        },
+        "privacy": {
+          "type": "string",
+          "format": "uri"
+        },
+        "terms": {
+          "type": "string",
+          "format": "uri"
+        }
+      }
+    },
+    "heroImage": {
+      "type": "string"
+    },
+    "heroAlt": {
+      "type": "string"
+    },
+    "youtubeId": {
+      "type": "string"
+    },
+    "client": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "string"
+    },
+    "institution": {
+      "type": "string"
+    },
+    "collaborators": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedOrg": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedExperience": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedEducation": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedVolunteering": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedAwards": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedTools": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedSkills": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedVideos": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedVideosRich": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "slug": {
+            "type": "string"
+          },
+          "youtubeId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "publishedDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "client": {
+            "type": "string"
+          },
+          "organisation": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "credits": {
+            "type": "string"
+          },
+          "heroImage": {
+            "type": "string"
+          },
+          "heroAlt": {
+            "type": "string"
+          },
+          "imageCredit": {
+            "type": "string"
+          },
+          "relatedPodcasts": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relatedExperience": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relatedInitiatives": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "relatedEvents": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "videoType": {
+            "type": "string"
+          },
+          "tags": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "slug"
+        ]
+      }
+    },
+    "relatedArticles": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "image": {
+            "type": "string"
+          },
+          "imageCredit": {
+            "type": "string"
+          },
+          "topics": {
+            "default": [],
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "excerpt": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "publication": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "relatedCaseStudies": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedInitiatives": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedProjects": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedEvents": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "toolsTech": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "features": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "impact": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string"
+      },
+      "additionalProperties": {}
+    },
+    "evidenceReady": {
+      "default": false,
+      "type": "boolean"
+    },
+    "role": {
+      "type": "string"
+    },
+    "challenge": {
+      "type": "string"
+    },
+    "objectives": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "approach": {
+      "type": "string"
+    },
+    "outputs": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "outcomes": {
+      "type": "string"
+    },
+    "testimonial": {
+      "type": "object",
+      "properties": {
+        "quote": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "organisation": {
+          "type": "string"
+        },
+        "permission": {
+          "default": false,
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "quote",
+        "name"
+      ]
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tagline": {
+      "type": "string"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "lab",
+        "tool",
+        "app"
+      ]
+    },
+    "platforms": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "web",
+          "desktop",
+          "mobile",
+          "cli",
+          "api",
+          "library",
+          "browser-extension",
+          "hardware",
+          "other"
+        ]
+      }
+    },
+    "status": {
+      "default": "active",
+      "type": "string",
+      "enum": [
+        "planned",
+        "active",
+        "maintenance",
+        "paused",
+        "retired",
+        "archived"
+      ]
+    },
+    "stage": {
+      "default": "prototype",
+      "type": "string",
+      "enum": [
+        "concept",
+        "prototype",
+        "alpha",
+        "beta",
+        "stable"
+      ]
+    },
+    "launchedDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "retiredDate": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "audience": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "problem": {
+      "type": "string"
+    },
+    "useCases": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "title",
+          "description"
+        ]
+      }
+    },
+    "access": {
+      "default": "public",
+      "type": "string",
+      "enum": [
+        "public",
+        "signup",
+        "invite-only",
+        "private",
+        "unavailable"
+      ]
+    },
+    "pricing": {
+      "default": "free",
+      "type": "string",
+      "enum": [
+        "free",
+        "freemium",
+        "paid",
+        "mixed",
+        "not-applicable"
+      ]
+    },
+    "requirements": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "limitations": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "sourceAvailability": {
+      "type": "string",
+      "enum": [
+        "open-source",
+        "source-available",
+        "closed-source"
+      ]
+    },
+    "license": {
+      "type": "string"
+    },
+    "screenshots": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "src": {
+            "type": "string",
+            "minLength": 1
+          },
+          "alt": {
+            "type": "string",
+            "minLength": 1
+          },
+          "caption": {
+            "type": "string"
+          },
+          "credit": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "src",
+          "alt"
+        ]
+      }
+    },
+    "primaryCta": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "href": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "label",
+        "href"
+      ]
+    },
+    "relatedBuilds": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "relatedInsights": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "replacement": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "href": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "title",
+        "href"
+      ]
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "summary",
+    "type"
+  ]
+}

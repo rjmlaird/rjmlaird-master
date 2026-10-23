@@ -1,17 +1,24 @@
 ---
-id: 41
+id: 30
 slug: bake-in-space
 title: Bake In Space
 type: featured
 status: completed
+draft: false
 description: >
   Bake In Space was a space-food innovation project developing a safe,
   low-power system for baking fresh, crumb-free bread aboard the International
-  Space Station. The project used bread as a practical technology demonstration
-  for improving food quality, wellbeing and long-term self-sufficiency in human
-  spaceflight.
+  Space Station. The project used bread as a practical technology
+  demonstration for improving food quality, wellbeing and long-term
+  self-sufficiency in human spaceflight.
 startDate: 2017-03-01
 endDate: 2018-12-31
+client: Bake In Space GmbH
+organisation: Bake In Space GmbH
+role: Editor and UK Coordinator
+category:
+  - projects
+  - space-innovation
 tags:
   - bake-in-space
   - space-food
@@ -22,9 +29,6 @@ tags:
   - design-and-data
   - iss
   - microgravity
-category:
-  - projects
-  - space-innovation
 tools_tech:
   - International Space Station
   - Space-ready convection oven
@@ -33,24 +37,21 @@ tools_tech:
   - Microgravity food-safety design
   - Editorial strategy
   - Science communication
-youtubeId: JrsFaQ5Gof4
 links:
   web: https://bakein.space
   youtube: https://youtu.be/JrsFaQ5Gof4?si=sINdDZ6FQn1RfCmh
+youtubeId: JrsFaQ5Gof4
 impact:
   summary: >
     Supported a high-profile space-food innovation programme that developed a
     prototype microgravity oven and a crumb-free bread concept for the
-    International Space Station, while communicating its relevance to astronaut
-    wellbeing, food-system innovation and long-duration exploration.
+    International Space Station, while communicating its relevance to
+    astronaut wellbeing, food-system innovation and long-duration exploration.
   outcomes:
     - Prototype low-power oven designed for ISS safety constraints
     - Public-facing science and innovation communications
     - International media coverage of the proposed bread-in-space demonstration
     - Recognition through the 2017 INNOspace Masters competition
-client: Bake In Space GmbH
-organisation: Bake In Space GmbH
-role: Editor and UK Coordinator
 heroImage: /images/projects/bakeinspace.jpg
 heroAlt: >
   Bake In Space concept imagery showing a compact oven designed to bake bread
@@ -58,7 +59,7 @@ heroAlt: >
 imageCredit: NASA / Bake In Space
 relatedExperience:
   - exp-design-and-data
-relatedAward:
+relatedAwards:
   - awards-innospace-masters-2017
 relatedCaseStudies:
   - bake-in-space
@@ -247,7 +248,7 @@ the risk of crumbs and the need to develop a suitable dough product. These
 stories helped connect public curiosity about space travel with the practical
 work required to support human life away from Earth.
 
-## Limitations and status
+## Limitations
 
 Bake In Space was an innovation and technology-demonstration programme. Its
 ambition extended beyond the immediate task of baking bread in microgravity,
@@ -264,9 +265,3 @@ human space exploration.
 - [Bake In Space: YouTube video](https://youtu.be/JrsFaQ5Gof4?si=sINdDZ6FQn1RfCmh)
 - [Bake In Space website](https://bakein.space)
 - [INNOspace Masters project profile](https://innospace-masters.de/bake-in-space/)
-
-## Keywords
-
-Human spaceflight; International Space Station; space food; microgravity;
-fresh food; bread; food safety; low-power engineering; science communication;
-space sustainability; innovation.

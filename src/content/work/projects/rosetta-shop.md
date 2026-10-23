@@ -1,9 +1,10 @@
 ---
-id: 41
+id: 23
 slug: rosetta-shop
 title: Rosetta Shop
 type: featured
 status: completed
+draft: false
 description: >
   Website and order-management support for the Rosetta Shop, an online
   merchandise initiative connected to ESA’s Rosetta and Philae comet mission.
@@ -11,6 +12,12 @@ description: >
   day-to-day website management during a period of high public interest in the
   mission.
 startDate: 2015-07-01
+client: European Space Agency
+organisation: Design & Data GmbH
+role: Website and order manager
+category:
+  - work
+  - digital
 tags:
   - esa
   - rosetta
@@ -21,9 +28,6 @@ tags:
   - space-communication
   - digital-operations
   - design-and-data
-category:
-  - work
-  - digital
 tools_tech:
   - Website management
   - E-commerce operations
@@ -50,17 +54,15 @@ impact:
     - Supported product information and catalogue updates
     - Helped deliver a reliable customer experience for mission supporters
     - Connected public enthusiasm for Rosetta and Philae with official mission merchandise
-client: European Space Agency
-organisation: Design & Data GmbH
-role: Website and order manager
-caseStudy: Rosetta Philae
-relatedExperience:
-  - exp-design-and-data
 heroImage: /images/projects/rosetta-shop.jpg
 heroAlt: >
   Rosetta Shop website offering mission-related products inspired by ESA’s
   Rosetta orbiter and Philae comet lander.
 imageCredit: ESA / Design & Data
+relatedExperience:
+  - exp-design-and-data
+relatedCaseStudies:
+  - rosetta-philae
 ---
 
 ## Overview
@@ -76,7 +78,7 @@ managing customer orders.
 
 Rosetta was ESA’s comet-chasing mission to comet 67P/Churyumov-Gerasimenko. It
 delivered the Philae lander to the comet’s surface as part of the first detailed
-in-situ investigation of a cometary nucleus. [web:240]
+in-situ investigation of a cometary nucleus.
 
 ## The context
 
@@ -159,22 +161,7 @@ For Rosetta, this mattered because the mission had already become a powerful
 example of how space exploration, design and public communication can reinforce
 one another.
 
-## Contribution
-
-My contribution was operational rather than scientific or spacecraft-related.
-
-I did not design the Rosetta spacecraft, develop mission instruments or lead
-ESA’s science communications. Instead, I helped sustain an online platform that
-made the mission’s public-facing identity accessible through a functioning,
-well-managed e-commerce service.
-
-The role required balancing two forms of responsibility:
-
-- **Digital quality:** accurate, usable and well-maintained website content.
-- **Operational reliability:** careful handling of orders and customer
-  expectations.
-
-## Outcome
+## Outcomes
 
 The project delivered a managed online shop for Rosetta-related merchandise and
 public engagement.
@@ -192,11 +179,25 @@ Key outcomes included:
 Rosetta remains one of ESA’s landmark science missions. Its exploration of
 comet 67P and deployment of Philae made it a defining public moment for
 European space science. ESA continues to present Rosetta and Philae as central
-parts of its space-science history. [web:240]
+parts of its space-science history.
 
 ESA also maintains official merchandise retailing through its broader ESA Shop,
 which presents ESA-branded products celebrating European space ambitions.
-[web:239]
+
+## Limitations
+
+My contribution was operational rather than scientific or spacecraft-related.
+
+I did not design the Rosetta spacecraft, develop mission instruments or lead
+ESA’s science communications. Instead, I helped sustain an online platform that
+made the mission’s public-facing identity accessible through a functioning,
+well-managed e-commerce service.
+
+The role required balancing two forms of responsibility:
+
+- **Digital quality:** accurate, usable and well-maintained website content.
+- **Operational reliability:** careful handling of orders and customer
+  expectations.
 
 ## Related work
 
@@ -206,9 +207,3 @@ communications, digital experiences and public engagement.
 See also:
 
 - [Rosetta Philae case study](/work/case-studies/rosetta-philae/)
-
-## Keywords
-
-Rosetta; Philae; European Space Agency; ESA; e-commerce; website management;
-order management; digital operations; customer experience; space communication;
-public engagement; Design & Data.

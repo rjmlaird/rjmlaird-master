@@ -1,9 +1,10 @@
 ---
-id: 41
+id: 34
 slug: vortex
 title: Vortex
 type: featured
 status: completed
+draft: false
 description: >
   Editorial and science-communication work for an ECMWF and Copernicus Climate
   Change Service case study showing how Vortex combines high-resolution wind
@@ -12,6 +13,12 @@ description: >
 startDate: 2018-04-10
 endDate: 2018-04-10
 updatedDate: 2018-04-10
+client: ECMWF
+organisation: Design & Data GmbH
+role: Editor and science communicator
+category:
+  - work
+  - editorial
 tags:
   - c3s
   - copernicus
@@ -24,9 +31,6 @@ tags:
   - earth-observation
   - science-communication
   - design-and-data
-category:
-  - work
-  - editorial
 tools_tech:
   - Editorial development
   - Video scripting
@@ -39,33 +43,30 @@ features:
   - Communicated the use of C3S climate data in wind-resource assessment
   - Explained how climate information supports renewable-energy decisions
   - Presented a practical climate-service case study for public and professional audiences
-youtubeId: czHlge1hJ7o
 links:
   web: https://climate.copernicus.eu/vortex
   youtube: https://youtu.be/czHlge1hJ7o?si=XrHuk36_ajopdURg
+youtubeId: czHlge1hJ7o
 impact:
   summary: >
-    Supported an ECMWF and Copernicus Climate Change Service case study showing
-    how Vortex uses climate reanalysis and high-resolution wind modelling to
-    help renewable-energy developers assess wind resources, plan projects and
-    manage risk.
+    Supported an ECMWF and Copernicus Climate Change Service case study
+    showing how Vortex uses climate reanalysis and high-resolution wind
+    modelling to help renewable-energy developers assess wind resources, plan
+    projects and manage risk.
   outcomes:
     - Produced editorial communication for an ECMWF/C3S user story
     - Explained practical use of ERA5 and climate-service data
     - Connected Earth-observation data with renewable-energy investment decisions
     - Supported video communication for the 2018 European State of the Climate event
-client: ECMWF
-organisation: Design & Data GmbH
-role: Editor and science communicator
-relatedExperience:
-  - exp-design-and-data
-relatedCaseStudies:
-  - esotc2017
 heroImage: /images/projects/vortex-infographic.png
 heroAlt: >
   Vortex wind-resource modelling visualisation showing wind conditions used to
   assess and plan renewable-energy projects.
 imageCredit: Vortex
+relatedExperience:
+  - exp-design-and-data
+relatedCaseStudies:
+  - esotc2017
 ---
 
 ## Overview
@@ -97,7 +98,6 @@ support site selection, energy-yield estimates and project risk assessment.
 
 Vortex provides online “Wind & Site” information derived from mesoscale
 meteorological modelling and ERA5 climate reanalysis data produced by ECMWF.
-[web:231]
 
 ## The challenge
 
@@ -128,12 +128,12 @@ Vortex uses C3S data for its online wind-modelling services.
 The Copernicus Climate Change Service provides climate information based on
 observations, models and reanalysis. ECMWF operates C3S on behalf of the
 European Union and produces the ERA5 global climate reanalysis dataset used in
-many climate-service applications. [web:231]
+many climate-service applications.
 
 Vortex combines large-scale climate information with mesoscale modelling to
 produce wind-resource data at a more useful spatial scale for energy projects.
 Its services are designed to support planning and risk management across the
-renewable-energy project lifecycle. [web:231]
+renewable-energy project lifecycle.
 
 ## My role
 
@@ -185,7 +185,7 @@ Vortex uses numerical weather modelling to translate broader atmospheric
 conditions into higher-resolution wind information. Its modelling workflow
 uses Weather Research and Forecasting (WRF)-based approaches and
 high-performance computing to downscale atmospheric data for wind-resource
-applications. [web:233]
+applications.
 
 The resulting information can be used where direct measurements are limited,
 while still requiring appropriate validation, local expertise and careful
@@ -209,6 +209,17 @@ Key outcomes included:
 - A reusable narrative linking Earth observation, climate science, energy
   systems and investment decisions.
 
+## Limitations
+
+This project concerned editorial communication and climate-service storytelling.
+It did not involve developing the Vortex platform, producing ERA5 itself or
+operating the underlying wind models.
+
+Modelled wind-resource information is not a substitute for all on-site
+measurement and engineering assessment. Results depend on data quality, model
+configuration, local terrain, observation availability and the specific
+requirements of a proposed energy project.
+
 ## Related media
 
 - [Watch on YouTube](https://youtu.be/czHlge1hJ7o?si=XrHuk36_ajopdURg)
@@ -223,22 +234,3 @@ observation.
 See also:
 
 - [European State of the Climate 2017 case study](/work/case-studies/esotc2017/)
-
-## Limitations
-
-This project concerned editorial communication and climate-service storytelling.
-It did not involve developing the Vortex platform, producing ERA5 itself or
-operating the underlying wind models.
-
-Modelled wind-resource information is not a substitute for all on-site
-measurement and engineering assessment. Results depend on data quality, model
-configuration, local terrain, observation availability and the specific
-requirements of a proposed energy project.
-
-## Keywords
-
-Vortex; ECMWF; Copernicus; C3S; ERA5; wind energy; renewable energy; wind
-resource; mesoscale modelling; climate services; Earth observation; science
-communication; editorial strategy.
-
-Vortex uses C3S and ECMWF-produced ERA5 reanalysis data alongside mesoscale modelling to help customers plan and safeguard renewable-energy projects.  The linked 2018 video describes Vortex’s use of C3S data for online wind modelling and wind-farm development decisions.

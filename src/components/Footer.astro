@@ -106,7 +106,6 @@ const footerNavigation: FooterGroup[] = [
                 aria-label={`${item.label} (opens in a new tab)`}
                 target="_blank"
                 rel="me noopener noreferrer"
-                title={item.name}
               >
                 <span class="socials__icon" aria-hidden="true">
                   {name && <Icon name={name} class="socials__svg" />}
@@ -123,12 +122,12 @@ const footerNavigation: FooterGroup[] = [
         const groupId = `footer-${group.title.toLowerCase()}`;
 
         return (
-          <section class="footer__group" aria-labelledby={groupId}>
+          <div class="footer__group">
             <h2 id={groupId} class="footer__heading">
               {group.title}
             </h2>
 
-            <ul class="footer__list" role="list">
+            <ul class="footer__list" role="list" aria-labelledby={groupId}>
               {group.links.map((link) => (
                 <li class="footer__item">
                   <a
@@ -148,7 +147,7 @@ const footerNavigation: FooterGroup[] = [
                 </li>
               ))}
             </ul>
-          </section>
+          </div>
         );
       })}
     </nav>
@@ -170,14 +169,14 @@ const footerNavigation: FooterGroup[] = [
   /* global.css styles the bare `footer` element as a flex row, so reset it */
   .footer {
     display: block;
-    padding: 2rem var(--gutter);
+    padding: 2rem var(--gutter) calc(2rem + env(safe-area-inset-bottom, 0px));
     border-top: 1px solid var(--bd);
     background: var(--ink);
   }
 
   .footer__top {
     display: grid;
-    grid-template-columns: minmax(14rem, 1.1fr) minmax(0, 1.9fr);
+    grid-template-columns: minmax(14rem, 1fr) minmax(0, 2.4fr);
     gap: clamp(2rem, 6vw, 5rem);
     align-items: start;
   }
@@ -254,8 +253,8 @@ const footerNavigation: FooterGroup[] = [
     position: static;
     z-index: auto;
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 1.5rem clamp(1.25rem, 3vw, 3rem);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: 1.75rem clamp(1.25rem, 3vw, 3rem);
     align-items: start;
     align-content: start;
     min-height: 0;
@@ -302,14 +301,15 @@ const footerNavigation: FooterGroup[] = [
     Both use the same size, colour, underline and interaction states.
   */
   .footer__links a,
-  .footer__copy a,
   .footer__meta a {
     display: inline-block;
-    padding-block: 0.15rem;
+    min-height: 1.5rem;
+    padding-block: 0.2rem;
     color: var(--mb);
     font-family: var(--font-body);
-    font-size: 0.8rem;
+    font-size: 0.875rem;
     line-height: 1.5;
+    overflow-wrap: anywhere;
     text-decoration: underline;
     text-underline-offset: 3px;
     transition: color 0.2s;
@@ -317,8 +317,6 @@ const footerNavigation: FooterGroup[] = [
 
   .footer__links a:hover,
   .footer__links a:focus-visible,
-  .footer__copy a:hover,
-  .footer__copy a:focus-visible,
   .footer__meta a:hover,
   .footer__meta a:focus-visible {
     color: var(--teal);
@@ -341,7 +339,7 @@ const footerNavigation: FooterGroup[] = [
     margin-top: 2rem;
     padding-top: 1.25rem;
     border-top: 1px solid var(--bd);
-    font-size: 0.8rem;
+    font-size: 0.875rem;
     color: var(--m);
   }
 
@@ -376,11 +374,25 @@ const footerNavigation: FooterGroup[] = [
   }
 
 
-  @media (max-width: 700px) {
-    .footer {
-      padding-block: 1.75rem;
+  /* Touch devices: 44px targets for footer links */
+  @media (pointer: coarse) {
+    .footer__links a,
+    .footer__meta a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 2.75rem;
     }
 
+    .footer__list {
+      gap: 0;
+    }
+
+    .footer__meta {
+      gap: 0 1.25rem;
+    }
+  }
+
+  @media (max-width: 56rem) {
     .footer__top {
       grid-template-columns: 1fr;
       gap: 2rem;
@@ -389,10 +401,11 @@ const footerNavigation: FooterGroup[] = [
     .footer__copy {
       max-width: 100%;
     }
+  }
 
-    .footer__links {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 2rem 1.5rem;
+  @media (max-width: 40rem) {
+    .footer {
+      padding-top: 1.75rem;
     }
 
     .footer__bottom {
@@ -402,17 +415,20 @@ const footerNavigation: FooterGroup[] = [
     }
   }
 
-  @media (max-width: 420px) {
-    .footer__links {
-      grid-template-columns: 1fr;
-      gap: 1.75rem;
+  @media (forced-colors: active) {
+    .socials__link {
+      border-color: ButtonText;
+    }
+
+    .footer__links a,
+    .footer__meta a {
+      color: LinkText;
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .socials__link,
     .footer__links a,
-    .footer__copy a,
     .footer__meta a {
       transition: none;
     }

@@ -1,0 +1,269 @@
+---
+// src/pages/organisations/index.astro
+import Layout from "../layouts/Layout.astro";
+import organisationsData from "../data/organisations.json";
+
+type Organisation = {
+  slug: string;
+  name: string;
+  shortName?: string | null;
+  url?: string | null;
+  logo?: string | null;
+  featured?: boolean;
+};
+
+type OrganisationItem = {
+  slug: string;
+  name: string;
+  website: string | null;
+  logo: string;
+  featured: boolean;
+};
+
+function text(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function websiteUrl(value: unknown): string | null {
+  const candidate = text(value);
+
+  if (!candidate) return null;
+
+  try {
+    const url = new URL(candidate);
+
+    return url.protocol === "https:" || url.protocol === "http:"
+      ? url.href
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * INPUT CHECKS
+ */
+
+const rawData: unknown = organisationsData;
+
+if (
+  !Array.isArray(rawData) ||
+  rawData.some(
+    (item) =>
+      item === null ||
+      typeof item !== "object" ||
+      Array.isArray(item),
+  )
+) {
+  throw new Error(
+    "organisations.json must contain one flat array of organisation objects.",
+  );
+}
+
+const records = rawData as Organisation[];
+const seenSlugs = new Set<string>();
+
+for (const record of records) {
+  const slug = text(record.slug);
+  const name = text(record.name);
+
+  if (!slug || !name) {
+    throw new Error(
+      "Every organisation must have a non-empty slug and name.",
+    );
+  }
+
+  const key = slug.toLowerCase();
+
+  if (seenSlugs.has(key)) {
+    throw new Error(
+      `Duplicate organisation slug "${slug}". Merge or correct the duplicate records.`,
+    );
+  }
+
+  seenSlugs.add(key);
+}
+
+/**
+ * DISPLAY ITEMS
+ *
+ * Featured organisations first, then alphabetical order.
+ */
+
+const organisations: OrganisationItem[] = records
+  .map((record) => ({
+    slug: text(record.slug),
+    name: text(record.name),
+    website: websiteUrl(record.url),
+    logo: text(record.logo),
+    featured: record.featured === true,
+  }))
+  .sort(
+    (a, b) =>
+      Number(b.featured) - Number(a.featured) ||
+      a.name.localeCompare(b.name, "en-GB"),
+  );
+---
+
+<Layout
+  title="Organisations"
+  description="Browse organisations across science, space, sustainability, education and technology."
+>
+  <section class="organisation-index">
+    <div class="container pg-shell">
+      <header class="page-head">
+        <p class="sl">Organisations</p>
+
+        <h1 class="fade">Organisations</h1>
+      </header>
+
+      {
+        organisations.length > 0 ? (
+          <ul class="organisation-grid" aria-label="Organisations">
+            {organisations.map((organisation) => {
+              const Tag = organisation.website ? "a" : "div";
+
+              return (
+                <li class="organisation-item">
+                  <Tag
+                    class:list={[
+                      "organisation-tile",
+                      { "has-logo": Boolean(organisation.logo) },
+                    ]}
+                    {...(organisation.website
+                      ? { href: organisation.website }
+                      : {})}
+                  >
+                    {organisation.logo && (
+                      <span class="organisation-logo">
+                        <img
+                          src={organisation.logo}
+                          alt=""
+                          width="200"
+                          height="100"
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      </span>
+                    )}
+
+                    <span class="organisation-name">
+                      {organisation.name}
+                    </span>
+                  </Tag>
+                </li>
+              );
+            })}
+          </ul>
+        ) : (
+          <p class="lede">No organisations to show yet.</p>
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .organisation-index {
+    --org-border: color-mix(in srgb, currentColor 16%, transparent);
+    --org-surface: color-mix(in srgb, currentColor 3%, transparent);
+    --org-hover: color-mix(in srgb, currentColor 7%, transparent);
+  }
+
+  .page-head {
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .organisation-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .organisation-item {
+    display: flex;
+    min-width: 0;
+  }
+
+  .organisation-tile {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.25rem;
+    box-sizing: border-box;
+    min-width: 0;
+    min-height: 13rem;
+    border: 1px solid var(--org-border);
+    border-radius: 0.75rem;
+    padding: clamp(1rem, 2vw, 1.5rem);
+    background: var(--org-surface);
+    color: inherit;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  a.organisation-tile:hover {
+    border-color: currentColor;
+    background: var(--org-hover);
+  }
+
+  a.organisation-tile:hover .organisation-name {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  a.organisation-tile:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .organisation-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    height: 7rem;
+    border-radius: 0.35rem;
+    padding: 0.75rem;
+    background: #fff;
+  }
+
+  .organisation-logo img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .organisation-name {
+    max-width: 100%;
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+
+  @media (max-width: 1100px) {
+    .organisation-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .organisation-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 420px) {
+    .organisation-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

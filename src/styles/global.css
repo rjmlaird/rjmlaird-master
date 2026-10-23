@@ -40,6 +40,14 @@
   --bm: rgba(255,255,255,.2);
   --focus: #7FE6D4;
 
+  /* Semantic aliases used by shared components (StatCard, ImpactStats, FactBox, ...) */
+  --color-text: var(--w);
+  --color-text-muted: var(--mb);
+  --color-surface: var(--card);
+  --color-border: var(--bd);
+  --color-accent: var(--teal);
+  --color-accent-subtle: var(--td);
+
   /* Layout */
   --content-max: 1320px;
   --gutter-min: clamp(1.25rem, 5vw, 2.5rem);
