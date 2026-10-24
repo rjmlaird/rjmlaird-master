@@ -40,7 +40,7 @@ function normaliseSlug(value: string): string {
 function encodeSlug(value: string): string {
   return normaliseSlug(value)
     .split("/")
-    .map((segment) => encodeURIComponent(segment))
+    .map((segment: string) => encodeURIComponent(segment))
     .join("/");
 }
 
@@ -104,7 +104,6 @@ export async function getStaticPaths() {
   }));
 }
 
-
 /**
  * CURRENT SECTOR
  */
@@ -133,19 +132,19 @@ const pageDescription = sectorData.description;
  */
 
 const relatedProjects = await getCollection("projects", ({ data }) =>
-  !data.draft && data.sectors?.includes(sectorId),
+  !data.draft && data.sectors?.includes(sectorId as any),
 );
 
 const relatedCaseStudies = await getCollection("caseStudies", ({ data }) =>
-  !data.draft && data.sectors?.includes(sectorId),
+  !data.draft && data.sectors?.includes(sectorId as any),
 );
 
 const relatedInitiatives = await getCollection("initiatives", ({ data }) =>
-  !data.draft && data.sectors?.includes(sectorId),
+  !data.draft && data.sectors?.includes(sectorId as any),
 );
 
 const relatedEvents = await getCollection("events", ({ data }) =>
-  !data.draft && data.sectors?.includes(sectorId),
+  !data.draft && data.sectors?.includes(sectorId as any),
 );
 
 const relatedWork: RelatedWorkGroup[] = [
