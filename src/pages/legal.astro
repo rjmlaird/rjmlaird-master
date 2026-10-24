@@ -1,0 +1,292 @@
+---
+// src/pages/policies.astro
+import Layout from "../layouts/Layout.astro";
+import {
+  policyRegister,
+  notices,
+  renderPolicyMarkdown,
+  hasTodo,
+} from "@rjmlaird/policies";
+
+const files = import.meta.glob("/node_modules/@rjmlaird/policies/content/*.md", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+
+const policies = policyRegister
+  .filter((p) => {
+    const raw = Object.entries(files).find(([k]) =>
+      k.endsWith(`/${p.contentFile.split("/").pop()}`),
+    )?.[1];
+    if (!raw) return false;
+
+    const { markdown } = renderPolicyMarkdown(raw);
+    if (hasTodo(markdown) && !import.meta.env.DEV) {
+      return false;
+    }
+    return true;
+  })
+  .map((p) => {
+    const notice = notices[p.slug as keyof typeof notices] || {};
+    const routeSlug = p.route.replace(/^\/+|\/+$/g, "");
+
+    return {
+      ...p,
+      href: `/${routeSlug}/`,
+      notice,
+    };
+  })
+  .sort((a, b) => new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime());
+
+function formatDate(dateStr: string): string {
+  const date = new Date(dateStr);
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  }).format(date);
+}
+---
+
+<Layout
+  title="Policies & Legal Notices"
+  description="Explore our governance, privacy, terms, and compliance policies."
+>
+  <section class="policies-index">
+    <div class="container pg-shell">
+      <header class="page-head">
+        <p class="sl">Governance &amp; Compliance</p>
+
+        <h1 class="fade">
+          Policies <em>&amp; legal notices</em>
+        </h1>
+
+        <div class="lede">
+          <p>
+            Transparency, data protection, and operational terms governing our platforms,
+            services, and digital interactions.
+          </p>
+        </div>
+
+        {
+          policies.length > 0 && (
+            <p class="policies-overview">
+              <span>
+                {policies.length} published{" "}
+                {policies.length === 1 ? "policy" : "policies"}
+              </span>
+            </p>
+          )
+        }
+      </header>
+
+      {
+        policies.length > 0 ? (
+          <div class="policies-grid" id="policyGrid">
+            {policies.map((policy) => (
+              <article class="policy-card">
+                <div class="policy-card-body">
+                  <div class="policy-card-meta">
+                    {policy.notice.eyebrow && (
+                      <span class="policy-eyebrow">{policy.notice.eyebrow}</span>
+                    )}
+                    {policy.lastUpdated && (
+                      <time datetime={policy.lastUpdated}>
+                        Updated {formatDate(policy.lastUpdated)}
+                      </time>
+                    )}
+                  </div>
+
+                  <h2>
+                    <a href={policy.href}>{policy.title}</a>
+                  </h2>
+
+                  <p class="policy-summary">
+                    {policy.notice.description || policy.notice.summary}
+                  </p>
+
+                  <div class="policy-card-footer">
+                    <a class="hp-link" href={policy.href}>
+                      Read policy
+                      <span aria-hidden="true"> →</span>
+                      <span class="visually-hidden">: {policy.title}</span>
+                    </a>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div class="policy-empty">
+            <h2>Policies are on the way</h2>
+            <p>Legal notices and governance policies will appear here as they are published.</p>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .policies-index {
+    --policy-border: color-mix(in srgb, currentColor 18%, transparent);
+    --policy-surface: color-mix(in srgb, currentColor 4%, transparent);
+    --policy-muted: color-mix(in srgb, currentColor 75%, transparent);
+    --policy-accent: var(--accent, #00c2a8);
+  }
+
+  .hp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    width: fit-content;
+    min-height: 2.75rem;
+    color: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: var(--policy-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .hp-link:hover,
+  .hp-link:focus-visible {
+    color: var(--policy-accent);
+  }
+
+  .page-head {
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .lede {
+    max-width: 72ch;
+  }
+
+  .policies-overview {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    margin: 1.5rem 0 0;
+    color: var(--policy-muted);
+    font-size: 0.875rem;
+  }
+
+  .policies-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  .policy-card {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    overflow: hidden;
+    border: 1px solid var(--policy-border);
+    border-top: 4px solid var(--policy-accent);
+    border-radius: 0.85rem;
+    background: var(--policy-surface);
+    transition:
+      border-color 0.15s,
+      transform 0.15s;
+  }
+
+  .policy-card:hover {
+    border-color: color-mix(in srgb, var(--policy-accent) 55%, var(--policy-border));
+    transform: translateY(-2px);
+  }
+
+  .policy-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 0;
+    padding: clamp(1.1rem, 2vw, 1.5rem);
+  }
+
+  .policy-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    font-size: 0.75rem;
+    color: var(--policy-muted);
+  }
+
+  .policy-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid color-mix(in srgb, var(--policy-accent) 60%, transparent);
+    border-radius: 999px;
+    padding: 0.2rem 0.6rem;
+    background: color-mix(in srgb, var(--policy-accent) 14%, transparent);
+    font-weight: 600;
+    line-height: 1.5;
+    color: inherit;
+  }
+
+  .policy-card h2 {
+    margin: 0;
+    font-size: clamp(1.25rem, 2vw, 1.55rem);
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+  }
+
+  .policy-card h2 a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .policy-card h2 a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .policy-summary {
+    margin: 0;
+    color: var(--policy-muted);
+    line-height: 1.65;
+  }
+
+  .policy-card-footer {
+    margin-top: auto;
+    padding-top: 0.75rem;
+  }
+
+  .policy-empty {
+    padding: 2rem 0;
+  }
+
+  .policy-empty h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  .policy-empty p {
+    margin: 0;
+    color: var(--policy-muted);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 760px) {
+    .policies-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
