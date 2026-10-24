@@ -19,7 +19,7 @@ impact: {}
 relatedCaseStudies: ["phiweekbootcamp"]
 client: European Space Agency
 relatedExperience: ["exp-design-and-data"]
-sectors: ["energy","earth observation"]
+sectors: ["energy","space","environment"]
 heroImage: https://img.youtube.com/vi/kbaoIb3s29s/maxresdefault.jpg
 heroAlt: "PhiWeek Bootcamp 2019 Thumbnail"
 imageCredit: ESA/Design & Data

@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+Disallow: /analytics
+
+Sitemap: https://rjmlaird.co.uk/sitemap-index.xml

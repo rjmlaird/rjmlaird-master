@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-	"pid": 3882,
-=======
-	"pid": 42926,
->>>>>>> 9f01504 (rebuild)
+	"pid": 51576,
 	"port": 4321,
 	"url": "http://localhost:4321",
 	"urls": {
@@ -14,9 +10,5 @@
 		"networkInterfaceNames": []
 	},
 	"background": false,
-<<<<<<< HEAD
-	"startedAt": "2026-10-23T00:37:35.362Z"
-=======
-	"startedAt": "2026-10-23T22:39:41.976Z"
->>>>>>> 9f01504 (rebuild)
+	"startedAt": "2026-10-23T23:36:44.329Z"
 }

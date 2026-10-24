@@ -1,0 +1,590 @@
+---
+// src/pages/sectors/[slug].astro
+import Layout from "../../layouts/Layout.astro";
+
+import {
+  getCollection,
+  render,
+  type CollectionEntry,
+} from "astro:content";
+
+/**
+ * TYPES
+ */
+
+type SectorEntry = CollectionEntry<"sectors">;
+
+type WorkEntry = CollectionEntry<
+  "projects" | "caseStudies" | "initiatives" | "events"
+>;
+
+interface RelatedWorkGroup {
+  title: string;
+  base: string;
+  items: WorkEntry[];
+}
+
+interface RelatedSectorGroup {
+  title: string;
+  items: SectorEntry[];
+}
+
+/**
+ * HELPERS
+ */
+
+function normaliseSlug(value: string): string {
+  return value.replace(/^\/+|\/+$/g, "");
+}
+
+function encodeSlug(value: string): string {
+  return normaliseSlug(value)
+    .split("/")
+    .map((segment) => encodeURIComponent(segment))
+    .join("/");
+}
+
+function workHref(
+  entry: WorkEntry,
+  base: string,
+): string {
+  const slug =
+    entry.data.slug ??
+    (typeof entry.id === "string" ? entry.id : String(entry.id));
+
+  return `${base}/${encodeSlug(slug)}/`;
+}
+
+function sectorHref(entry: SectorEntry): string {
+  return `/sectors/${encodeSlug(entry.id)}/`;
+}
+
+function resolveRelatedSectors(
+  sectorIds: string[],
+  sectors: SectorEntry[],
+): SectorEntry[] {
+  const selected: SectorEntry[] = [];
+  const seen = new Set<string>();
+
+  for (const sectorId of sectorIds) {
+    const match = sectors.find(
+      (candidate) =>
+        candidate.id === sectorId ||
+        normaliseSlug(candidate.id) === normaliseSlug(sectorId),
+    );
+
+    if (!match || seen.has(match.id)) {
+      continue;
+    }
+
+    seen.add(match.id);
+    selected.push(match);
+  }
+
+  return selected;
+}
+
+/**
+ * STATIC PATHS
+ */
+
+export async function getStaticPaths() {
+  const normaliseSlug = (value: string): string =>
+    value.replace(/^\/+|\/+$/g, "");
+
+  const sectors = await getCollection("sectors");
+
+  return sectors.map((sector) => ({
+    params: {
+      slug: normaliseSlug(sector.id),
+    },
+    props: {
+      sector,
+    },
+  }));
+}
+
+
+/**
+ * CURRENT SECTOR
+ */
+
+const { sector } = Astro.props as {
+  sector: SectorEntry;
+};
+
+const { Content } = await render(sector);
+
+const sectorData = sector.data;
+const sectorId = sector.id;
+
+/**
+ * PAGE METADATA
+ */
+
+const pageTitle = sectorData.title;
+const pageDescription = sectorData.description;
+
+/**
+ * RELATED WORK
+ *
+ * A sector page highlights published work associated with its ID.
+ * Draft entries are excluded.
+ */
+
+const relatedProjects = await getCollection("projects", ({ data }) =>
+  !data.draft && data.sectors?.includes(sectorId),
+);
+
+const relatedCaseStudies = await getCollection("caseStudies", ({ data }) =>
+  !data.draft && data.sectors?.includes(sectorId),
+);
+
+const relatedInitiatives = await getCollection("initiatives", ({ data }) =>
+  !data.draft && data.sectors?.includes(sectorId),
+);
+
+const relatedEvents = await getCollection("events", ({ data }) =>
+  !data.draft && data.sectors?.includes(sectorId),
+);
+
+const relatedWork: RelatedWorkGroup[] = [
+  {
+    title: "Projects",
+    base: "/work/projects",
+    items: relatedProjects,
+  },
+  {
+    title: "Case studies",
+    base: "/work/case-studies",
+    items: relatedCaseStudies,
+  },
+  {
+    title: "Initiatives",
+    base: "/work/initiatives",
+    items: relatedInitiatives,
+  },
+  {
+    title: "Events",
+    base: "/work/events",
+    items: relatedEvents,
+  },
+];
+
+const visibleRelatedWork = relatedWork.filter(
+  (group) => group.items.length > 0,
+);
+
+const hasRelatedWork = visibleRelatedWork.length > 0;
+
+/**
+ * RELATED SECTORS
+ */
+
+const allSectors = await getCollection("sectors");
+
+const relatedSectors = resolveRelatedSectors(
+  sectorData.related ?? [],
+  allSectors.filter((candidate) => candidate.id !== sector.id),
+);
+
+const relatedSectorGroups: RelatedSectorGroup[] = relatedSectors.length
+  ? [
+      {
+        title: "Related sectors",
+        items: relatedSectors,
+      },
+    ]
+  : [];
+---
+
+<Layout title={pageTitle} description={pageDescription}>
+  <section class="sector-detail">
+    <div class="container pg-shell">
+      <nav class="sector-breadcrumb" aria-label="Breadcrumb">
+        <a href="/sectors/">Sectors</a>
+        <span aria-hidden="true">/</span>
+        <span aria-current="page">{sectorData.title}</span>
+      </nav>
+
+      <header class="page-head">
+        <div class="sector-meta">
+          {
+            sectorData.status && (
+              <span class="sector-category">
+                {sectorData.status}
+              </span>
+            )
+          }
+        </div>
+
+        <h1 class="fade">{sectorData.title}</h1>
+
+        <p class="lede sector-summary">{sectorData.description}</p>
+      </header>
+
+      {
+        sectorData.heroImage && (
+          <div class="sector-hero">
+            <img
+              src={sectorData.heroImage}
+              alt={sectorData.heroAlt ?? ""}
+              fetchpriority="high"
+              decoding="async"
+            />
+          </div>
+        )
+      }
+
+      <div class="sector-layout">
+        <div class="sector-main">
+          <div class="sector-body prose">
+            <Content />
+          </div>
+        </div>
+
+        <aside class="sector-sidebar" aria-label="Related content">
+          <div class="sidebar-panel">
+            <h2>Related content</h2>
+
+            {
+              hasRelatedWork ? (
+                visibleRelatedWork.map((group) => (
+                  <section class="related-content-group">
+                    <h3>{group.title}</h3>
+
+                    <ul class="related-content-list">
+                      {group.items.map((item) => (
+                        <li>
+                          <a href={workHref(item, group.base)}>
+                            {item.data.title}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ))
+              ) : (
+                <p class="related-content-empty">
+                  No related work has been published for this sector yet.
+                </p>
+              )
+            }
+          </div>
+        </aside>
+      </div>
+
+      {
+        relatedSectorGroups.length > 0 && (
+          <div class="related-content">
+            {relatedSectorGroups.map((group) => (
+              <section class="related-group">
+                <h2>{group.title}</h2>
+
+                <div class="related-grid">
+                  {group.items.map((item) => (
+                    <article class="related-card">
+                      <h3>
+                        <a href={sectorHref(item)}>
+                          {item.data.title}
+                        </a>
+                      </h3>
+
+                      {item.data.description && (
+                        <p>{item.data.description}</p>
+                      )}
+                    </article>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        )
+      }
+
+      <footer class="sector-footer">
+        <a class="hp-link" href="/sectors/">
+          <span aria-hidden="true">← </span>
+          All sectors
+        </a>
+      </footer>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .sector-detail {
+    --sector-border: color-mix(in srgb, currentColor 18%, transparent);
+    --sector-surface: color-mix(in srgb, currentColor 4%, transparent);
+    --sector-muted: color-mix(in srgb, currentColor 75%, transparent);
+    --sector-accent: var(--accent, #00c2a8);
+
+    --w: #fff;
+    --on-accent: #111;
+  }
+
+  .hp-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3em;
+    width: fit-content;
+    min-height: 2.75rem;
+    color: inherit;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-decoration: underline;
+    text-decoration-color: var(--sector-accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.25em;
+  }
+
+  .hp-link:hover,
+  .hp-link:focus-visible {
+    color: var(--sector-accent);
+  }
+
+  .sector-breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 1.5rem;
+    color: var(--sector-muted);
+    font-size: 0.875rem;
+    overflow-wrap: anywhere;
+  }
+
+  .page-head {
+    max-width: 78ch;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .page-head h1 {
+    overflow-wrap: anywhere;
+  }
+
+  .sector-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .sector-category {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--sector-border);
+    border-radius: 999px;
+    padding: 0.25rem 0.7rem;
+    font-size: 0.8rem;
+    border-color: color-mix(
+      in srgb,
+      var(--sector-accent) 60%,
+      transparent
+    );
+    background: color-mix(
+      in srgb,
+      var(--sector-accent) 14%,
+      transparent
+    );
+    font-weight: 600;
+  }
+
+  .sector-summary {
+    max-width: 70ch;
+    color: var(--sector-muted);
+    line-height: 1.7;
+  }
+
+  .sector-detail a {
+    text-underline-offset: 0.2em;
+    overflow-wrap: anywhere;
+  }
+
+  .sector-detail a:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  .sector-hero {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    overflow: hidden;
+    border: 1px solid var(--sector-border);
+    border-top: 4px solid var(--sector-accent);
+    border-radius: 0.85rem;
+  }
+
+  .sector-hero img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .sector-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 20rem);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: start;
+  }
+
+  .sector-main,
+  .sector-sidebar {
+    min-width: 0;
+  }
+
+  .sector-main {
+    max-width: 78ch;
+  }
+
+  .sector-body {
+    margin-bottom: clamp(2rem, 4vw, 3rem);
+    overflow-wrap: anywhere;
+  }
+
+  .sector-body:empty {
+    display: none;
+  }
+
+  .sector-body :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .sector-body :global(pre) {
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .sector-body :global(table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .related-group h2 {
+    margin: 0 0 1rem;
+    font-size: clamp(1.3rem, 2vw, 1.65rem);
+  }
+
+  .sector-sidebar {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .sidebar-panel {
+    min-width: 0;
+    border: 1px solid var(--sector-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    background: var(--sector-surface);
+  }
+
+  .sidebar-panel:first-child {
+    border-top: 4px solid var(--sector-accent);
+  }
+
+  .sidebar-panel h2 {
+    margin: 0 0 1rem;
+    font-size: 1rem;
+  }
+
+  .related-content-group + .related-content-group {
+    margin-top: 1.5rem;
+  }
+
+  .related-content-group h3 {
+    margin: 0 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--sector-muted);
+  }
+
+  .related-content-list {
+    display: grid;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related-content-list a {
+    display: inline-block;
+    line-height: 1.5;
+  }
+
+  .related-content-empty {
+    margin: 0;
+    color: var(--sector-muted);
+    line-height: 1.6;
+  }
+
+  .related-content {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2rem;
+    border-top: 1px solid var(--sector-border);
+    padding-top: 2.5rem;
+  }
+
+  .related-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+  }
+
+  .related-card {
+    min-width: 0;
+    border: 1px solid var(--sector-border);
+    border-radius: 0.75rem;
+    padding: 1.25rem;
+    background: var(--sector-surface);
+  }
+
+  .related-card h3 {
+    margin: 0;
+    font-size: 1.1rem;
+  }
+
+  .related-card p {
+    margin: 0.75rem 0 0;
+    color: var(--sector-muted);
+    line-height: 1.6;
+  }
+
+  .sector-footer {
+    margin-top: 3rem;
+    border-top: 1px solid var(--sector-border);
+    padding-top: 1.5rem;
+  }
+
+  .page-head::before {
+    content: "";
+    display: block;
+    width: 4rem;
+    height: 4px;
+    margin-bottom: 1.25rem;
+    border-radius: 2px;
+    background: var(--sector-accent);
+  }
+
+  @media (max-width: 1000px) {
+    .sector-layout {
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, 17rem);
+      gap: 2rem;
+    }
+
+    .related-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 760px) {
+    .sector-layout,
+    .related-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .sector-main {
+      max-width: none;
+    }
+  }
+</style>

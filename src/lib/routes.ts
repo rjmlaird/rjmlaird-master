@@ -42,7 +42,7 @@ export const routes = {
   blog: "/insights/blog/",
   resources: "/insights/resources/",
   podcasts: "/insights/podcasts/",
-  sectors: "/insights/sectors/",
+  sectors: "/sectors/",
   substack: "/insights/substack/",
 
   // Browse

@@ -1,4 +1,3 @@
-// src/content.config.ts
 import { defineCollection } from "astro:content";
 import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
@@ -121,6 +120,77 @@ const linksSchema = z.object({
 });
 
 /**
+ * SECTORS
+ *
+ * A controlled vocabulary shared by blog posts, projects,
+ * initiatives, case studies, events and builds.
+ *
+ * Sector IDs must match the `id` value in:
+ * src/content/sectors/*.md
+ *
+ * Use a sector only when it is central to the work.
+ * A content entry may have zero, one or several sectors.
+ */
+
+export const sectorIdSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .regex(
+    /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+    "Sector IDs must be lowercase kebab-case.",
+  );
+
+export const sectorIds = [
+  "automotive",
+  "built-environment",
+  "climate",
+  "education",
+  "energy",
+  "environment",
+  "fisheries",
+  "health",
+  "logistics",
+  "marine",
+  "space",
+] as const;
+
+
+export type SectorId = (typeof sectorIds)[number];
+
+export const sectorReferenceSchema = z
+  .union([sectorIdSchema, z.string()])
+  .transform((value) => value.trim().toLowerCase())
+  .refine(
+    (value): value is SectorId =>
+      (sectorIds as readonly string[]).includes(value),
+    {
+      message:
+        "Unknown sector. Use one of the IDs defined in src/content/sectors/.",
+    },
+  );
+
+export const sectorReferencesSchema = z
+  .array(sectorReferenceSchema)
+  .default([])
+  .transform((values) => Array.from(new Set(values)));
+
+const sectorSchema = z.object({
+  id: sectorIdSchema,
+  title: z.string().trim().min(1),
+  description: z.string().trim().min(1),
+
+  order: z.number().int().default(0),
+  status: z.enum(["active", "archived"]).default("active"),
+
+  related: sectorReferencesSchema,
+  excludes: stringArray,
+
+  heroImage: z.string().optional(),
+  heroAlt: z.string().optional(),
+});
+
+/**
  * BASE CONTENT
  *
  * Shared metadata, media, relationships and work-related fields.
@@ -141,7 +211,7 @@ const baseSchema = seoSchema.extend({
   author: z.string().optional(),
 
   tags: stringArray,
-  sectors: stringArray,
+  sectors: sectorReferencesSchema,
 
   category: z
     .preprocess(
@@ -548,6 +618,31 @@ const eventSchema = baseSchema.extend({
 
 export const collections = {
   faqs,
+
+  /**
+   * SECTORS
+   *
+   * Controlled vocabulary for cross-cutting sector classification.
+   *
+   * Content directory:
+   * - src/content/sectors/
+   *
+   * Public routes:
+   * - /sectors/
+   * - /sectors/[id]/
+   *
+   * Do not create a sector page merely because a sector exists.
+   * A sector page is useful when it has enough distinct content
+   * to justify a destination.
+   */
+
+  sectors: defineCollection({
+    loader: glob({
+      pattern: "**/*.md",
+      base: "./src/content/sectors",
+    }),
+    schema: sectorSchema,
+  }),
 
   /**
    * WORK
