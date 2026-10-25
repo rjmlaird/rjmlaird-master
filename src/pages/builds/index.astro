@@ -10,7 +10,7 @@ interface Build {
   description: string;
   group: string;
   tech: string[];
-  status: "active" | "in-progress" | "planned" | "archived" ;
+  status: "active" | "in-progress" | "planned" | "archived";
   updated: string;
   repository: string;
   path?: string;
@@ -88,7 +88,7 @@ function badgeUrl(item: StackItem): string {
 
 function uniqueTechnologies(values: string[]): string[] {
   const seen = new Set<string>();
-  return values.filter((value) => {
+  return (values || []).filter((value) => {
     const key = normalise(value);
     if (!key || seen.has(key)) return false;
     seen.add(key);
@@ -100,13 +100,13 @@ function uniqueTechnologies(values: string[]): string[] {
  * BUILDS
  */
 
-const typeLabels = {
+const typeLabels: Record<string, string> = {
   lab: "Lab",
   tool: "Tool",
   app: "App",
 };
 
-const statusLabels = {
+const statusLabels: Record<string, string> = {
   planned: "Planned",
   active: "Active",
   "in-progress": "In progress",
@@ -120,10 +120,8 @@ function buildTime(entry: Build): number | null {
   return Number.isNaN(time) ? null : time;
 }
 
+// Sort newest to oldest by updated date
 const builds = [...entries].sort((a, b) => {
-  const featuredDifference = Number(b.featured) - Number(a.featured);
-  if (featuredDifference !== 0) return featuredDifference;
-
   const aTime = buildTime(a);
   const bTime = buildTime(b);
 
@@ -211,7 +209,11 @@ const availableTechnologies = [...technologyCounts.entries()]
 const totalTechnologies = availableTechnologies.length;
 
 function buildHref(entry: Build): string {
-  return entry.url || entry.path || "#";
+  return entry.url || entry.path || entry.source || entry.repository || "#";
+}
+
+function sourceHref(entry: Build): string {
+  return entry.source || entry.repository;
 }
 
 function searchText(entry: Build): string {
@@ -370,7 +372,9 @@ function searchText(entry: Build): string {
             <div class="build-grid" id="buildGrid">
               {builds.map((build) => {
                 const href = buildHref(build);
+                const sourceUrl = sourceHref(build);
                 const technologies = uniqueTechnologies(build.tech);
+                const typeLabel = typeLabels[build.type] || "Build";
 
                 return (
                   <article
@@ -404,7 +408,7 @@ function searchText(entry: Build): string {
                     <div class="build-card-body">
                       <div class="build-card-meta">
                         <span class="build-type">
-                          {typeLabels[build.type]}
+                          {typeLabel}
                         </span>
 
                         <span class="build-status" data-status={build.status}>
@@ -417,7 +421,9 @@ function searchText(entry: Build): string {
                       </div>
 
                       <h2>
-                        <a href={href} target="_blank" rel="noopener noreferrer">{build.title}</a>
+                        <a href={href} target="_blank" rel="noopener noreferrer">
+                          {build.title}
+                        </a>
                       </h2>
 
                       <p class="build-summary">{build.description}</p>
@@ -464,28 +470,32 @@ function searchText(entry: Build): string {
                       )}
 
                       <div class="build-card-footer">
-                        <a class="hp-link" href={href} target="_blank" rel="noopener noreferrer">
-                          Explore {typeLabels[build.type]}
-                          <span aria-hidden="true"> →</span>
-                          <span class="visually-hidden">
-                            : {build.title}
-                          </span>
-                        </a>
+                        <div class="footer-links">
+                          <a class="hp-link" href={href} target="_blank" rel="noopener noreferrer">
+                            Explore {typeLabel.toLowerCase()}
+                            <span aria-hidden="true"> →</span>
+                            <span class="visually-hidden">
+                              : {build.title}
+                            </span>
+                          </a>
 
-                        {build.primaryCta &&
-                          build.primaryCta.href !== href && (
+                          {sourceUrl && (
                             <a
-                              class="build-primary-cta"
-                              href={build.primaryCta.href}
+                              class="source-link"
+                              href={sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
                             >
-                              {build.primaryCta.label}
-                              <span class="visually-hidden">
-                                : {build.title}
-                              </span>
+                              Source
                             </a>
                           )}
+                        </div>
+
+                        {build.updated && (
+                          <p class="updated-date">
+                            Updated <time datetime={build.updated}>{build.updated}</time>
+                          </p>
+                        )}
                       </div>
                     </div>
                   </article>
@@ -699,7 +709,6 @@ function searchText(entry: Build): string {
     align-items: center;
     gap: 0.3em;
     width: fit-content;
-    min-height: 2.75rem;
     color: inherit;
     font-size: 0.9rem;
     font-weight: 600;
@@ -963,19 +972,37 @@ function searchText(entry: Build): string {
 
   .build-card-footer {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem 1rem;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
+    gap: 0.5rem;
     margin-top: auto;
-    padding-top: 0.75rem;
+    padding-top: 0.85rem;
+    border-top: 1px solid var(--build-border);
   }
 
-  .build-primary-cta {
-    font-size: 0.9rem;
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1rem;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .source-link {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--build-muted);
+    text-decoration: underline;
     text-underline-offset: 0.2em;
-    overflow-wrap: anywhere;
-    font-weight: 600;
+  }
+
+  .source-link:hover {
+    color: var(--type-accent);
+  }
+
+  .updated-date {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--build-muted);
   }
 
   .build-empty {
