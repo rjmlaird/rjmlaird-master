@@ -1,5 +1,4 @@
 ---
-// src/pages/builds/index.astro
 import Layout from "../../layouts/Layout.astro";
 import techStack from "../../data/dev/techstack.json";
 
@@ -212,8 +211,7 @@ const availableTechnologies = [...technologyCounts.entries()]
 const totalTechnologies = availableTechnologies.length;
 
 function buildHref(entry: Build): string {
-  const slug = entry.id.split("/")[1] || entry.id;
-  return `/builds/${slug.replace(/^\/+|\/+$/g, "")}/`;
+  return entry.url || entry.path || "#";
 }
 
 function searchText(entry: Build): string {
@@ -389,6 +387,8 @@ function searchText(entry: Build): string {
                       <a
                         class="build-card-image"
                         href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         tabindex="-1"
                         aria-hidden="true"
                       >
@@ -417,7 +417,7 @@ function searchText(entry: Build): string {
                       </div>
 
                       <h2>
-                        <a href={href}>{build.title}</a>
+                        <a href={href} target="_blank" rel="noopener noreferrer">{build.title}</a>
                       </h2>
 
                       <p class="build-summary">{build.description}</p>
@@ -464,8 +464,8 @@ function searchText(entry: Build): string {
                       )}
 
                       <div class="build-card-footer">
-                        <a class="hp-link" href={href}>
-                          Explore build
+                        <a class="hp-link" href={href} target="_blank" rel="noopener noreferrer">
+                          Explore {typeLabels[build.type]}
                           <span aria-hidden="true"> →</span>
                           <span class="visually-hidden">
                             : {build.title}
@@ -477,6 +477,8 @@ function searchText(entry: Build): string {
                             <a
                               class="build-primary-cta"
                               href={build.primaryCta.href}
+                              target="_blank"
+                              rel="noopener noreferrer"
                             >
                               {build.primaryCta.label}
                               <span class="visually-hidden">
@@ -1034,44 +1036,41 @@ function searchText(entry: Build): string {
     margin: 1rem 0 0;
     padding: 0;
     color: var(--build-muted);
-    font-size: 0.85rem;
+    font-size: 0.875rem;
     list-style: none;
   }
 
   .type-legend-item {
     display: inline-flex;
-    gap: 0.4rem;
     align-items: center;
+    gap: 0.4rem;
   }
 
   .type-callout {
     margin-top: clamp(3rem, 6vw, 5rem);
     border-top: 1px solid var(--build-border);
-    padding-top: clamp(2rem, 4vw, 3rem);
+    padding-top: clamp(2.5rem, 5vw, 4rem);
   }
 
   .type-callout-intro {
-    max-width: 62ch;
-    margin-bottom: 1.5rem;
+    max-width: 72ch;
+    margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   }
 
   .type-callout-eyebrow {
-    margin: 0 0 0.4rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    margin: 0 0 0.5rem;
     color: var(--build-muted);
+    font-size: 0.875rem;
+    font-weight: 600;
   }
 
-  .type-callout h2 {
+  .type-callout-intro h2 {
+    margin: 0 0 0.75rem;
+    font-size: clamp(1.5rem, 2.5vw, 2rem);
+  }
+
+  .type-callout-intro p {
     margin: 0;
-    font-size: clamp(1.3rem, 3vw, 1.7rem);
-    line-height: 1.25;
-  }
-
-  .type-callout-intro > p:last-child {
-    margin: 1rem 0 0;
     color: var(--build-muted);
     line-height: 1.65;
   }
@@ -1079,137 +1078,100 @@ function searchText(entry: Build): string {
   .type-callout-grid {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 1.25rem;
+    gap: clamp(1rem, 2vw, 1.5rem);
     margin: 0;
     padding: 0;
     list-style: none;
   }
 
   .type-callout-card {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
     border: 1px solid var(--build-border);
-    border-top: 4px solid var(--type-accent);
+    border-top: 4px solid var(--type-accent, var(--build-border));
     border-radius: 0.85rem;
-    padding: 1.4rem;
+    padding: clamp(1.25rem, 2vw, 1.75rem);
     background: var(--build-surface);
-    transition:
-      border-color 0.15s,
-      transform 0.15s;
-  }
-
-  .type-callout-card:hover {
-    border-color: color-mix(in srgb, var(--type-accent) 55%, var(--build-border));
-    transform: translateY(-2px);
   }
 
   .type-callout-icon {
-    display: grid;
-    width: 2.75rem;
-    height: 2.75rem;
-    place-items: center;
-    border: 1px solid var(--type-accent);
-    border-radius: 0.6rem;
-    background: color-mix(in srgb, var(--type-accent) 16%, transparent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, var(--type-accent) 15%, transparent);
+    color: var(--type-accent);
     font-weight: 700;
   }
 
   .type-callout-label {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.25rem 0.75rem;
-    align-items: baseline;
+    gap: 0.5rem 0.75rem;
+    align-items: center;
     margin: 0 0 0.4rem;
-    font-size: 0.78rem;
+    font-size: 0.8rem;
     font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
   }
 
   .type-callout-count {
     color: var(--build-muted);
-    font-weight: 400;
-    letter-spacing: normal;
-    text-transform: none;
+    font-weight: normal;
   }
 
   .type-callout-card h3 {
-    margin: 0;
-    font-size: 1.2rem;
-    line-height: 1.25;
+    margin: 0 0 0.5rem;
+    font-size: 1.25rem;
   }
 
-  .type-callout-card p:not(.type-callout-label) {
-    margin: 0.7rem 0 0;
+  .type-callout-card p {
+    margin: 0;
     color: var(--build-muted);
+    font-size: 0.95rem;
     line-height: 1.6;
   }
 
   .type-callout-link {
-    grid-column: 1 / -1;
     display: inline-flex;
-    gap: 0.4rem;
     align-items: center;
+    gap: 0.3em;
     width: fit-content;
-    min-height: 44px;
+    color: inherit;
+    font-size: 0.9rem;
     font-weight: 600;
+    text-decoration: underline;
     text-decoration-color: var(--type-accent);
     text-decoration-thickness: 2px;
     text-underline-offset: 0.2em;
   }
 
   .type-callout-link:hover {
-    text-decoration-thickness: 3px;
+    color: var(--type-accent);
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .build-card,
-    .type-callout-card {
-      transition: none;
-    }
-
-    .build-card:hover,
-    .type-callout-card:hover {
-      transform: none;
-    }
-  }
-
-  @media (max-width: 1100px) {
-    .build-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .type-callout-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
+  @media (max-width: 1024px) {
     .build-filters {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .filter-search {
-      grid-column: 1 / -1;
-    }
-
-    .filter-reset {
-      justify-self: start;
+    .build-grid,
+    .type-callout-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
   }
 
-  @media (max-width: 700px) {
-    .build-grid,
-    .build-filters,
-    .type-callout-grid {
+  @media (max-width: 640px) {
+    .build-filters {
       grid-template-columns: 1fr;
     }
 
-    .filter-search {
-      grid-column: auto;
-    }
-
-    .filter-reset {
-      justify-self: stretch;
+    .build-grid,
+    .type-callout-grid {
+      grid-template-columns: 1fr;
     }
   }
 </style>
