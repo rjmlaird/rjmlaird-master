@@ -34,7 +34,6 @@ export const routes = {
   editorial: "/work/editorial/",
   research: "/research/",
   publications: "/research/publications/",
-  dev: "/dev/",
   builds: "/builds/",
 
   // Insights
@@ -67,11 +66,13 @@ export const routes = {
   accessibility: "/accessibility/",
 
   cv: "https://cv.rjmlaird.co.uk/",
+  dev: "https://dev.rjmlaird.co.uk/",
 } as const;
 
 /** External websites and applications that belong to this site's ecosystem. */
 export const external = {
   cv: "https://cv.rjmlaird.co.uk/",
+  dev: "https://dev.rjmlaird.co.uk/",
   docs: "https://docs.rjmlaird.co.uk",
   tools: "https://tools.rjmlaird.co.uk",
   apps: "https://apps.rjmlaird.co.uk",
@@ -132,14 +133,11 @@ export const primaryNav: NavLink[] = [
     children: [
       { label: "Case studies", href: routes.caseStudies },
       { label: "Projects", href: routes.projects },
-      { label: "Initiatives", href: routes.initiatives },
       { label: "Research", href: routes.research },
       { label: "Events", href: routes.events },
       { label: "Podcasts", href: routes.podcasts },
       { label: "Videos", href: routes.videos },
       { label: "Editorial", href: routes.editorial },
-      { label: "Development & systems", href: routes.dev },
-      { label: "Builds", href: routes.builds },
     ],
   },
   {
@@ -167,13 +165,14 @@ export const primaryNav: NavLink[] = [
     href: routes.about,
     children: [
       { label: "Biography", href: routes.bio },
-      { label: "Organisations & initiatives", href: routes.organisations },
+      { label: "Organisations", href: routes.organisations },
+      { label: "Initiatives", href: routes.initiatives },
       { label: "Press & media", href: routes.press },
     ],
   },
 ];
 
-export const utilityNav: NavLink[] = [{ label: "CV", href: external.cv, external: true }];
+export const utilityNav: NavLink[] = [{ label: "CV", href: external.cv, external: true },{ label: "Dev", href: external.dev, external: true }];
 
 export const ctaNav: NavLink = { label: "Start a conversation", href: routes.contact };
 
@@ -184,8 +183,8 @@ export const footerNav: FooterGroup[] = [
     title: "Explore",
     links: [
       { label: "Work", href: routes.work },
+      { label: "CV", href: external.cv },
       { label: "Research", href: routes.research },
-      { label: "Builds", href: routes.builds },
       { label: "Insights", href: routes.insights },
       ...(showcase.live ? [{ label: showcase.label, href: showcase.href, external: true }] : []),
     ],
@@ -197,6 +196,7 @@ export const footerNav: FooterGroup[] = [
   {
     title: "Platforms",
     links: [
+      { label: "Dev", href: external.dev },
       { label: "Docs", href: external.docs },
       { label: "Tools", href: external.tools },
       { label: "Apps", href: external.apps },
