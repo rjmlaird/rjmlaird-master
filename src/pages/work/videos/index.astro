@@ -32,7 +32,10 @@ const clients = [...new Set(sortedVideos.map((v) => normalize(v.client)).filter(
 const tags = [...new Set(sortedVideos.flatMap((v) => v.tags ?? []).map(normalize).filter(Boolean))].sort();
 ---
 
-<Layout>
+<Layout
+  title="Videos"
+  description="Video work for Mercator Ocean, ECMWF, ESA, EUMETSAT and DLR: editorial storytelling, motion design and science communication for environmental and space data."
+>
   <section class="section video-gallery">
     <div class="container vg-shell">
       <header class="vg-head">

@@ -6,7 +6,10 @@ import PodcastCard from "../../../components/PodcastCard.astro";
 const podcasts = await getCollection("podcasts");
 ---
 
-<Layout>
+<Layout
+  title="Podcasts"
+  description="Podcast and broadcast contributions on space, Earth observation and science communication."
+>
   <section class="section podcast-gallery">
     <div class="container pg-shell">
       <header class="pg-head">

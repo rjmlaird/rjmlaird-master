@@ -3,6 +3,8 @@ import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../../components/Projects/ProjectCard.astro";
 import Filters from "../../../components/Projects/Filters.astro";
+import IndexHero from "../../../components/Index/IndexHero.astro";
+import CardGrid from "../../../components/Index/CardGrid.astro";
 
 const events = (await getCollection("events", ({ data }) => data.draft !== true))
   .sort((a, b) => {
@@ -10,29 +12,32 @@ const events = (await getCollection("events", ({ data }) => data.draft !== true)
     const bDate = b.data.startDate ? new Date(b.data.startDate).getTime() : 0;
     return bDate - aDate;
   });
+
+const years = events
+  .map((e) => (e.data.startDate ? new Date(e.data.startDate).getFullYear() : NaN))
+  .filter((y) => Number.isFinite(y));
+const span = years.length ? `${Math.min(...years)}–${Math.max(...years)}` : "";
 ---
 
 <Layout
   title="Events"
-  description="Space, sustainability and science-communication events — filter by date, client, tags, type and status."
+  description="Space, sustainability and science-communication events I have organised, hosted or taken part in. Search by title, filter by year, tag, type or format."
 >
   <section class="project-index">
-    <div class="container pg-shell">
-      <header class="pg-head">
-        <p class="eyebrow">Events</p>
+    <div class="pg-shell">
+      <IndexHero
+        eyebrow="Events"
+        title="Events across"
+        accent="space, sustainability & science policy"
+        lede="Meetups, live broadcasts, conferences and bootcamps I have organised, hosted or taken part in. Newest first."
+        stats={[`${events.length} events`, ...(span ? [span] : [])]}
+      />
 
-        <h1 class="ch fade">
-          Events across <em>space, sustainability &amp; science policy</em>
-        </h1>
-      </header>
+      <Filters items={events} noun="events" />
 
-      <Filters items={events} />
-
-      <div class="grid" id="projectGrid">
-        {events.map((event) => (
-          <ProjectCard event={event} />
-        ))}
-      </div>
+      <CardGrid label="Events">
+        {events.map((event) => <ProjectCard event={event} />)}
+      </CardGrid>
     </div>
   </section>
 </Layout>

@@ -1,9 +1,11 @@
 ---
-// src/pages/case-studies/index.astro
+// src/pages/work/case-studies/index.astro
 import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../../components/Projects/ProjectCard.astro";
 import Filters from "../../../components/Projects/Filters.astro";
+import IndexHero from "../../../components/Index/IndexHero.astro";
+import CardGrid from "../../../components/Index/CardGrid.astro";
 
 const caseStudies = await getCollection("caseStudies", ({ data }) => data.draft !== true);
 
@@ -13,27 +15,24 @@ const sortedCaseStudies = caseStudies.sort((a, b) =>
 ---
 
 <Layout
-  title="Case Studies"
-  description="Space, sustainability and science-communication case studies — filter by date, client, tags, type and status."
+  title="Case studies"
+  description="Selected case studies in space, sustainability and science communication: the brief, my role and what changed."
 >
   <section class="project-index">
-    <div class="container pg-shell">
-      <header class="pg-head">
-        <p class="eyebrow">Case Studies</p>
+    <div class="pg-shell">
+      <IndexHero
+        eyebrow="Case studies"
+        title="Selected work, written up"
+        accent="the brief, my role, the outcome"
+        lede="Fuller accounts of projects in space, Earth observation and science communication."
+        stats={[`${sortedCaseStudies.length} case studies`]}
+      />
 
-        <h1 class="ch fade">
-          Case Studies across <em>space, sustainability &amp; science policy</em>
-        </h1>
-      </header>
+      <Filters items={sortedCaseStudies} noun="case studies" />
 
-      <Filters items={caseStudies} />
-
-      <div class="grid" id="projectGrid">
-        {sortedCaseStudies.map((caseStudy) => (
-          <ProjectCard caseStudy={caseStudy} />
-        ))}
-      </div>
+      <CardGrid label="Case studies">
+        {sortedCaseStudies.map((caseStudy) => <ProjectCard caseStudy={caseStudy} />)}
+      </CardGrid>
     </div>
   </section>
 </Layout>
-

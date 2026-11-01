@@ -60,6 +60,8 @@ export default defineConfig({
   redirects: {
     "/dev": "https://dev.rjmlaird.co.uk",
     "/cv": "https://cv.rjmlaird.co.uk",
+    // /work/talks was a byte-for-byte copy of /work/articles; talks and events live together now.
+    "/work/talks": "/work/events/",
   },
 
   // [term] and [term|text] in Markdown/MDX link to https://glossary.rjmlaird.co.uk/{slug}/.

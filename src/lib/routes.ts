@@ -133,9 +133,8 @@ export const primaryNav: NavLink[] = [
     children: [
       { label: "Case studies", href: routes.caseStudies },
       { label: "Projects", href: routes.projects },
-      { label: "Research", href: routes.research },
+      { label: "Initiatives", href: routes.initiatives },
       { label: "Events", href: routes.events },
-      { label: "Podcasts", href: routes.podcasts },
       { label: "Videos", href: routes.videos },
       { label: "Editorial", href: routes.editorial },
     ],
@@ -156,6 +155,8 @@ export const primaryNav: NavLink[] = [
     href: routes.insights,
     children: [
       { label: "Blog", href: routes.blog },
+      { label: "Research", href: routes.research },
+      { label: "Podcasts", href: routes.podcasts },
       { label: "Signal & Noise newsletter", href: routes.substack },
       { label: "Sectors", href: routes.sectors },
     ],
@@ -166,7 +167,6 @@ export const primaryNav: NavLink[] = [
     children: [
       { label: "Biography", href: routes.bio },
       { label: "Organisations", href: routes.organisations },
-      { label: "Initiatives", href: routes.initiatives },
       { label: "Press & media", href: routes.press },
     ],
   },

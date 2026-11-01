@@ -1,5 +1,8 @@
 ---
 // src/components/Projects/Filters.astro
+// Filter bar for card indexes. Reads the data-* attributes emitted by ProjectCard.astro and the
+// grid id "projectGrid". Search is always visible; everything else sits behind a "Filters" toggle
+// so phones see the content first.
 import type { CollectionEntry } from "astro:content";
 
 type AnyEntry = CollectionEntry<"projects" | "initiatives" | "caseStudies" | "events">;
@@ -7,10 +10,18 @@ type AnyEntry = CollectionEntry<"projects" | "initiatives" | "caseStudies" | "ev
 interface Props {
   items?: AnyEntry[];
   clientFields?: string[];
+  /** Tags shown before the "Show all" toggle. */
+  tagLimit?: number;
+  /** Noun for the result count, e.g. "events". */
+  noun?: string;
 }
 
-const { items = [], clientFields = ["client", "organisation", "institution", "organiser"] } =
-  Astro.props as Props;
+const {
+  items = [],
+  clientFields = ["client", "organisation", "institution", "organiser"],
+  tagLimit = 12,
+  noun = "items",
+} = Astro.props as Props;
 
 const flattenStrings = (val: unknown): string[] => {
   if (!val) return [];
@@ -25,368 +36,511 @@ const getClientLike = (data: Record<string, unknown>) => {
     if (typeof val === "string" && val.trim()) return val.trim();
 
     if (key === "organiser") {
-      if (Array.isArray(val)) {
-        const first = val.find((o) => {
-          if (!o) return false;
-          if (typeof o === "string") return o.trim().length > 0;
-          return typeof o === "object" && o !== null && "name" in o && String((o as { name?: unknown }).name || "").trim().length > 0;
-        });
-
-        if (typeof first === "string") return first.trim();
-        if (first && typeof first === "object" && "name" in first) {
-          return String((first as { name?: unknown }).name || "").trim();
-        }
-      }
-
-      if (val && typeof val === "object" && "name" in (val as object)) {
-        return String((val as { name?: unknown }).name || "").trim();
+      const first = Array.isArray(val) ? val.find(Boolean) : val;
+      if (typeof first === "string" && first.trim()) return first.trim();
+      if (first && typeof first === "object" && "name" in (first as object)) {
+        const name = String((first as { name?: unknown }).name || "").trim();
+        if (name) return name;
       }
     }
   }
   return "";
 };
 
-const allClients = Array.from(
+const dataOf = (p: AnyEntry) => (p.data as Record<string, unknown>) || {};
+const uniqueSorted = (values: string[]) => Array.from(new Set(values.filter(Boolean))).sort();
+
+const allClients = uniqueSorted(items.map((p) => getClientLike(dataOf(p))));
+
+// Tags ranked by how many entries use them, so the visible handful are the useful ones.
+const tagCounts = new Map<string, number>();
+for (const p of items) {
+  for (const t of new Set(flattenStrings(dataOf(p).tags))) tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1);
+}
+const rankedTags = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+const visibleTags = rankedTags.slice(0, tagLimit);
+const extraTags = rankedTags.slice(tagLimit).sort((a, b) => a[0].localeCompare(b[0]));
+
+const allCategories = uniqueSorted(
+  items.flatMap((p) => [...flattenStrings(dataOf(p).category), ...flattenStrings(dataOf(p).sectors)]),
+);
+const allTypes = uniqueSorted(items.map((p) => String(dataOf(p).type || "").trim()));
+const allStatuses = uniqueSorted(items.map((p) => String(dataOf(p).status || "").trim()));
+const allFormats = uniqueSorted(items.map((p) => String(dataOf(p).format || "").trim()));
+
+const years = Array.from(
   new Set(
     items
-      .map((p) => getClientLike((p.data as Record<string, unknown>) || {}))
-      .filter(Boolean)
-  )
-).sort();
+      .map((p) => {
+        const d = dataOf(p).startDate;
+        const t = d ? new Date(d as string | number | Date) : null;
+        return t && !Number.isNaN(t.getTime()) ? String(t.getFullYear()) : "";
+      })
+      .filter(Boolean),
+  ),
+).sort((a, b) => Number(b) - Number(a));
 
-const allTags = Array.from(
-  new Set(
-    items.flatMap((p) => flattenStrings(((p.data as Record<string, unknown>)?.tags ?? []) as unknown))
-  )
-).sort();
-
-const allCategories = Array.from(
-  new Set(
-    items.flatMap((p) => [
-      ...flattenStrings(((p.data as Record<string, unknown>)?.category ?? []) as unknown),
-      ...flattenStrings(((p.data as Record<string, unknown>)?.sectors ?? []) as unknown),
-    ])
-  )
-).sort();
-
-const allTypes = Array.from(
-  new Set(
-    items
-      .map((p) => String((p.data as Record<string, unknown>)?.type || "").trim())
-      .filter(Boolean)
-  )
-).sort();
-
-const allStatuses = Array.from(
-  new Set(
-    items
-      .map((p) => String((p.data as Record<string, unknown>)?.status || "").trim())
-      .filter(Boolean)
-  )
-).sort();
-
-const hasEvents = items.some((p) => {
-  const data = (p.data as Record<string, unknown>) || {};
-  return Boolean(data.location || data.format);
-});
-
-const allFormats = Array.from(
-  new Set(
-    items
-      .map((p) => String((p.data as Record<string, unknown>)?.format || "").trim())
-      .filter(Boolean)
-  )
-).sort();
 ---
 
-<div class="filters" aria-label="Filters">
-  <div class="filter-field full-width">
-    <label for="search">Search</label>
-    <input id="search" type="text" placeholder="Search title or description" />
+<section class="filters" aria-label="Filter and search">
+  <div class="filters__bar">
+    <div class="filter-field filters__search">
+      <label for="search">Search</label>
+      <input id="search" type="search" placeholder="Search title or description" autocomplete="off" />
+    </div>
+
+    <button
+      class="filters__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="filterPanel"
+      id="filterToggle"
+    >
+      Filters <span class="filters__badge" id="filterBadge" hidden>0</span>
+    </button>
   </div>
 
-  {allClients.length > 0 && (
-    <div class="filter-field">
-      <label for="client">Client / Organiser</label>
-      <select id="client">
-        <option value="">All</option>
-        {allClients.map((c) => <option value={c}>{c}</option>)}
-      </select>
-    </div>
-  )}
+  <div class="filters__panel" id="filterPanel" hidden>
+    <div class="filters__selects">
+      {allClients.length > 1 && (
+        <div class="filter-field">
+          <label for="client">Client / organiser</label>
+          <select id="client">
+            <option value="">All</option>
+            {allClients.map((c) => <option value={c}>{c}</option>)}
+          </select>
+        </div>
+      )}
 
-  {allTags.length > 0 && (
-    <div class="filter-field full-width">
-      <label>Tags</label>
-      <div class="checkbox-group" id="tagGroup">
-        {allTags.map((t) => (
-          <label class="checkbox-label">
-            <input type="checkbox" class="tag-checkbox" value={t} />
-            <span>{t}</span>
-          </label>
-        ))}
+      {allTypes.length > 1 && (
+        <div class="filter-field">
+          <label for="type">Type</label>
+          <select id="type">
+            <option value="">All</option>
+            {allTypes.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
+      )}
+
+      {allStatuses.length > 1 && (
+        <div class="filter-field">
+          <label for="status">Status</label>
+          <select id="status">
+            <option value="">All</option>
+            {allStatuses.map((s) => <option value={s}>{s}</option>)}
+          </select>
+        </div>
+      )}
+
+      {allFormats.length > 1 && (
+        <div class="filter-field">
+          <label for="format">Format</label>
+          <select id="format">
+            <option value="">All</option>
+            {allFormats.map((f) => <option value={f}>{f}</option>)}
+          </select>
+        </div>
+      )}
+
+      {years.length > 1 && (
+        <div class="filter-field">
+          <label for="year">Year</label>
+          <select id="year">
+            <option value="">All</option>
+            {years.map((y) => <option value={y}>{y}</option>)}
+          </select>
+        </div>
+      )}
+    </div>
+
+    {rankedTags.length > 0 && (
+      <fieldset class="filter-group">
+        <legend>Tags</legend>
+        <div class="checkbox-group" id="tagGroup">
+          {visibleTags.map(([t, n]) => (
+            <label class="chip">
+              <input type="checkbox" class="tag-checkbox" value={t} />
+              <span>{t} <small>{n}</small></span>
+            </label>
+          ))}
+          {extraTags.map(([t, n]) => (
+            <label class="chip chip--extra" hidden>
+              <input type="checkbox" class="tag-checkbox" value={t} />
+              <span>{t} <small>{n}</small></span>
+            </label>
+          ))}
+        </div>
+        {extraTags.length > 0 && (
+          <button class="filters__more" id="tagMore" type="button" aria-expanded="false">
+            Show all {rankedTags.length} tags
+          </button>
+        )}
+      </fieldset>
+    )}
+
+    {allCategories.length > 0 && (
+      <fieldset class="filter-group">
+        <legend>Categories</legend>
+        <div class="checkbox-group" id="categoryGroup">
+          {allCategories.map((c) => (
+            <label class="chip">
+              <input type="checkbox" class="category-checkbox" value={c} />
+              <span>{c}</span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+    )}
+
+    <div class="filters__dates">
+      <div class="filter-field">
+        <label for="fromDate">From</label>
+        <input id="fromDate" type="date" />
       </div>
-    </div>
-  )}
-
-  {allCategories.length > 0 && (
-    <div class="filter-field full-width">
-      <label>Categories</label>
-      <div class="checkbox-group" id="categoryGroup">
-        {allCategories.map((c) => (
-          <label class="checkbox-label">
-            <input type="checkbox" class="category-checkbox" value={c} />
-            <span>{c}</span>
-          </label>
-        ))}
+      <div class="filter-field">
+        <label for="toDate">To</label>
+        <input id="toDate" type="date" />
       </div>
+      <button id="clearFilters" class="filters__clear" type="button">Clear all</button>
     </div>
-  )}
-
-  {allTypes.length > 0 && (
-    <div class="filter-field">
-      <label for="type">Type</label>
-      <select id="type">
-        <option value="">All</option>
-        {allTypes.map((t) => <option value={t}>{t}</option>)}
-      </select>
-    </div>
-  )}
-
-  {allStatuses.length > 0 && (
-    <div class="filter-field">
-      <label for="status">Status</label>
-      <select id="status">
-        <option value="">All</option>
-        {allStatuses.map((s) => <option value={s}>{s}</option>)}
-      </select>
-    </div>
-  )}
-
-  {hasEvents && allFormats.length > 0 && (
-    <div class="filter-field">
-      <label for="format">Format</label>
-      <select id="format">
-        <option value="">All</option>
-        {allFormats.map((f) => <option value={f}>{f}</option>)}
-      </select>
-    </div>
-  )}
-
-  <div class="filter-field">
-    <label for="fromDate">From</label>
-    <input id="fromDate" type="date" />
   </div>
 
-  <div class="filter-field">
-    <label for="toDate">To</label>
-    <input id="toDate" type="date" />
-  </div>
-
-  <div class="filter-actions">
-    <button id="clearFilters" type="button">Clear</button>
-  </div>
+  <p class="filters__count" id="resultCount" role="status" aria-live="polite" data-noun={noun}></p>
+  <p class="filters__empty" id="noResults" hidden>
+    Nothing matches those filters. <button type="button" id="emptyClear">Clear filters</button>
+  </p>
 
   <script is:inline>
     (() => {
       const grid = document.getElementById("projectGrid");
-      const searchInput = document.getElementById("search");
-      const clientSelect = document.getElementById("client");
-      const typeSelect = document.getElementById("type");
-      const statusSelect = document.getElementById("status");
-      const formatSelect = document.getElementById("format");
-      const fromDateInput = document.getElementById("fromDate");
-      const toDateInput = document.getElementById("toDate");
-      const clearBtn = document.getElementById("clearFilters");
+      if (!grid) return;
 
-      const tagCheckboxes = Array.from(document.querySelectorAll(".tag-checkbox"));
-      const categoryCheckboxes = Array.from(document.querySelectorAll(".category-checkbox"));
+      const $ = (id) => document.getElementById(id);
+      const searchInput = $("search");
+      const selects = ["client", "type", "status", "format", "year"].map($).filter(Boolean);
+      const fromDateInput = $("fromDate");
+      const toDateInput = $("toDate");
+      const tagBoxes = [...document.querySelectorAll(".tag-checkbox")];
+      const catBoxes = [...document.querySelectorAll(".category-checkbox")];
+      const countEl = $("resultCount");
+      const emptyEl = $("noResults");
+      const badge = $("filterBadge");
+      const panel = $("filterPanel");
+      const toggle = $("filterToggle");
 
-      const getValue = (el) => (el && "value" in el ? el.value : "");
-      const setValue = (el, value) => {
-        if (el && "value" in el) el.value = value;
-      };
-
-      const getCheckedValues = (boxes) => boxes.filter((b) => b.checked).map((b) => b.value);
-
-      const parseDateInput = (value) => {
-        if (!value) return null;
-        const d = new Date(`${value}T00:00:00`);
+      const checked = (boxes) => boxes.filter((b) => b.checked).map((b) => b.value);
+      const dateMs = (v, end) => {
+        if (!v) return null;
+        const d = new Date(`${v}T${end ? "23:59:59" : "00:00:00"}`);
         return Number.isNaN(d.getTime()) ? null : d.getTime();
       };
+      const val = (id) => ($(id) ? $(id).value : "");
 
-      const parseStartDate = (raw) => {
-        if (!raw) return null;
-        const d = new Date(raw);
-        return Number.isNaN(d.getTime()) ? null : d.getTime();
-      };
+      function apply() {
+        const q = (searchInput?.value || "").toLowerCase().trim();
+        const client = val("client"), type = val("type"), status = val("status");
+        const format = val("format"), year = val("year");
+        const from = dateMs(fromDateInput?.value, false);
+        const to = dateMs(toDateInput?.value, true);
+        const tags = checked(tagBoxes);
+        const cats = checked(catBoxes);
 
-      function applyFilters() {
-        const q = getValue(searchInput).toLowerCase().trim();
-        const client = getValue(clientSelect);
-        const type = getValue(typeSelect);
-        const status = getValue(statusSelect);
-        const format = getValue(formatSelect);
-        const from = parseDateInput(getValue(fromDateInput));
-        const to = parseDateInput(getValue(toDateInput));
-
-        const selectedTags = getCheckedValues(tagCheckboxes);
-        const selectedCategories = getCheckedValues(categoryCheckboxes);
-
-        const cards = Array.from(grid?.children || []);
+        const cards = [...grid.children];
+        let shown = 0;
 
         cards.forEach((card) => {
-          const title = (card.dataset.title || "").toLowerCase();
-          const desc = (card.dataset.description || "").toLowerCase();
-          const clientLike = card.dataset.client || "";
-          const cardTags = (card.dataset.tags || "").split("|").filter(Boolean);
-          const cardCategories = (card.dataset.categories || "").split("|").filter(Boolean);
-          const cardType = card.dataset.type || "";
-          const cardStatus = card.dataset.status || "";
-          const cardFormat = card.dataset.format || "";
-          const start = parseStartDate(card.dataset.startDate);
+          const d = card.dataset;
+          const hay = `${d.title || ""} ${d.description || ""}`.toLowerCase();
+          const cardTags = (d.tags || "").split("|").filter(Boolean);
+          const cardCats = (d.categories || "").split("|").filter(Boolean);
+          const start = d.startDate ? new Date(d.startDate).getTime() : null;
 
           let ok = true;
-
-          if (q && !`${title} ${desc}`.includes(q)) ok = false;
-          if (client && clientLike !== client) ok = false;
-
-          if (selectedTags.length > 0) {
-            const matchesTag = selectedTags.some((t) => cardTags.includes(t));
-            if (!matchesTag) ok = false;
-          }
-
-          if (selectedCategories.length > 0) {
-            const matchesCategory = selectedCategories.some((c) => cardCategories.includes(c));
-            if (!matchesCategory) ok = false;
-          }
-
-          if (type && cardType !== type) ok = false;
-          if (status && cardStatus !== status) ok = false;
-          if (format && cardFormat !== format) ok = false;
-
+          if (q && !hay.includes(q)) ok = false;
+          if (client && d.client !== client) ok = false;
+          if (type && d.type !== type) ok = false;
+          if (status && d.status !== status) ok = false;
+          if (format && d.format !== format) ok = false;
+          if (year && d.year !== year) ok = false;
+          if (tags.length && !tags.some((t) => cardTags.includes(t))) ok = false;
+          if (cats.length && !cats.some((c) => cardCats.includes(c))) ok = false;
+          // Undated entries are only excluded when a date range is set.
+          if ((from !== null || to !== null) && start === null) ok = false;
           if (from !== null && start !== null && start < from) ok = false;
           if (to !== null && start !== null && start > to) ok = false;
 
-          card.style.display = ok ? "" : "none";
+          card.hidden = !ok;
+          if (ok) shown += 1;
         });
+
+        const total = cards.length;
+        const noun = countEl.dataset.noun || "items";
+        countEl.textContent = shown === total ? `${total} ${noun}` : `Showing ${shown} of ${total} ${noun}`;
+        emptyEl.hidden = shown !== 0;
+
+        const active =
+          selects.filter((s) => s.value).length +
+          tags.length + cats.length +
+          (fromDateInput?.value ? 1 : 0) + (toDateInput?.value ? 1 : 0);
+        badge.textContent = String(active);
+        badge.hidden = active === 0;
       }
 
-      [searchInput, clientSelect, typeSelect, statusSelect, formatSelect, fromDateInput, toDateInput].forEach((el) =>
-        el?.addEventListener("input", applyFilters)
-      );
+      function clearAll() {
+        if (searchInput) searchInput.value = "";
+        selects.forEach((s) => (s.value = ""));
+        [fromDateInput, toDateInput].forEach((i) => i && (i.value = ""));
+        [...tagBoxes, ...catBoxes].forEach((b) => (b.checked = false));
+        apply();
+      }
 
-      [clientSelect, typeSelect, statusSelect, formatSelect, fromDateInput, toDateInput].forEach((el) =>
-        el?.addEventListener("change", applyFilters)
-      );
-
-      tagCheckboxes.forEach((cb) => cb.addEventListener("change", applyFilters));
-      categoryCheckboxes.forEach((cb) => cb.addEventListener("change", applyFilters));
-
-      clearBtn?.addEventListener("click", () => {
-        setValue(searchInput, "");
-        setValue(clientSelect, "");
-        setValue(typeSelect, "");
-        setValue(statusSelect, "");
-        setValue(formatSelect, "");
-        setValue(fromDateInput, "");
-        setValue(toDateInput, "");
-
-        tagCheckboxes.forEach((cb) => (cb.checked = false));
-        categoryCheckboxes.forEach((cb) => (cb.checked = false));
-
-        applyFilters();
+      toggle?.addEventListener("click", () => {
+        const open = toggle.getAttribute("aria-expanded") === "true";
+        toggle.setAttribute("aria-expanded", String(!open));
+        panel.hidden = open;
       });
 
-      applyFilters();
+      $("tagMore")?.addEventListener("click", (e) => {
+        const btn = e.currentTarget;
+        const open = btn.getAttribute("aria-expanded") === "true";
+        document.querySelectorAll(".chip--extra").forEach((c) => (c.hidden = open));
+        btn.setAttribute("aria-expanded", String(!open));
+        btn.textContent = open ? `Show all ${tagBoxes.length} tags` : "Show fewer tags";
+      });
+
+      [searchInput, ...selects, fromDateInput, toDateInput, ...tagBoxes, ...catBoxes].forEach((el) => {
+        el?.addEventListener("input", apply);
+        el?.addEventListener("change", apply);
+      });
+      $("clearFilters")?.addEventListener("click", clearAll);
+      $("emptyClear")?.addEventListener("click", clearAll);
+
+      apply();
     })();
   </script>
-</div>
+</section>
 
 <style>
   .filters {
     display: grid;
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.9rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .filters__bar {
+    display: flex;
+    align-items: flex-end;
     gap: 0.75rem;
-    margin-bottom: 1.5rem;
   }
 
-  @media (min-width: 640px) {
-    .filters {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (min-width: 1024px) {
-    .filters {
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-    }
+  .filters__search {
+    flex: 1;
+    min-width: 0;
   }
 
   .filter-field {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.3rem;
+    min-width: 0;
   }
 
-  .filter-field.full-width {
-    grid-column: 1 / -1;
-  }
-
-  .filter-field label {
+  .filter-field label,
+  .filter-group legend {
     font-size: 0.75rem;
+    letter-spacing: 0.04em;
     color: var(--color-text-muted);
   }
 
-  .filter-field input[type="text"],
-  .filter-field input[type="date"],
+  .filter-field input,
   .filter-field select {
-    padding: 0.4rem 0.5rem;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
+    width: 100%;
+    min-height: 2.6rem;
+    padding: 0.5rem 0.7rem;
+    background: var(--card);
+    color: var(--w);
+    border: 1px solid var(--bm);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color-scheme: dark;
+  }
+
+  .filter-field input:focus-visible,
+  .filter-field select:focus-visible {
+    outline-offset: 1px;
+  }
+
+  .filters__toggle,
+  .filters__clear,
+  .filters__more,
+  .filters__empty button {
+    min-height: 2.6rem;
+    padding: 0.5rem 0.95rem;
+    background: transparent;
+    color: var(--w);
+    border: 1px solid var(--bm);
+    border-radius: 6px;
     font-size: 0.85rem;
+    cursor: pointer;
+  }
+
+  .filters__toggle:hover,
+  .filters__clear:hover,
+  .filters__more:hover,
+  .filters__empty button:hover {
+    border-color: var(--teal);
+  }
+
+  .filters__toggle[aria-expanded="true"] {
+    border-color: var(--teal);
+    background: var(--td);
+  }
+
+  .filters__badge {
+    display: inline-block;
+    min-width: 1.25rem;
+    margin-left: 0.3rem;
+    padding: 0 0.35rem;
+    border-radius: 999px;
+    background: var(--teal);
+    color: var(--ink);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .filters__badge[hidden] {
+    display: none;
+  }
+
+  .filters__panel {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--ink2);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+  }
+
+  .filters__panel[hidden] {
+    display: none;
+  }
+
+  .filters__selects {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+    gap: 0.75rem;
+  }
+
+  .filter-group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .filter-group legend {
+    margin-bottom: 0.4rem;
+    padding: 0;
   }
 
   .checkbox-group {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.35rem 0.6rem;
-    max-height: 10rem;
-    overflow-y: auto;
-    border: 1px solid var(--color-border);
-    border-radius: 4px;
-    padding: 0.4rem 0.5rem;
+    gap: 0.4rem;
   }
 
-  .checkbox-label {
+  .chip {
     display: inline-flex;
-    align-items: center;
-    gap: 0.25rem;
-    font-size: 0.8rem;
     cursor: pointer;
     user-select: none;
   }
 
-  .checkbox-label input[type="checkbox"] {
+  .chip[hidden] {
+    display: none;
+  }
+
+  .chip input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .chip span {
+    padding: 0.3rem 0.7rem;
+    border: 1px solid var(--bm);
+    border-radius: 999px;
+    font-size: 0.8rem;
+    color: var(--mb);
+  }
+
+  .chip small {
+    opacity: 0.65;
+  }
+
+  .chip input:checked + span {
+    background: var(--td);
+    border-color: var(--teal);
+    color: var(--w);
+  }
+
+  .chip input:focus-visible + span {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .filters__more {
+    margin-top: 0.6rem;
+    min-height: 0;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .filters__dates {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    align-items: end;
+  }
+
+  .filters__clear {
+    grid-column: 1 / -1;
+    justify-self: start;
+  }
+
+  .filters__count {
     margin: 0;
-  }
-
-  .filter-actions {
-    display: flex;
-    align-items: flex-end;
-  }
-
-  .filter-actions button {
-    padding: 0.4rem 0.7rem;
-    border: 1px solid var(--color-border);
-    background: #f7f7f7;
-    border-radius: 4px;
     font-size: 0.85rem;
-    cursor: pointer;
     color: var(--color-text-muted);
   }
 
-  .filter-actions button:hover {
-    background: #eee;
+  .filters__empty {
+    margin: 0;
+    padding: 1rem 1.25rem;
+    border: 1px dashed var(--bm);
+    border-radius: 8px;
+    color: var(--mb);
+  }
+
+  .filters__empty[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 720px) {
+    .filters__search {
+      max-width: 28rem;
+    }
+
+    .filters__bar {
+      justify-content: space-between;
+    }
+
+    .filters__dates {
+      grid-template-columns: 12rem 12rem auto;
+    }
+
+    .filters__clear {
+      grid-column: auto;
+    }
   }
 </style>

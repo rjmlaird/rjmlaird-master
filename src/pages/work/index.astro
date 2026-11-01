@@ -1,62 +1,296 @@
 ---
+// src/pages/work/index.astro
+// The Work hub: what has been made and done, with counts and a short list of selected pieces.
+// (Services, i.e. how to hire me, live at /services/ and are linked once at the foot of the page.)
 import Layout from "../../layouts/Layout.astro";
+import IndexHero from "../../components/Index/IndexHero.astro";
+import { getCollection } from "astro:content";
+import { cleanText } from "../../lib/content-quality.mjs";
+import { routes, entryHref, type EntryKind } from "../../lib/routes";
+import selectedWork from "../../data/selected-work.json";
+import videos from "../../data/videos.json";
+import articlesData from "../../data/articles.json";
+
+const published = <T extends { data: { draft?: boolean } }>(entry: T) => entry.data.draft !== true;
+
+const [caseStudies, projects, initiatives, events] = await Promise.all([
+  getCollection("caseStudies", published),
+  getCollection("projects", published),
+  getCollection("initiatives", published),
+  getCollection("events", published),
+]);
+
+const videoCount = Array.isArray(videos) ? videos.length : 0;
+const articleCount = Array.isArray(articlesData?.articles) ? articlesData.articles.length : 0;
+
+/* ---- Selected work: curated in src/data/selected-work.json ---- */
+const kindFor: Record<string, EntryKind> = {
+  projects: "project",
+  initiatives: "initiative",
+  caseStudies: "caseStudy",
+  events: "event",
+};
+const pools: Record<string, { id: string; data: Record<string, any> }[]> = {
+  projects,
+  initiatives,
+  caseStudies,
+  events,
+};
+
+const selected = (selectedWork.items ?? [])
+  .map((item) => {
+    const entry = pools[item.collection]?.find((e) => e.id === item.slug);
+    if (!entry) return null;
+    const d = entry.data;
+    const year = item.year || (d.startDate ? String(new Date(d.startDate).getFullYear()) : "");
+    return {
+      href: entryHref(kindFor[item.collection], entry.id),
+      title: String(d.title ?? ""),
+      meta: [item.sector, year].filter(Boolean).join(" · "),
+      summary: cleanText(d.description) || cleanText(d.excerpt),
+      role: item.role || (typeof d.role === "string" ? d.role : ""),
+      kind: item.collection === "caseStudies" ? "Case study" : item.collection === "initiatives" ? "Initiative" : "Project",
+    };
+  })
+  .filter((x): x is NonNullable<typeof x> => Boolean(x));
+
+/* ---- Who the work has been for: most frequent clients across projects, case studies and video ---- */
+const clientCounts = new Map<string, number>();
+const addClient = (value: unknown) => {
+  const name = typeof value === "string" ? value.trim() : "";
+  if (name) clientCounts.set(name, (clientCounts.get(name) ?? 0) + 1);
+};
+[...projects, ...caseStudies].forEach((e) => addClient((e.data as Record<string, unknown>).client));
+(Array.isArray(videos) ? videos : []).forEach((v: { client?: string }) => addClient(v.client));
+const clients = [...clientCounts.entries()]
+  .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+  .slice(0, 12)
+  .map(([name]) => name);
+
+/* ---- Browse tiles ---- */
+const eventYears = events
+  .map((e) => (e.data.startDate ? new Date(e.data.startDate).getFullYear() : NaN))
+  .filter(Number.isFinite);
+const eventSpan = eventYears.length ? `${Math.min(...eventYears)}–${Math.max(...eventYears)}` : "";
+
+const tiles = [
+  {
+    href: routes.caseStudies,
+    label: "Case studies",
+    count: caseStudies.length,
+    text: "Projects written up in full: the brief, my role and what changed.",
+  },
+  {
+    href: routes.projects,
+    label: "Projects",
+    count: projects.length,
+    text: "Space communications, Earth observation, public engagement and research, filterable by year, client and tag.",
+  },
+  {
+    href: routes.initiatives,
+    label: "Initiatives",
+    count: initiatives.length,
+    text: "Community programmes I run or support, including Leicester Space Week and Space for Neurodiversity.",
+  },
+  {
+    href: routes.events,
+    label: "Events",
+    count: events.length,
+    text: `Meetups, live broadcasts, conferences and bootcamps${eventSpan ? `, ${eventSpan}` : ""}.`,
+  },
+  {
+    href: routes.videos,
+    label: "Videos",
+    count: videoCount,
+    text: "Motion and explainer video for Mercator Ocean, ECMWF, ESA, EUMETSAT and DLR.",
+  },
+  {
+    href: routes.editorial,
+    label: "Editorial",
+    count: articleCount,
+    text: "Articles, reports and commentary on space systems, climate intelligence and innovation.",
+  },
+];
+
+const stats = [
+  `${caseStudies.length} case studies`,
+  `${projects.length} projects`,
+  `${initiatives.length} initiatives`,
+  `${events.length} events`,
+  ...(videoCount ? [`${videoCount} videos`] : []),
+];
 ---
 
 <Layout
-  title="Work with me"
-  description="Four ways to work with Ryan Laird: strategic communications, mentoring, teaching and tutoring, and speaking, media or research collaboration."
+  title="Work"
+  description="Selected work by Ryan Laird: case studies, projects, initiatives, events and video across space, Earth observation, sustainability and science communication."
 >
-  <div class="wrap page">
-    <header class="page-head">
-      <p class="sl">Work with me</p>
+  <section class="work-hub">
+    <div class="pg-shell">
+      <IndexHero
+        eyebrow="Work"
+        title="Selected work across"
+        accent="space, Earth observation & science communication"
+        lede="Case studies, projects, community initiatives, events and video made with space agencies, research organisations and local partners. Start with the selected pieces, or browse everything."
+        stats={stats}
+      />
 
-      <h1>Four routes, one for what you need</h1>
+      {
+        selected.length > 0 && (
+          <section class="wh-block" aria-labelledby="selected-heading">
+            <h2 id="selected-heading">Selected pieces</h2>
+            <div class="work-grid">
+              {selected.map((item) => (
+                <a class="work-card" href={item.href}>
+                  <span class="meta">{[item.kind, item.meta].filter(Boolean).join(" · ")}</span>
+                  <h3>{item.title}</h3>
+                  {item.summary && <p>{item.summary}</p>}
+                  {item.role && (
+                    <p class="role">
+                      <strong>Role:</strong> {item.role}
+                    </p>
+                  )}
+                </a>
+              ))}
+            </div>
+          </section>
+        )
+      }
 
-      <p class="lede">
-        I work with organisations, students, professionals and event hosts. They need different things, so the routes
-        below are separate. Choose the one that fits and you’ll land on the right page.
+      <section class="wh-block" aria-labelledby="browse-heading">
+        <h2 id="browse-heading">Browse all work</h2>
+        <ul class="wh-tiles">
+          {
+            tiles.map((tile) => (
+              <li>
+                <a class="wh-tile" href={tile.href}>
+                  <span class="wh-tile__count">{tile.count}</span>
+                  <span class="wh-tile__body">
+                    <span class="wh-tile__label">{tile.label}</span>
+                    <span class="wh-tile__text">{tile.text}</span>
+                  </span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      {
+        clients.length > 0 && (
+          <section class="wh-block" aria-labelledby="clients-heading">
+            <h2 id="clients-heading">Worked with</h2>
+            <ul class="wh-clients">
+              {clients.map((name) => (
+                <li>{name}</li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
+      <p class="wh-foot">
+        Looking to commission something similar? See <a href={routes.services}>services</a> or
+        <a href={routes.contact}>get in touch</a>.
       </p>
-    </header>
-
-    <div class="route-grid">
-      <article class="route" id="consulting" data-tone="teal">
-        <h2>Strategic communications and advisory</h2>
-        <p>Positioning, content and digital strategy for organisations working with technical, scientific or environmental subject matter.</p>
-        <p class="for"><strong>For:</strong> space, Earth observation, climate and sustainability organisations; science and technology businesses; mission-led and public-interest initiatives.</p>
-        <p class="for">Organisation-level projects are delivered through Green Orbit Digital.</p>
-        <a class="go" href="/consulting/">How consulting works</a>
-      </article>
-
-      <article class="route" id="teaching-and-mentoring" data-tone="violet">
-        <h2>Mentoring</h2>
-        <p>Structured one-to-one conversations about career direction, moving between science and communications, and working in mission-led fields.</p>
-        <p class="for"><strong>For:</strong> early- and mid-career professionals, and scientists considering communications, policy, engagement or commercial roles.</p>
-        <a class="go" href="/mentoring/">How mentoring works</a>
-        <a class="go" href="/coaching/">ADHD-informed coaching</a>
-      </article>
-
-      <article class="route" data-tone="sky">
-        <h2>Teaching, tutoring and workshops</h2>
-        <p>Physics and astronomy tutoring, guest lectures, and workshops on communicating complex topics.</p>
-        <p class="for"><strong>For:</strong> students, adult learners, schools, universities, charities, networks and professional teams.</p>
-        <a class="go" href="/teaching/">Tutoring, talks and workshops</a>
-        <a class="go" href="/tutoring/">Physics and astronomy tuition (GCSE and A-level)</a>
-      </article>
-
-      <article class="route" id="speaking" data-tone="amber">
-        <h2>Speaking, media and collaboration</h2>
-        <p>Talks, panels, podcast and press contributions, and research or editorial collaborations.</p>
-        <p class="for"><strong>For:</strong> conference and event organisers, podcast hosts, journalists and editors, universities and public-engagement teams, research collaborators.</p>
-        <a class="go" href="/press/">Press kit and past appearances</a>
-      </article>
     </div>
-
-    <div class="block">
-      <h2>Not sure which route fits?</h2>
-      <p class="prose">
-        Use the <a href="/contact/">contact page</a>, pick the closest option and describe what you have in mind. If it
-        belongs with another route, or with Green Orbit Digital, I’ll say so.
-      </p>
-    </div>
-  </div>
+  </section>
 </Layout>
+
+<style>
+  .wh-block {
+    display: grid;
+    gap: 1rem;
+    padding: 0;
+  }
+
+  .wh-block > h2 {
+    margin: 0;
+    font-size: clamp(1.3rem, 3vw, 1.75rem);
+    letter-spacing: -0.02em;
+  }
+
+  /* Tiles: number first, so the scale of the work is visible at a glance. */
+  .wh-tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .wh-tile {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+    height: 100%;
+    padding: 1.1rem 1.25rem;
+    background: var(--card);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .wh-tile:hover,
+  .wh-tile:focus-visible {
+    border-color: var(--teal);
+  }
+
+  .wh-tile__count {
+    min-width: 2.6rem;
+    font-family: var(--font-display);
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--teal);
+  }
+
+  .wh-tile__body {
+    display: grid;
+    gap: 0.3rem;
+    min-width: 0;
+  }
+
+  .wh-tile__label {
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--w);
+  }
+
+  .wh-tile__text {
+    font-size: 0.88rem;
+    line-height: 1.55;
+    color: var(--mb);
+  }
+
+  .wh-clients {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .wh-clients li {
+    padding: 0.35rem 0.8rem;
+    border: 1px solid var(--bm);
+    border-radius: 999px;
+    font-size: 0.88rem;
+    color: var(--mb);
+  }
+
+  .wh-foot {
+    margin: 0;
+    color: var(--mb);
+  }
+
+  .wh-foot a {
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

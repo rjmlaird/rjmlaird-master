@@ -3,6 +3,8 @@ import Layout from "../../../layouts/Layout.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
 import ProjectCard from "../../../components/Projects/ProjectCard.astro";
 import Filters from "../../../components/Projects/Filters.astro";
+import IndexHero from "../../../components/Index/IndexHero.astro";
+import CardGrid from "../../../components/Index/CardGrid.astro";
 
 const initiatives = await getCollection("initiatives", ({ data }) => data.draft !== true);
 
@@ -14,26 +16,23 @@ const sortedInitiatives = initiatives.sort(sortByTitle);
 
 <Layout
   title="Initiatives"
-  description="Space, sustainability and science-communication initiatives — filter by date, client, tags, type and status."
+  description="Community-led initiatives in space and science communication that I run or support, including Leicester Space Week, Space for Neurodiversity and Spaceoneers."
 >
   <section class="project-index">
-    <div class="container pg-shell">
-      <header class="pg-head">
-        <p class="eyebrow">Initiatives</p>
+    <div class="pg-shell">
+      <IndexHero
+        eyebrow="Initiatives"
+        title="Initiatives I run"
+        accent="and support"
+        lede="Community-led programmes in space and science communication, from Leicester Space Week to Space for Neurodiversity and Spaceoneers."
+        stats={[`${sortedInitiatives.length} initiatives`]}
+      />
 
-        <h1 class="ch fade">
-          Initiatives across <em>space, sustainability &amp; science policy</em>
-        </h1>
-      </header>
+      <Filters items={sortedInitiatives} noun="initiatives" />
 
-      <Filters items={initiatives} />
-
-      <div class="grid" id="projectGrid">
-        {sortedInitiatives.map((initiative) => (
-          <ProjectCard initiative={initiative} />
-        ))}
-      </div>
+      <CardGrid label="Initiatives">
+        {sortedInitiatives.map((initiative) => <ProjectCard initiative={initiative} />)}
+      </CardGrid>
     </div>
   </section>
 </Layout>
-

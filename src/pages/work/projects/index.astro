@@ -3,6 +3,8 @@ import Layout from "../../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
 import ProjectCard from "../../../components/Projects/ProjectCard.astro";
 import Filters from "../../../components/Projects/Filters.astro";
+import IndexHero from "../../../components/Index/IndexHero.astro";
+import CardGrid from "../../../components/Index/CardGrid.astro";
 
 const entries = await getCollection(
   "projects",
@@ -73,70 +75,27 @@ const projects = [...entries].sort((a, b) => {
 
 <Layout
   title="Projects"
-  description="Space, sustainability and science-communication projects — filter by date, client, tags, type and status."
+  description="Space, sustainability and science-communication projects. Search by title, filter by year, client, tag or type."
 >
   <section class="project-index">
-    <div class="container pg-shell">
-      <header class="page-head">
-        <p class="sl">Projects</p>
+    <div class="pg-shell">
+      <IndexHero
+        eyebrow="Projects"
+        title="Projects across"
+        accent="space, sustainability & science policy"
+        lede="Work across space communications, Earth observation, public engagement and research. Entries are being rewritten one at a time as full case studies; short pages are marked and kept out of search results until complete."
+        stats={[`${projects.length} projects`]}
+      />
 
-        <h1 class="fade">
-          Projects across <em>space, sustainability &amp; science policy</em>
-        </h1>
-
-        <div class="lede">
-          <p>
-            Work across space communications, Earth observation, public engagement and research. Entries are being
-            rewritten one at a time as full case studies, with context, my role and outcomes. Where a page is still
-            short, it is marked and kept out of search results until it is complete.
-          </p>
-        </div>
-      </header>
-
-      <Filters items={projects} />
+      <Filters items={projects} noun="projects" />
 
       {projects.length > 0 ? (
-        <div class="grid project-grid" id="projectGrid">
-          {projects.map((project) => (
-            <ProjectCard project={project} />
-          ))}
-        </div>
+        <CardGrid label="Projects">
+          {projects.map((project) => <ProjectCard project={project} />)}
+        </CardGrid>
       ) : (
         <p class="lede">No projects to show yet.</p>
       )}
     </div>
   </section>
 </Layout>
-
-<style>
-  /* Three columns on desktop, two on tablet, one on mobile */
-  #projectGrid {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: clamp(1rem, 2vw, 1.5rem);
-    align-items: stretch;
-  }
-
-  /* Cards come from a child component, so reach them with :global */
-  #projectGrid > :global(*) {
-    min-width: 0;   /* stops long titles or tags from stretching a column */
-    height: 100%;   /* equal-height cards in each row */
-  }
-
-  /* The filter script hides cards with [hidden]; make sure display rules never override it */
-  #projectGrid > :global([hidden]) {
-    display: none;
-  }
-
-  @media (max-width: 1100px) {
-    #projectGrid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 700px) {
-    #projectGrid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>

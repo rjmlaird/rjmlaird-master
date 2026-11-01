@@ -1,0 +1,33 @@
+---
+// src/components/Index/CardGrid.astro
+// Responsive grid shared by every index page: 1 column on phones, 2 on tablets, 3 on desktop.
+// Pass the id the filter script looks for (default "projectGrid").
+interface Props {
+  id?: string;
+  label?: string;
+}
+const { id = "projectGrid", label } = Astro.props as Props;
+---
+
+<div class="card-grid" id={id} aria-label={label}>
+  <slot />
+</div>
+
+<style>
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr));
+    gap: clamp(1rem, 2vw, 1.5rem);
+    align-items: stretch;
+  }
+
+  /* Children come from other components, so reach them with :global. */
+  .card-grid > :global(*) {
+    min-width: 0; /* long titles or tags never stretch a column */
+    height: 100%; /* equal-height cards per row */
+  }
+
+  .card-grid > :global([hidden]) {
+    display: none;
+  }
+</style>

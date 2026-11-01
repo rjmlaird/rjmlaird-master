@@ -51,11 +51,56 @@ const primaryType = type || status || client || organisation || institution || "
 const dateText = kind === "event" ? formatDateRange(startDate, endDate) : formatDate(startDate, "short");
 
 const href = entryHref(kind as EntryKind, source?.id ?? "");
+
+/* ---- Filter hooks -------------------------------------------------------------------------
+   Filters.astro reads these data-* attributes. They must stay in sync with its field list. */
+const asStrings = (val: unknown): string[] =>
+  Array.isArray(val) ? val.filter(Boolean).map(String) : val ? [String(val)] : [];
+
+const organiserName = (val: unknown): string => {
+  const first = Array.isArray(val) ? val[0] : val;
+  if (!first) return "";
+  if (typeof first === "string") return first.trim();
+  if (typeof first === "object" && "name" in (first as object)) {
+    return String((first as { name?: unknown }).name ?? "").trim();
+  }
+  return "";
+};
+
+const clientLike = (
+  [client, organisation, institution].find((v) => typeof v === "string" && v.trim()) ||
+  organiserName((data as Record<string, unknown>)?.organiser)
+)
+  .toString()
+  .trim();
+
+const raw = (data ?? {}) as Record<string, unknown>;
+const categories = [...asStrings(raw.category), ...asStrings(raw.sectors)];
+const format = typeof raw.format === "string" ? raw.format : "";
+const startIso = isoDate(startDate);
+const year = startIso ? startIso.slice(0, 4) : "";
+
+/* Events: show where and how, which is what people scan for. */
+const loc = raw.location as { name?: string; city?: string; online?: boolean } | undefined;
+const place = kind === "event" ? (loc?.online ? "Online" : [loc?.city].filter(Boolean).join("")) || "" : "";
+const placeText = [place, format && format !== "in-person" ? format : ""].filter(Boolean).join(" · ");
 ---
 
-<article class:list={["project-card", { featured }]}>
+<article
+  class:list={["project-card", { featured }]}
+  data-title={title}
+  data-description={description || excerpt}
+  data-client={clientLike}
+  data-tags={safeTags.join("|")}
+  data-categories={categories.join("|")}
+  data-type={type}
+  data-status={status}
+  data-format={format}
+  data-start-date={startIso}
+  data-year={year}
+>
   {heroImage && (
-    <a href={href} class="project-card-image-link" aria-label={title}>
+    <a href={href} class="project-card-image-link" aria-label={title} tabindex="-1">
       <Figure src={heroImage} alt={heroAlt} />
     </a>
   )}
@@ -75,9 +120,10 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
       </div>
     )}
 
-    {dateText && (
+    {(dateText || placeText) && (
       <div class="footer">
-        <time datetime={isoDate(startDate)}>{dateText}</time>
+        {dateText && <time datetime={startIso}>{dateText}</time>}
+        {placeText && <span class="place">{placeText}</span>}
       </div>
     )}
   </div>
@@ -87,7 +133,8 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
   .project-card {
     display: flex;
     flex-direction: column;
-    text-decoration: none;
+    height: 100%;
+    background: var(--card);
     color: inherit;
     border: 1px solid var(--color-border);
     border-radius: 8px;
@@ -95,16 +142,34 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
     transition: border-color 0.15s ease, transform 0.15s ease;
   }
 
-  .project-card:hover {
+  .project-card:hover,
+  .project-card:focus-within {
     border-color: var(--color-accent);
     transform: translateY(-2px);
   }
 
   .project-card-image-link {
     display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--ink2);
+  }
+
+  /* Figure adds a 2rem margin for article bodies; inside a card it only creates dead space. */
+  .project-card-image-link :global(.post-figure) {
+    margin: 0;
+    height: 100%;
+  }
+
+  .project-card-image-link :global(.post-figure img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 0;
   }
 
   .body {
+    flex: 1;
     padding: 1.1rem 1.2rem 1.3rem;
     display: flex;
     flex-direction: column;
@@ -121,9 +186,20 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
     font-size: 1.5rem;
   }
 
+  /* Whole card is clickable via the title link. */
   .title-link {
     color: inherit;
     text-decoration: none;
+  }
+
+  .title-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .project-card {
+    position: relative;
   }
 
   .title-link:hover {
@@ -135,12 +211,16 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
     font-size: 0.9rem;
     color: var(--color-text-muted);
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
 
+  /* Sits above the stretched title link so tag links stay clickable. */
   .meta-block {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     gap: 0.6rem;
@@ -148,9 +228,18 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
   }
 
   .footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    margin-top: auto;
+    padding-top: 0.4rem;
     font-size: 0.78rem;
     color: var(--color-text-muted);
-    margin-top: 0.3rem;
+  }
+
+  .place::before {
+    content: "·";
+    margin-right: 0.75rem;
   }
 
   .featured {
@@ -164,11 +253,22 @@ const href = entryHref(kind as EntryKind, source?.id ?? "");
 
     .featured .project-card-image-link {
       width: 65%;
+      aspect-ratio: auto;
     }
 
     .featured .body {
-      flex: 1;
       justify-content: center;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-card {
+      transition: none;
+    }
+
+    .project-card:hover,
+    .project-card:focus-within {
+      transform: none;
     }
   }
 </style>

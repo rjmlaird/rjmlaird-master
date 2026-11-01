@@ -166,43 +166,18 @@ main:focus { outline: none; }
 
 /* Larger touch targets for coarse pointers (WCAG 2.5.5) */
 @media (pointer: coarse) {
-  .nsub, .ncta, .filter-btn { min-height: 44px; display: inline-flex; align-items: center; }
-  .nl a { display: inline-block; padding-block: .6rem; }
+  .filter-btn { min-height: 44px; display: inline-flex; align-items: center; }
 }
 
 /* 4. NAV & HEADER ======================================================== */
-nav {
-  position: sticky; top: 0; z-index: 300;
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  min-height: var(--nav-h);
-  padding: .75rem var(--gutter);
-  background: rgba(11,15,26,.96);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
-  border-bottom: 1px solid var(--bd);
-}
+/* Primary navigation is styled by src/components/Nav.astro (single source). */
 .logo { font-family: var(--font-display); font-size: .95rem; font-weight: 700; letter-spacing: .04em; color: var(--w); text-decoration: none; }
 .logo span { color: var(--teal); }
-.nl { display: flex; gap: 1.6rem; list-style: none; }
-.nl a { font-family: var(--font-display); font-size: .8125rem; font-weight: 500; color: var(--mb); text-decoration: none; letter-spacing: .04em; transition: color .2s; }
-.nl a:hover { color: var(--w); }
-.nl a[aria-current="page"] { color: var(--teal); }
-.nr { display: flex; gap: .7rem; align-items: center; }
-.nsub {
-  font-family: var(--font-display); font-size: .75rem; font-weight: 500; color: var(--mb);
-  text-decoration: none; border: 1px solid var(--bm); padding: .3rem .7rem; border-radius: 3px;
-  transition: border-color .2s, color .2s;
-}
-.nsub:hover { border-color: var(--m); color: var(--w); }
-.ncta {
-  font-family: var(--font-display); font-size: .8125rem; font-weight: 600; color: var(--ink);
-  background: var(--teal); padding: .4rem 1rem; border-radius: 3px; text-decoration: none;
-  transition: opacity .2s;
-}
-.ncta:hover { opacity: .87; }
 
-/* Slim bar header (home link + one item). Page intro headers use .page-head. */
-header:not(.page-head) {
+/* Slim bar header (home link + one item): applies ONLY to a bare <header> with no class.
+   Previously this matched every classed header (.pg-head, .vg-head, .service-hero ...) at higher
+   specificity than their own rules, turning intro headers into side-by-side flex rows. */
+:where(header:not([class])) {
   display: flex; align-items: center; justify-content: space-between;
   padding: 1.5rem var(--gutter);
   border-bottom: 1px solid var(--bd);
@@ -596,12 +571,6 @@ footer a:hover, footer a:focus-visible { color: var(--w); }
 }
 
 @media (max-width: 900px) {
-  /* Nav: links drop to their own scrollable row rather than disappearing */
-  nav { flex-wrap: wrap; row-gap: .25rem; }
-  .nl { order: 3; width: 100%; gap: 1.25rem; overflow-x: auto; scrollbar-width: none; padding-bottom: .15rem; }
-  .nl::-webkit-scrollbar { display: none; }
-  .nl a { white-space: nowrap; }
-
   .story-grid, .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .init-grid, .edu-grid, .repo-grid { grid-template-columns: 1fr; }
 
@@ -636,7 +605,7 @@ footer a:hover, footer a:focus-visible { color: var(--w); }
 }
 
 @media print {
-  nav, footer, .skip-link, .orb { display: none; }
+  .site-nav, footer, .skip-link, .orb { display: none; }
   body { background: #fff; color: #000; }
 }
 /* Glossary references: [term] in Markdown links to glossary.rjmlaird.co.uk. Dotted underline,

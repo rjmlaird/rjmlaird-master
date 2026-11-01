@@ -32,38 +32,6 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
     <a href="/" class="logo" aria-label="RJMLaird, home page">RJM<span>Laird</span></a>
   </div>
 
-  <div class="nav-right">
-    <div class="utility-links">
-      {utility.map((link) => (
-        <a
-          href={link.href}
-          class="nsub"
-          aria-current={isCurrent(link) ? "page" : undefined}
-          {...linkAttrs(link)}
-        >
-          {link.label}
-          {link.external && <span class="sr-only"> (opens in a new tab)</span>}
-        </a>
-      ))}
-    </div>
-
-    {cta && (
-      <a href={cta.href} class="ncta">
-        {cta.label}
-      </a>
-    )}
-
-    <button
-      class="nav-toggle"
-      type="button"
-      aria-expanded="false"
-      aria-controls="site-nav-menu"
-    >
-      <span class="sr-only">Open navigation</span>
-      <span class="hamburger" aria-hidden="true"></span>
-    </button>
-  </div>
-
   <div class="nav-center">
     <ul id="site-nav-menu" class="nl">
       {primary.map((link, index) => {
@@ -120,6 +88,38 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
     </ul>
   </div>
 
+  <div class="nav-right">
+    <div class="utility-links">
+      {utility.map((link) => (
+        <a
+          href={link.href}
+          class="nsub"
+          aria-current={isCurrent(link) ? "page" : undefined}
+          {...linkAttrs(link)}
+        >
+          {link.label}
+          {link.external && <span class="sr-only"> (opens in a new tab)</span>}
+        </a>
+      ))}
+    </div>
+
+    {cta && (
+      <a href={cta.href} class="ncta">
+        {cta.label}
+      </a>
+    )}
+
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav-menu"
+    >
+      <span class="sr-only">Open navigation</span>
+      <span class="hamburger" aria-hidden="true"></span>
+    </button>
+  </div>
+
   <script is:inline>
     const initNav = () => {
       const siteNav = document.querySelector("[data-nav]");
@@ -171,6 +171,27 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
       const closeAllSubmenus = (returnFocus = false) => {
         submenuToggles.forEach((toggle) => closeSubmenu(toggle, returnFocus));
       };
+
+
+      // Desktop pointers: open on hover as well as on click. Touch and narrow screens keep click-only.
+      const hoverQuery = window.matchMedia("(min-width: 721px) and (hover: hover)");
+      let hoverTimer;
+      siteNav.querySelectorAll(".nitem.has-children").forEach((item) => {
+        const toggle = item.querySelector(".submenu-toggle");
+        if (!toggle) return;
+
+        item.addEventListener("pointerenter", (event) => {
+          if (!hoverQuery.matches || event.pointerType === "touch") return;
+          window.clearTimeout(hoverTimer);
+          openSubmenu(toggle);
+        });
+
+        item.addEventListener("pointerleave", (event) => {
+          if (!hoverQuery.matches || event.pointerType === "touch") return;
+          window.clearTimeout(hoverTimer);
+          hoverTimer = window.setTimeout(() => closeSubmenu(toggle), 160);
+        });
+      });
 
       mobileToggle?.addEventListener("click", () => {
         const open = !siteNav.classList.contains("menu-open");
@@ -240,29 +261,36 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 
 <style>
 .site-nav {
-  position: relative;
-  z-index: 300;
+  /* Sticky and above all page content (cards use z-index <= 3, skip link is 1000). */
+  position: sticky;
+  top: 0;
+  z-index: 500;
   width: 100%;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "left center right";
   align-items: center;
   gap: 1.5rem;
-  padding: 1rem var(--gutter);
-  background: rgba(11, 15, 26, 0.93);
+  padding: 0.85rem var(--gutter);
+  background: rgba(11, 15, 26, 0.96);
+  -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
   border-bottom: 1px solid var(--bd);
 }
 
 .nav-left {
+  grid-area: left;
   justify-self: start;
 }
 
 .nav-center {
+  grid-area: center;
   justify-self: center;
   min-width: 0;
 }
 
 .nav-right {
+  grid-area: right;
   justify-self: end;
   display: flex;
   align-items: center;
@@ -370,20 +398,34 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 
 .dropdown {
   position: absolute;
-  top: calc(100% + 0.45rem);
-  left: 50%;
-  z-index: 10;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  z-index: 510;
   width: max-content;
-  min-width: 13rem;
-  max-width: min(20rem, calc(100vw - 2rem));
+  min-width: 14rem;
+  max-width: min(22rem, calc(100vw - 2rem));
   list-style: none;
   margin: 0;
   padding: 0.45rem;
-  border: 1px solid var(--bd);
-  border-radius: 4px;
-  background: rgba(11, 15, 26, 0.98);
-  box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.24);
-  transform: translateX(-50%);
+  border: 1px solid var(--bm);
+  border-radius: 6px;
+  /* Fully opaque so page text never shows through. */
+  background: var(--card);
+  box-shadow: 0 1.25rem 3rem rgba(0, 0, 0, 0.55);
+}
+
+/* Last two menus open towards the left so they never run off the right-hand edge. */
+.nitem:nth-last-child(-n + 2) > .dropdown {
+  left: auto;
+  right: 0;
+}
+
+/* Invisible bridge so the pointer can travel from the link to the menu without it closing. */
+.dropdown::before {
+  content: "";
+  position: absolute;
+  inset: -0.6rem 0 auto 0;
+  height: 0.6rem;
 }
 
 .dropdown[hidden] {
@@ -397,7 +439,7 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 .dropdown li a {
   display: block;
   font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 500;
   color: var(--m);
   text-decoration: none;
@@ -511,12 +553,13 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
 @media (max-width: 720px) {
   .site-nav {
     grid-template-columns: minmax(0, 1fr) auto;
-    grid-template-rows: auto auto;
-    gap: 0.75rem;
+    grid-template-areas:
+      "left right"
+      "center center";
+    gap: 0.5rem 0.75rem;
   }
 
   .nav-center {
-    grid-column: 1 / -1;
     justify-self: stretch;
   }
 
@@ -544,6 +587,10 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
   .site-nav.menu-open .nl {
     display: flex;
     flex-direction: column;
+    /* Tall menus scroll inside the panel instead of running off short screens. */
+    max-height: calc(100dvh - 7rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
 
   .nitem {
@@ -577,7 +624,14 @@ const linkAttrs = (link: { href: string; external?: boolean }) =>
     border-radius: 0;
     background: transparent;
     box-shadow: none;
-    transform: none;
+  }
+
+  .dropdown::before {
+    display: none;
+  }
+
+  .nitem:nth-last-child(-n + 2) > .dropdown {
+    right: auto;
   }
 
   .dropdown li + li {
